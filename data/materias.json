@@ -1,0 +1,222 @@
+{
+    "904136184647778346": {
+        "nomeMateria": "Cálculo Diferencial e Integral",
+        "codMateria": "FOZ0984",
+        "cargaHoráriaEmHoras": 136,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T10:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-2T10:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Ricardo Krauskopf Neto"
+            }
+        ]
+    },
+    "904136257272184832": {
+        "nomeMateria": "Circuitos Elétricos",
+        "codMateria": "FOZ1914",
+        "cargaHoráriaEmHoras": 68,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-5T10:10:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-1T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Prática",
+                "turma": "P1"
+            },
+            {
+                "inicio": "R42/2021-W43-1T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Prática",
+                "turma": "P2"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Fernanda Maria Nodari"
+            }
+        ]
+    },
+    "904136309935833098": {
+        "nomeMateria": "Computação I",
+        "codMateria": "FOZ0987",
+        "cargaHoráriaEmHoras": 170,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T07:30:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T08:20:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P1"
+            },
+            {
+                "inicio": "R42/2021-W43-4T08:20:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P2"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Jorge Habib Hanna El Khouri"
+            }
+        ]
+    },
+    "904136277278982144": {
+        "nomeMateria": "Computação I Desdobramento",
+        "codMateria": "FOZ0987",
+        "cargaHoráriaEmHoras": 170,
+        "serie": "1D",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T07:30:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T10:10:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P1"
+            },
+            {
+                "inicio": "R42/2021-W43-4T11:00:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P2"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Newton Spolaôr"
+            }
+        ]
+    },
+    "904136370367373353": {
+        "nomeMateria": "Geometria Analítica e Álgebra Linear",
+        "codMateria": "FOZ0989",
+        "cargaHoráriaEmHoras": 136,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T08:20:00/P1W",
+                "duracaoEmMinutos": 110,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-3T08:20:00/P1W",
+                "duracaoEmMinutos": 110,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Katiani Pereira da Conceição"
+            }
+        ]
+    },
+    "904153195759157258": {
+        "nomeMateria": "Circuitos Elétricos Desdobramento",
+        "codMateria": "FOZ1914",
+        "cargaHoráriaEmHoras": 68,
+        "serie": "1D",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-5T10:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-1T17:00:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P1"
+            },
+            {
+                "inicio": "R42/2021-W43-1T17:00:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Prática",
+                "turma": "P2"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Fernanda Maria Nodari"
+            }
+        ]
+    },
+    "904153227963035718": {
+        "nomeMateria": "Introdução à Ciência da Computação",
+        "codMateria": "FOZ0988",
+        "cargaHoráriaEmHoras": 68,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T13:00:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Juan Carlos Sotuyo"
+            }
+        ]
+    },
+    "904153253091110962": {
+        "nomeMateria": "Lógica e Matemática Discreta",
+        "codMateria": "FOZ0985",
+        "cargaHoráriaEmHoras": 102,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-5T07:30:00/P1W",
+                "duracaoEmMinutos": 110,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Katiani Pereira da Conceição"
+            }
+        ]
+    },
+    "904153266907144192": {
+        "nomeMateria": "Probabilidade e Estatística",
+        "codMateria": "FOZ0698",
+        "cargaHoráriaEmHoras": 68,
+        "serie": "1",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-3T10:10:00/P1W",
+                "duracaoEmMinutos": 50,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "Professores": [
+            {
+                "nome": "Fabiana Frata Furlan Peres"
+            }
+        ]
+    }
+}
