@@ -581,5 +581,219 @@
                 "nome": "Andre Gustavo Maletzke"
             }
         ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Computação Gráfica",
+        "codMateria": "FOZ1010",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-2T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2022-W15-4T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Fabiana Frata Furlan Peres"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Engenharia de Software II",
+        "codMateria": "FOZ1012",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-1T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2022-W15-3T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Willian Francisco da Silva"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Inteligência Artificial",
+        "codMateria": "FOZ1008",
+        "cargaHorariaEmHoras": 136,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Huei Diana Lee"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Introdução à Ciência de Dados",
+        "codMateria": "FOZ1956",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2021-W43-1T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2021-W43-3T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Andre Gustavo Maletzke"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Mineração de Dados Não Convencionais",
+        "codMateria": "FOZ1957",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-1T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2022-W15-5T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Andre Gustavo Maletzke"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Processamento de Imagens Digitais",
+        "codMateria": "FOZ1013",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2021-W43-5T13:30:00/P1W",
+                "duracaoEmMinutos": 210,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Claudio Roberto Marquetto Mauricio"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Sistemas de Informação",
+        "codMateria": "FOZ1011",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2021-W43-1T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2021-W43-3T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Andre Gustavo Maletzke"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Sistemas Distribuídos",
+        "codMateria": "FOZ1009",
+        "cargaHorariaEmHoras": 136,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Renato Bobsin Machado"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Tópicos Especiais em Redes de Computadores",
+        "codMateria": "FOZ1905",
+        "cargaHorariaEmHoras": 68,
+        "serie": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-1T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2022-W15-5T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Antonio Marcos Massao Hachisuca"
+            }
+        ]
+    },
+    "000000000000000000": {
+        "nomeMateria": "Trabalho de Conclusão de Curso",
+        "codMateria": "FOZ1014",
+        "cargaHorariaEmHoras": 204,
+        "serie": "4",
+        "horarios": [ ],
+        "professores": [
+            {
+                "nome": "Teresinha Arnauts Hachisuca"
+            }
+        ]
     }
 }
