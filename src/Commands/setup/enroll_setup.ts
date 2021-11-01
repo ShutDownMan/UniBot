@@ -1,7 +1,7 @@
 import { Command, ControlRoles, EnrollMessages } from '../../Interfaces'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
-import { MessageActionRow, MessageSelectMenu, TextChannel } from 'discord.js'
+import { Message, MessageActionRow, MessageSelectMenu, TextChannel } from 'discord.js'
 import Materias from '../../../data/materias.json'
 import ExtendedClient from '../../Client'
 import { sendToTextChannel } from '../../Utils'
@@ -23,11 +23,11 @@ export const command: Command = {
         /// create a select for each period
         await createByYearSelects(client)
 
-        try {
-            await message.delete()
-        } catch (error) {
-            log.error(error)            
-        }
+        /// create enroll management message
+
+
+        /// delete sent command
+        await tryAndDelete(message)
     }
 }
 
@@ -43,12 +43,13 @@ async function clearChannelMessages(client) {
 }
 
 async function createBulkCoursesSelect(client: ExtendedClient) {
+    let options = getAllYearsAsOptions()
     /// create select with each year
     let row = new MessageActionRow().addComponents(
         new MessageSelectMenu()
             .setCustomId('bulkEnrollCoursesSelect')
             .setPlaceholder('Adicionar Matérias Por Ano')
-            .addOptions(getAllYearsAsOptions()),
+            .addOptions(options),
     )
     /// create view
     let bulkYearsEnrollView = {
@@ -71,7 +72,7 @@ function getAllYearsAsOptions() {
         let yearOption = {
             label: `${cardinals[index]} Ano`,
             description: `Adicione todas matérias do ${cardinals[index]} ano`,
-            value: (index + 1).toString(),
+            value: `addCoursesFromPeriod ${index + 1}`,
         }
 
         /// add to array
@@ -97,6 +98,7 @@ async function createByYearSelects(client: ExtendedClient) {
                 new MessageSelectMenu()
                     .setCustomId(cardinals[index] + 'YearEnrollCoursesSelect')
                     .setPlaceholder(`Matérias do ${cardinals[index]} Ano`)
+                    .setMaxValues(options.length)        
                     .addOptions(options),
             )
 
@@ -135,7 +137,7 @@ function getOptionsByYears(periods: string[]) {
         let materiaOption = {
             label: materia.nomeMateria,
             description: `${materiaProfessoresStr}`,
-            value: materiaID,
+            value: `addRole ${materiaID}`,
         }
         selectOptions.push(materiaOption)
 
@@ -146,6 +148,14 @@ function getOptionsByYears(periods: string[]) {
 
 function isFromGivenPeriod(array: string[], key: string) {
     return array.some((p: string) => { return p === Materias[key].serie })
+}
+
+async function tryAndDelete(item: Message) {
+    try {
+        await item.delete()
+    } catch (error) {
+        log.error(error)            
+    }
 }
 
 /*
