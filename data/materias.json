@@ -410,5 +410,176 @@
                 "nome": "Leonilda Correia dos Santos"
             }
         ]
+    },
+    "904759919658561676": {
+        "nomeMateria": "Banco de Dados",
+        "codMateria": "FOZ1001",
+        "cargaHorariaEmHoras": 102,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T07:30:00/P1W",
+                "duracaoEmMinutos": 160,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Roberto Gil Brasil"
+            }
+        ]
+    },
+    "904759994459762689": {
+        "nomeMateria": "Compiladores",
+        "codMateria": "FOZ1005",
+        "cargaHorariaEmHoras": 68,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-3T07:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Newton Spolaôr"
+            }
+        ]
+    },
+    "904760047601614878": {
+        "nomeMateria": "Engenharia de Software I",
+        "codMateria": "FOZ0999",
+        "cargaHorariaEmHoras": 136,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T16:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-5T07:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Roberto Gil Brasil"
+            }
+        ]
+    },
+    "904760144695541770": {
+        "nomeMateria": "Estágio Supervisionado",
+        "codMateria": "FOZ1007",
+        "cargaHorariaEmHoras": 204,
+        "serie": "3",
+        "horarios": [ ],
+        "professores": [
+            {
+                "nome": "Antonio Marcos Massao Hachisuca"
+            }
+        ]
+    },
+    "904760189503287368": {
+        "nomeMateria": "Formação Empreendedora",
+        "codMateria": "FOZ1917",
+        "cargaHorariaEmHoras": 102,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-3T09:20:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Antonio Marcos Massao Hachisuca"
+            }
+        ]
+    },
+    "904760331493072916": {
+        "nomeMateria": "Organização e Arquitetura de Computadores",
+        "codMateria": "FOZ1002",
+        "cargaHorariaEmHoras": 102,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-5T09:20:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Newton Spolaôr"
+            }
+        ]
+    },
+    "904760420177436702": {
+        "nomeMateria": "Projeto e Análise de Algoritmos",
+        "codMateria": "FOZ1916",
+        "cargaHorariaEmHoras": 136,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T09:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T09:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Rômulo César Silva"
+            }
+        ]
+    },
+    "904760499550453770": {
+        "nomeMateria": "Redes de Computadores",
+        "codMateria": "FOZ1918",
+        "cargaHorariaEmHoras": 136,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T07:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T07:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Renato Bobsin Machado"
+            }
+        ]
+    },
+    "904760629846507590": {
+        "nomeMateria": "Sistemas Operacionais",
+        "codMateria": "FOZ1003",
+        "cargaHorariaEmHoras": 68,
+        "serie": "3",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T10:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Andre Gustavo Maletzke"
+            }
+        ]
     }
 }
