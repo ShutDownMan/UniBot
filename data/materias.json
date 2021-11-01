@@ -218,5 +218,197 @@
                 "nome": "Fabiana Frata Furlan Peres"
             }
         ]
+    },
+    "904153306539110410": {
+        "nomeMateria": "Algoritmos e Estrutura de Dados",
+        "codMateria": "FOZ0992",
+        "cargaHorariaEmHoras": 136,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T15:20:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Rômulo César Silva"
+            }
+        ]
+    },
+    "904604403569418251": {
+        "nomeMateria": "Cálculo Numérico",
+        "codMateria": "FOZ0990",
+        "cargaHorariaEmHoras": 102,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T13:30:00/P1W",
+                "duracaoEmMinutos": 160,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Ricardo Krauskopf Neto"
+            }
+        ]
+    },
+    "904604963668361226": {
+        "nomeMateria": "Computação II",
+        "codMateria": "FOZ0991",
+        "cargaHorariaEmHoras": 136,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-4T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Teresinha Arnauts Hachisuca"
+            }
+        ]
+    },
+    "904607882153197628": {
+        "nomeMateria": "Conceitos de Linguagens de Programação",
+        "codMateria": "FOZ0996",
+        "cargaHorariaEmHoras": 51,
+        "serie": "2",
+        "periodo": "4",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-5T13:30:00/P1W",
+                "duracaoEmMinutos": 160,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Jorge Habib Hanna El Khouri"
+            }
+        ]
+    },
+    "904608462305128448": {
+        "nomeMateria": "Introdução à Engenharia de Software",
+        "codMateria": "FOZ0993",
+        "cargaHorariaEmHoras": 68,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R22/2021-W43-3T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R22/2021-W43-4T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+
+        ],
+        "professores": [
+            {
+                "nome": "Jorge Habib Hanna El Khouri"
+            }
+        ]
+    },
+    "904608574053945374": {
+        "nomeMateria": "Linguagens de Montagem",
+        "codMateria": "FOZ1915",
+        "cargaHorariaEmHoras": 51,
+        "serie": "2",
+        "periodo": "3",
+        "horarios": [
+            {
+                "inicio": "R22/2021-W43-5T13:30:00/P1W",
+                "duracaoEmMinutos": 160,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Jorge Habib Hanna El Khouri"
+            }
+        ]
+    },
+    "904610034900693073": {
+        "nomeMateria": "Linguagens Formais e Autômatos",
+        "codMateria": "FOZ0997",
+        "cargaHorariaEmHoras": 68,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-2T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Rômulo César Silva"
+            }
+        ]
+    },
+    "904611398842195988": {
+        "nomeMateria": "Sistemas Digitais",
+        "codMateria": "FOZ0995",
+        "cargaHorariaEmHoras": 136,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R42/2021-W43-1T16:10:00/P1W",
+                "duracaoEmMinutos": 150,
+                "tipoAula": "Teórica"
+            },
+            {
+                "inicio": "R42/2021-W43-3T13:30:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Prática",
+                "turma": "P1"
+            },
+            {
+                "inicio": "R42/2021-W43-3T15:10:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Prática",
+                "turma": "P2"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Jorge Habib Hanna El Khouri"
+            }
+        ]
+    },
+    "904611834768814111": {
+        "nomeMateria": "Técnicas de Redação Científica",
+        "codMateria": "FOZ1765",
+        "cargaHorariaEmHoras": 34,
+        "serie": "2",
+        "horarios": [
+            {
+                "inicio": "R22/2022-W15-3T17:00:00/P1W",
+                "duracaoEmMinutos": 100,
+                "tipoAula": "Teórica"
+            }
+        ],
+        "professores": [
+            {
+                "nome": "Leonilda Correia dos Santos"
+            }
+        ]
     }
 }

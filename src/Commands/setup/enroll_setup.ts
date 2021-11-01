@@ -43,17 +43,20 @@ async function clearChannelMessages(client) {
 }
 
 async function createBulkCoursesSelect(client: ExtendedClient) {
+    /// create select with each year
     let row = new MessageActionRow().addComponents(
         new MessageSelectMenu()
             .setCustomId('bulkEnrollCoursesSelect')
             .setPlaceholder('Adicionar Matérias Por Ano')
             .addOptions(getAllYearsAsOptions()),
     )
+    /// create view
     let bulkYearsEnrollView = {
         content: "**Adicionar Matérias Por Ano**",
         components: [row]
     }
 
+    /// send view to channel
     await sendToTextChannel(client, process.env.ENROLLMENT_CHANNEL, bulkYearsEnrollView)
 }
 
@@ -61,14 +64,17 @@ function getAllYearsAsOptions() {
     let cardinals = ["Primeiro", "Segundo", "Terceiro", "Quarto"]
     let yearOptions = []
 
+    /// for each year
     for (let index = 0; index < cardinals.length; index++) {
 
+        /// create option
         let yearOption = {
             label: `${cardinals[index]} Ano`,
-            description: `Adicione todas matérias do ${cardinals[index]} ano.`,
+            description: `Adicione todas matérias do ${cardinals[index]} ano`,
             value: (index + 1).toString(),
         }
 
+        /// add to array
         yearOptions.push(yearOption)
     }
 
@@ -78,22 +84,29 @@ function getAllYearsAsOptions() {
 async function createByYearSelects(client: ExtendedClient) {
     let cardinals = ["Primeiro", "Segundo", "Terceiro", "Quarto"]
 
+    /// for each year
     for (let index = 0; index < cardinals.length; index++) {
 
+        /// get option of the current year
         let yearStrs = [`${index+1}`]
         let options = getOptionsByYears(yearStrs)
+        /// if there are options to choose
         if(options.length > 0) {
+            /// create row element to show
             let row = new MessageActionRow().addComponents(
                 new MessageSelectMenu()
                     .setCustomId(cardinals[index] + 'YearEnrollCoursesSelect')
                     .setPlaceholder(`Matérias do ${cardinals[index]} Ano`)
                     .addOptions(options),
             )
+
+            /// createView
             let currentYearEnrollView = {
                 content: `**${cardinals[index]} Ano**`,
                 components: [row]
             }
     
+            /// send view to channel
             await sendToTextChannel(client, process.env.ENROLLMENT_CHANNEL, currentYearEnrollView)    
         }
     }
@@ -112,10 +125,10 @@ function getOptionsByYears(periods: string[]) {
         let materia = Materias[materiaID]
 
         /// create description string
-        let materiaProfessoresStr = "Professor: " + materia.professores[0].nome
+        let materiaProfessoresStr = materia.professores[0].nome
         /// if there's more than 1 professor, apply a reduce
         if ((materia.professores.length > 1))
-            materiaProfessoresStr = "Professores: " + materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
+            materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
 
         // log.debug(materiaProfessoresStr)
 
