@@ -2,7 +2,7 @@
     "904136184647778346": {
         "nomeMateria": "Cálculo Diferencial e Integral",
         "codMateria": "FOZ0984",
-        "cargaHoráriaEmHoras": 136,
+        "cargaHorariaEmHoras": 136,
         "serie": "1",
         "horarios": [
             {
@@ -16,7 +16,7 @@
                 "tipoAula": "Teórica"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Ricardo Krauskopf Neto"
             }
@@ -25,7 +25,7 @@
     "904136257272184832": {
         "nomeMateria": "Circuitos Elétricos",
         "codMateria": "FOZ1914",
-        "cargaHoráriaEmHoras": 68,
+        "cargaHorariaEmHoras": 68,
         "serie": "1",
         "horarios": [
             {
@@ -46,7 +46,7 @@
                 "turma": "P2"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Fernanda Maria Nodari"
             }
@@ -55,7 +55,7 @@
     "904136309935833098": {
         "nomeMateria": "Computação I",
         "codMateria": "FOZ0987",
-        "cargaHoráriaEmHoras": 170,
+        "cargaHorariaEmHoras": 170,
         "serie": "1",
         "horarios": [
             {
@@ -76,7 +76,7 @@
                 "turma": "P2"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Jorge Habib Hanna El Khouri"
             }
@@ -85,7 +85,7 @@
     "904136277278982144": {
         "nomeMateria": "Computação I Desdobramento",
         "codMateria": "FOZ0987",
-        "cargaHoráriaEmHoras": 170,
+        "cargaHorariaEmHoras": 170,
         "serie": "1D",
         "horarios": [
             {
@@ -106,7 +106,7 @@
                 "turma": "P2"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Newton Spolaôr"
             }
@@ -115,7 +115,7 @@
     "904136370367373353": {
         "nomeMateria": "Geometria Analítica e Álgebra Linear",
         "codMateria": "FOZ0989",
-        "cargaHoráriaEmHoras": 136,
+        "cargaHorariaEmHoras": 136,
         "serie": "1",
         "horarios": [
             {
@@ -129,7 +129,7 @@
                 "tipoAula": "Teórica"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Katiani Pereira da Conceição"
             }
@@ -138,7 +138,7 @@
     "904153195759157258": {
         "nomeMateria": "Circuitos Elétricos Desdobramento",
         "codMateria": "FOZ1914",
-        "cargaHoráriaEmHoras": 68,
+        "cargaHorariaEmHoras": 68,
         "serie": "1D",
         "horarios": [
             {
@@ -159,7 +159,7 @@
                 "turma": "P2"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Fernanda Maria Nodari"
             }
@@ -168,7 +168,7 @@
     "904153227963035718": {
         "nomeMateria": "Introdução à Ciência da Computação",
         "codMateria": "FOZ0988",
-        "cargaHoráriaEmHoras": 68,
+        "cargaHorariaEmHoras": 68,
         "serie": "1",
         "horarios": [
             {
@@ -177,7 +177,7 @@
                 "tipoAula": "Teórica"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Juan Carlos Sotuyo"
             }
@@ -186,7 +186,7 @@
     "904153253091110962": {
         "nomeMateria": "Lógica e Matemática Discreta",
         "codMateria": "FOZ0985",
-        "cargaHoráriaEmHoras": 102,
+        "cargaHorariaEmHoras": 102,
         "serie": "1",
         "horarios": [
             {
@@ -195,7 +195,7 @@
                 "tipoAula": "Teórica"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Katiani Pereira da Conceição"
             }
@@ -204,7 +204,7 @@
     "904153266907144192": {
         "nomeMateria": "Probabilidade e Estatística",
         "codMateria": "FOZ0698",
-        "cargaHoráriaEmHoras": 68,
+        "cargaHorariaEmHoras": 68,
         "serie": "1",
         "horarios": [
             {
@@ -213,7 +213,7 @@
                 "tipoAula": "Teórica"
             }
         ],
-        "Professores": [
+        "professores": [
             {
                 "nome": "Fabiana Frata Furlan Peres"
             }
