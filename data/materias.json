@@ -1,5 +1,6 @@
 {
     "904136184647778346": {
+        "canalTextoID": "904598484387250227",
         "nomeMateria": "Cálculo Diferencial e Integral",
         "codMateria": "FOZ0984",
         "cargaHorariaEmHoras": 136,
@@ -23,6 +24,7 @@
         ]
     },
     "904136257272184832": {
+        "canalTextoID": "904598605829136395",
         "nomeMateria": "Circuitos Elétricos",
         "codMateria": "FOZ1914",
         "cargaHorariaEmHoras": 68,
@@ -53,6 +55,7 @@
         ]
     },
     "904136309935833098": {
+        "canalTextoID": "904598830903885825",
         "nomeMateria": "Computação I",
         "codMateria": "FOZ0987",
         "cargaHorariaEmHoras": 170,
@@ -83,6 +86,7 @@
         ]
     },
     "904136277278982144": {
+        "canalTextoID": "904598935484645416",
         "nomeMateria": "Computação I Desdobramento",
         "codMateria": "FOZ0987",
         "cargaHorariaEmHoras": 170,
@@ -113,6 +117,7 @@
         ]
     },
     "904136370367373353": {
+        "canalTextoID": "904599087456874506",
         "nomeMateria": "Geometria Analítica e Álgebra Linear",
         "codMateria": "FOZ0989",
         "cargaHorariaEmHoras": 136,
@@ -136,6 +141,7 @@
         ]
     },
     "904153195759157258": {
+        "canalTextoID": "904599218495311932",
         "nomeMateria": "Circuitos Elétricos Desdobramento",
         "codMateria": "FOZ1914",
         "cargaHorariaEmHoras": 68,
@@ -166,6 +172,7 @@
         ]
     },
     "904153227963035718": {
+        "canalTextoID": "904599454752071690",
         "nomeMateria": "Introdução à Ciência da Computação",
         "codMateria": "FOZ0988",
         "cargaHorariaEmHoras": 68,
@@ -184,6 +191,7 @@
         ]
     },
     "904153253091110962": {
+        "canalTextoID": "904599572687515658",
         "nomeMateria": "Lógica e Matemática Discreta",
         "codMateria": "FOZ0985",
         "cargaHorariaEmHoras": 102,
@@ -202,6 +210,7 @@
         ]
     },
     "904153266907144192": {
+        "canalTextoID": "904599682028830720",
         "nomeMateria": "Probabilidade e Estatística",
         "codMateria": "FOZ0698",
         "cargaHorariaEmHoras": 68,
@@ -220,6 +229,7 @@
         ]
     },
     "904153306539110410": {
+        "canalTextoID": "904614318098771979",
         "nomeMateria": "Algoritmos e Estrutura de Dados",
         "codMateria": "FOZ0992",
         "cargaHorariaEmHoras": 136,
@@ -243,6 +253,7 @@
         ]
     },
     "904604403569418251": {
+        "canalTextoID": "904614480221204492",
         "nomeMateria": "Cálculo Numérico",
         "codMateria": "FOZ0990",
         "cargaHorariaEmHoras": 102,
@@ -261,6 +272,7 @@
         ]
     },
     "904604963668361226": {
+        "canalTextoID": "904614688581623808",
         "nomeMateria": "Computação II",
         "codMateria": "FOZ0991",
         "cargaHorariaEmHoras": 136,
@@ -284,6 +296,7 @@
         ]
     },
     "904607882153197628": {
+        "canalTextoID": "904614770022445127",
         "nomeMateria": "Conceitos de Linguagens de Programação",
         "codMateria": "FOZ0996",
         "cargaHorariaEmHoras": 51,
@@ -303,6 +316,7 @@
         ]
     },
     "904608462305128448": {
+        "canalTextoID": "904614873135210507",
         "nomeMateria": "Introdução à Engenharia de Software",
         "codMateria": "FOZ0993",
         "cargaHorariaEmHoras": 68,
@@ -327,6 +341,7 @@
         ]
     },
     "904608574053945374": {
+        "canalTextoID": "904614998989488128",
         "nomeMateria": "Linguagens de Montagem",
         "codMateria": "FOZ1915",
         "cargaHorariaEmHoras": 51,
@@ -346,6 +361,7 @@
         ]
     },
     "904610034900693073": {
+        "canalTextoID": "904615105407381544",
         "nomeMateria": "Linguagens Formais e Autômatos",
         "codMateria": "FOZ0997",
         "cargaHorariaEmHoras": 68,
@@ -364,6 +380,7 @@
         ]
     },
     "904611398842195988": {
+        "canalTextoID": "904615242955374593",
         "nomeMateria": "Sistemas Digitais",
         "codMateria": "FOZ0995",
         "cargaHorariaEmHoras": 136,
@@ -394,6 +411,7 @@
         ]
     },
     "904611834768814111": {
+        "canalTextoID": "904615380654366742",
         "nomeMateria": "Técnicas de Redação Científica",
         "codMateria": "FOZ1765",
         "cargaHorariaEmHoras": 34,
@@ -412,6 +430,7 @@
         ]
     },
     "904759919658561676": {
+        "canalTextoID": "904760889926897714",
         "nomeMateria": "Banco de Dados",
         "codMateria": "FOZ1001",
         "cargaHorariaEmHoras": 102,
@@ -430,6 +449,7 @@
         ]
     },
     "904759994459762689": {
+        "canalTextoID": "904760974865760296",
         "nomeMateria": "Compiladores",
         "codMateria": "FOZ1005",
         "cargaHorariaEmHoras": 68,
@@ -448,6 +468,7 @@
         ]
     },
     "904760047601614878": {
+        "canalTextoID": "904761066754547802",
         "nomeMateria": "Engenharia de Software I",
         "codMateria": "FOZ0999",
         "cargaHorariaEmHoras": 136,
@@ -471,6 +492,7 @@
         ]
     },
     "904760144695541770": {
+        "canalTextoID": "904761158496567317",
         "nomeMateria": "Estágio Supervisionado",
         "codMateria": "FOZ1007",
         "cargaHorariaEmHoras": 204,
@@ -483,6 +505,7 @@
         ]
     },
     "904760189503287368": {
+        "canalTextoID": "904761241380204636",
         "nomeMateria": "Formação Empreendedora",
         "codMateria": "FOZ1917",
         "cargaHorariaEmHoras": 102,
@@ -501,6 +524,7 @@
         ]
     },
     "904760331493072916": {
+        "canalTextoID": "904761349970743356",
         "nomeMateria": "Organização e Arquitetura de Computadores",
         "codMateria": "FOZ1002",
         "cargaHorariaEmHoras": 102,
@@ -519,6 +543,7 @@
         ]
     },
     "904760420177436702": {
+        "canalTextoID": "904761453230317578",
         "nomeMateria": "Projeto e Análise de Algoritmos",
         "codMateria": "FOZ1916",
         "cargaHorariaEmHoras": 136,
@@ -542,6 +567,7 @@
         ]
     },
     "904760499550453770": {
+        "canalTextoID": "904761543202308106",
         "nomeMateria": "Redes de Computadores",
         "codMateria": "FOZ1918",
         "cargaHorariaEmHoras": 136,
@@ -565,6 +591,7 @@
         ]
     },
     "904760629846507590": {
+        "canalTextoID": "904761642577960970",
         "nomeMateria": "Sistemas Operacionais",
         "codMateria": "FOZ1003",
         "cargaHorariaEmHoras": 68,
@@ -582,7 +609,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904802821499666433": {
+        "canalTextoID": "904804875420975104",
         "nomeMateria": "Computação Gráfica",
         "codMateria": "FOZ1010",
         "cargaHorariaEmHoras": 68,
@@ -605,7 +633,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904802895520759808": {
+        "canalTextoID": "904804971218862161",
         "nomeMateria": "Engenharia de Software II",
         "codMateria": "FOZ1012",
         "cargaHorariaEmHoras": 68,
@@ -628,7 +657,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904802969889959946": {
+        "canalTextoID": "904805258834890812",
         "nomeMateria": "Inteligência Artificial",
         "codMateria": "FOZ1008",
         "cargaHorariaEmHoras": 136,
@@ -651,7 +681,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803081206775879": {
+        "canalTextoID": "904805386803109888",
         "nomeMateria": "Introdução à Ciência de Dados",
         "codMateria": "FOZ1956",
         "cargaHorariaEmHoras": 68,
@@ -674,7 +705,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803241123016824": {
+        "canalTextoID": "904805510610571354",
         "nomeMateria": "Mineração de Dados Não Convencionais",
         "codMateria": "FOZ1957",
         "cargaHorariaEmHoras": 68,
@@ -697,7 +729,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803385901973625": {
+        "canalTextoID": "904805648213106709",
         "nomeMateria": "Processamento de Imagens Digitais",
         "codMateria": "FOZ1013",
         "cargaHorariaEmHoras": 68,
@@ -715,7 +748,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803518332956692": {
+        "canalTextoID": "904805807252733953",
         "nomeMateria": "Sistemas de Informação",
         "codMateria": "FOZ1011",
         "cargaHorariaEmHoras": 68,
@@ -738,7 +772,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803563803410502": {
+        "canalTextoID": "904806925215096902",
         "nomeMateria": "Sistemas Distribuídos",
         "codMateria": "FOZ1009",
         "cargaHorariaEmHoras": 136,
@@ -761,7 +796,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803693965230101": {
+        "canalTextoID": "904805944993661039",
         "nomeMateria": "Tópicos Especiais em Redes de Computadores",
         "codMateria": "FOZ1905",
         "cargaHorariaEmHoras": 68,
@@ -784,7 +820,8 @@
             }
         ]
     },
-    "000000000000000000": {
+    "904803778472071269": {
+        "canalTextoID": "904806070973767711",
         "nomeMateria": "Trabalho de Conclusão de Curso",
         "codMateria": "FOZ1014",
         "cargaHorariaEmHoras": 204,
