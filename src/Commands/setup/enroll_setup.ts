@@ -89,7 +89,7 @@ async function createByYearSelects(client: ExtendedClient) {
     for (let index = 0; index < cardinals.length; index++) {
 
         /// get option of the current year
-        let yearStrs = [`${index+1}`]
+        let yearStrs = [`${index+1}`, `${index+1}D`]
         let options = getOptionsByYears(yearStrs)
         /// if there are options to choose
         if(options.length > 0) {

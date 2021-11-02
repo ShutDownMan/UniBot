@@ -59,12 +59,9 @@ export function deleteAfter(message: Message, timeInSeconds: number) {
     }, timeInSeconds * 1000)
 }
 
-export function sendToTextChannel(client, channelID, message) {
-    client.channels.fetch(channelID).then(channel => {
-        if (!channel) return
+export async function sendToTextChannel(client, channelID, message) {
+    let channel = client.channels.fetch(channelID)
+    if (!channel) return
 
-        (channel as TextChannel).send(message)
-    }).catch((error: any) => {
-        log.error(error)
-    })
+    (channel as TextChannel).send(message)
 }

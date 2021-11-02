@@ -1,6 +1,8 @@
 require('events').EventEmitter.defaultMaxListeners = 30
 import { Intents, User } from 'discord.js'
 import Client from './Client'
+import Persistence from './Persistence'
+import Tasks from './Tasks'
 import Logger from './Logger'
 import { BotState, ControlRoles, EnrollMessages} from './Interfaces'
 import { VoiceChannel, Role, MessageActionRow, MessageButton } from 'discord.js'
@@ -11,12 +13,7 @@ let dataState: BotState = {
     controlRoles: [ControlRoles.Admin, ControlRoles.Dev, ControlRoles.Moderator],
     prefix: process.argv[2] /* Bot Prefix */,
     enrollMessages: (<any>Object).values(EnrollMessages),
-    clear() {
-        this.anchorUser = null
-        this.isThreadCreated = false
-        this.threadID = ''
-        this.threadMembers = new Map()
-    },
+    clear() {},
 }
 
 global.dataState = dataState
@@ -29,15 +26,25 @@ enum ExitStatus {
 try {
     console.clear()
 
-    log.info('Inicializing bot...')
+    log.info('Initializing bot...')
 
     /// get client instance
     let client = new Client({
         intents: [Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
     })
 
-    log.info('Inicializing client...')
+    log.info('Initializing client...')
     client.init()
+
+
+    let persistence = new Persistence({})
+
+    log.info('Initializing persistence...')
+    persistence.init()
+
+    let tasks = new Tasks(persistence)
+    log.info('Initializing tasks...')
+    tasks.init()
 
     const exitSignals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT']
 
@@ -45,6 +52,7 @@ try {
     exitSignals.map((signal) => {
         process.on(signal, async () => {
             await client.gracefullShutdown()
+            await persistence.gracefullShutdown()
             if (process.env.IS_DEV_VERSION === 'true') process.exit(ExitStatus.Failure)
         })
     })
@@ -55,6 +63,7 @@ try {
 
         /// attempt graceful shutdown
         await client.gracefullShutdown()
+        await persistence.gracefullShutdown()
 
         /// if dev version, exit process
         // log.debug(process.env.IS_DEV_VERSION)
