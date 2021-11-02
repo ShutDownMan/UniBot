@@ -42,10 +42,10 @@ async function runSelectInteraction(client: ExtendedClient, interaction: SelectM
     let reply: Message = undefined;
     switch (interactionName) {
         case "bulkEnrollCoursesSelect":
-            await interaction.reply({content: "🤖 **Adicionando matérias** 🤖", ephemeral: true})
+            await interaction.reply({ content: "🤖 **Adicionando Matérias...** 🤖", ephemeral: true })
 
             await addCoursesFromPeriod(interaction.member as GuildMember, interaction.values[0])
-            reply = await interaction.editReply("🤖 **Matérias adicionadas** 🤖") as Message
+            reply = await interaction.editReply("🤖 **Matérias Adicionadas** 🤖") as Message
 
             await (interaction.message as Message).edit((interaction.message as Message).content)
 
@@ -55,20 +55,20 @@ async function runSelectInteraction(client: ExtendedClient, interaction: SelectM
         case "SegundoYearEnrollCoursesSelect":
         case "TerceiroYearEnrollCoursesSelect":
         case "QuartoYearEnrollCoursesSelect":
-            await interaction.reply({content: "🤖 **Adicionando matérias** 🤖", ephemeral: true})
+            await interaction.reply({ content: "🤖 **Adicionando Matérias...** 🤖", ephemeral: true })
 
             await addBulkRoles(interaction.member as GuildMember, interaction.values)
-            reply = await interaction.editReply("🤖 **Matérias adicionadas** 🤖") as Message
+            reply = await interaction.editReply("🤖 **Matérias Adicionadas** 🤖") as Message
 
             await (interaction.message as Message).edit((interaction.message as Message).content)
 
             deleteAfter(reply, 15)
             break;
         case "removeCoursesSelect":
-            await interaction.reply({content: "🤖 **Removendo matérias** 🤖", ephemeral: true})
+            await interaction.reply({ content: "🤖 **Removendo Matérias...** 🤖", ephemeral: true })
 
-            await removeBulkRoles(interaction.member as GuildMember, interaction.values)
-            reply = await interaction.editReply("🤖 **Matérias removidas** 🤖") as Message
+            await removeBulkCourses(interaction.member as GuildMember, interaction.values)
+            reply = await interaction.editReply("🤖 **Matérias Removidas** 🤖") as Message
 
             // await interaction.deleteReply()
             // await (interaction.message as Message).delete()
@@ -82,39 +82,56 @@ async function addCoursesFromPeriod(member: GuildMember, period: string) {
 
     // log.debug(materiasFromPeriods)
 
-    materiasFromPeriods.forEach(materiaID => {
-        addRole(member, materiaID)
-    })
+    await Promise.all(materiasFromPeriods.map(async materiaID => {
+        await addRole(member, materiaID)
+    }))
+
+    // materiasFromPeriods.forEach(async materiaID => {
+    //     await addRole(member, materiaID)
+    // })
 
 }
 
 async function addBulkRoles(member: GuildMember, rolesID: string[]) {
-    rolesID.forEach(async roleID => {
+    await Promise.all(rolesID.map(async roleID => {
         await addRole(member, roleID);
-    })
+    }))
+    // rolesID.forEach(async roleID => {
+    //     await addRole(member, roleID);
+    // })
 }
 
 async function addRole(member: GuildMember, roleID: string) {
     try {
-        member.guild.roles.fetch(roleID).then(role => {
-            member.roles.add(role)
-        })
+        let role = await member.guild.roles.fetch(roleID)
+        await member.roles.add(role)
     } catch (error) {
         log.error(error)
     }
 }
 
-async function removeBulkRoles(member: GuildMember, rolesID: string[]) {
-    rolesID.forEach(async roleID => {
+async function removeBulkCourses(member: GuildMember, rolesID: string[]) {
+    await Promise.all(rolesID.map(async roleID => {
+        if (roleID === "removeAll") {
+            await removeAllCourses(member)
+            return
+        }
         await removeRole(member, roleID);
-    })
+    }))
+}
+
+async function removeAllCourses(member: GuildMember) {
+    await Promise.all(member.roles.cache.map(async role => {
+        if (role.id in Materias) {
+            await removeRole(member, role.id)
+        }
+    }))
 }
 
 async function removeRole(member: GuildMember, roleID: string) {
     try {
-        member.guild.roles.fetch(roleID).then(role => {
-            member.roles.remove(role)
-        })
+        let role = await member.guild.roles.fetch(roleID)
+        await member.roles.remove(role)
     } catch (error) {
         log.error(error)
     }
@@ -139,22 +156,43 @@ async function createRemoveCoursesSelect(client, interaction: Interaction) {
 
     /// if there are options to choose
     if (options.length > 0) {
-        /// create row element to show
-        let row = new MessageActionRow().addComponents(
-            new MessageSelectMenu()
-                .setCustomId(`removeCoursesSelect`)
-                .setPlaceholder(`Lista de Matérias`)
-                .setMaxValues(options.length)
-                .addOptions(options),
-        )
+        let defaultOption = {
+            label: "Todas as Matérias",
+            description: "Remova todas as matérias atuais",
+            value: "removeAll"
+        }
+        options = [defaultOption].concat(options)
+
+        let optionsChunks = options.reduce((all, one, i) => {
+            const ch = Math.floor(i / 25);
+            all[ch] = [].concat((all[ch] || []), one);
+            return all
+        }, [])
+
+        // log.debug(optionsChunks)
+
+        let selectRows: MessageActionRow[] = []
+        optionsChunks.forEach((chunk, index) => {
+
+            let placeHolderAuxStr = (index) ? "Continuação da " : ""
+            /// create row element to show
+            let row = new MessageActionRow().addComponents(
+                new MessageSelectMenu()
+                    .setCustomId(`removeCoursesSelect|${index}`)
+                    .setPlaceholder(`${placeHolderAuxStr}Lista de Matérias`)
+                    .setMaxValues(chunk.length)
+                    .addOptions(chunk),
+            )
+
+            selectRows.push(row)
+        });
 
         /// createView
-        let currentYearEnrollView = {
+        messageToSend = {
             content: `**Selecione as matérias para remover**`,
-            components: [row]
+            components: selectRows,
+            ephemeral: true
         }
-
-        messageToSend = { content: '**Escolha os cursos para remover**', ephemeral: true, components: [row] }
     } else {
         messageToSend = { content: '**Você não está escrito em nenhuma matéria**', ephemeral: true }
     }
