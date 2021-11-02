@@ -8,12 +8,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T10:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-2T10:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -32,18 +32,18 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-5T10:10:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-1T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
                 "inicio": "R42/2021-W43-1T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Prática",
                 "turma": "P2"
             }
@@ -63,18 +63,18 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T07:30:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T08:20:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
                 "inicio": "R42/2021-W43-4T08:20:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P2"
             }
@@ -94,18 +94,18 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T07:30:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T10:10:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
                 "inicio": "R42/2021-W43-4T11:00:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P2"
             }
@@ -125,12 +125,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T08:20:00/P1W",
-                "duracaoEmMinutos": 110,
+                "duracao": "PTM110",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-3T08:20:00/P1W",
-                "duracaoEmMinutos": 110,
+                "duracao": "PTM110",
                 "tipoAula": "Teórica"
             }
         ],
@@ -149,18 +149,18 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-5T10:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-1T17:00:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
                 "inicio": "R42/2021-W43-1T17:00:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Prática",
                 "turma": "P2"
             }
@@ -180,7 +180,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T13:00:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Teórica"
             }
         ],
@@ -199,7 +199,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-5T07:30:00/P1W",
-                "duracaoEmMinutos": 110,
+                "duracao": "PTM110",
                 "tipoAula": "Teórica"
             }
         ],
@@ -218,7 +218,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-3T10:10:00/P1W",
-                "duracaoEmMinutos": 50,
+                "duracao": "PTM50",
                 "tipoAula": "Teórica"
             }
         ],
@@ -237,12 +237,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -261,7 +261,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T13:30:00/P1W",
-                "duracaoEmMinutos": 160,
+                "duracao": "PTM160",
                 "tipoAula": "Teórica"
             }
         ],
@@ -280,12 +280,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -305,7 +305,7 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-5T13:30:00/P1W",
-                "duracaoEmMinutos": 160,
+                "duracao": "PTM160",
                 "tipoAula": "Teórica"
             }
         ],
@@ -324,12 +324,12 @@
         "horarios": [
             {
                 "inicio": "R22/2021-W43-3T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2021-W43-4T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
 
@@ -350,7 +350,7 @@
         "horarios": [
             {
                 "inicio": "R22/2021-W43-5T13:30:00/P1W",
-                "duracaoEmMinutos": 160,
+                "duracao": "PTM160",
                 "tipoAula": "Teórica"
             }
         ],
@@ -369,7 +369,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -388,18 +388,18 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T16:10:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-3T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
                 "inicio": "R42/2021-W43-3T15:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Prática",
                 "turma": "P2"
             }
@@ -419,7 +419,7 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-3T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -438,7 +438,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T07:30:00/P1W",
-                "duracaoEmMinutos": 160,
+                "duracao": "PTM160",
                 "tipoAula": "Teórica"
             }
         ],
@@ -457,7 +457,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-3T07:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -476,12 +476,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T16:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-5T07:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -513,7 +513,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-3T09:20:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             }
         ],
@@ -532,7 +532,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-5T09:20:00/P1W",
-                "duracaoEmMinutos": 150,
+                "duracao": "PTM150",
                 "tipoAula": "Teórica"
             }
         ],
@@ -551,12 +551,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T09:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T09:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -575,12 +575,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T07:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T07:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -599,7 +599,7 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T10:10:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -618,12 +618,12 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-2T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2022-W15-4T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -642,12 +642,12 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-1T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2022-W15-3T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -666,12 +666,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -690,12 +690,12 @@
         "horarios": [
             {
                 "inicio": "R22/2021-W43-1T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2021-W43-3T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -714,12 +714,12 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-1T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2022-W15-5T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -738,7 +738,7 @@
         "horarios": [
             {
                 "inicio": "R22/2021-W43-5T13:30:00/P1W",
-                "duracaoEmMinutos": 210,
+                "duracao": "PTM210",
                 "tipoAula": "Teórica"
             }
         ],
@@ -757,12 +757,12 @@
         "horarios": [
             {
                 "inicio": "R22/2021-W43-1T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2021-W43-3T13:30:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -781,12 +781,12 @@
         "horarios": [
             {
                 "inicio": "R42/2021-W43-2T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R42/2021-W43-4T17:00:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],
@@ -805,12 +805,12 @@
         "horarios": [
             {
                 "inicio": "R22/2022-W15-1T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             },
             {
                 "inicio": "R22/2022-W15-5T15:20:00/P1W",
-                "duracaoEmMinutos": 100,
+                "duracao": "PTM100",
                 "tipoAula": "Teórica"
             }
         ],

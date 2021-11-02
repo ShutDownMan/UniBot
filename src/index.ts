@@ -36,7 +36,6 @@ try {
     log.info('Initializing client...')
     client.init()
 
-
     let persistence = new Persistence({})
 
     log.info('Initializing persistence...')

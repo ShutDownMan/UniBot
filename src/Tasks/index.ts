@@ -10,30 +10,37 @@ class Tasks {
 
     public constructor(persistence) {
         this.persistence = persistence
+
+        return this
     }
 
     public async init() {
+        log.debug("init: ")
+        await Tasks.classReminder(this.persistence)
+
         await this.initTasks()
     }
 
     private initTasks() {
-        this.classReminderTask = setInterval(this.classReminder, Configs.ClassReminderInterval)
+        this.classReminderTask = setInterval(() => {Tasks.classReminder(this.persistence)}, Configs.ClassReminderInterval * 1000)
     }
 
-    private async classReminder() {
-        let todaysClassesData = await this.persistence.fetchTodaysClassData()
+    static async classReminder(persistence) {
+        // log.debug("classReminder: ")
+        // log.debug(persistence)
+        let todaysClassesData = await persistence.fetchTodaysClassData()
 
-        todaysClassesData.forEach(classData => {
-            if(!classData.reminderSent) {
-                let currentTime = new Date()
-                let reminderTime = new Date(classData.time)
-                reminderTime.setMinutes(-Configs.ClassReminderTimeInMinutes)
+        // todaysClassesData.forEach((classID, classData) => {
+        //     if(!classData.reminderSent) {
+        //         let currentTime = new Date()
+        //         let reminderTime = new Date(classData.time)
+        //         reminderTime.setMinutes(-Configs.ClassReminderTimeInMinutes)
 
-                if(currentTime >= reminderTime) {
-                    this.sendClassReminder(classData)
-                }
-            }
-        })
+        //         if(currentTime >= reminderTime) {
+        //             this.sendClassReminder(classData)
+        //         }
+        //     }
+        // })
     }
 
     private sendClassReminder(classData) {

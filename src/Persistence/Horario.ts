@@ -1,6 +1,6 @@
 
 export interface Horario {
     inicio: string
-    duracaoEmMinutos: Number
+    duracao: string
     tipoAula: string
 }
