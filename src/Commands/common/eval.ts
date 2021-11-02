@@ -12,9 +12,9 @@ export const command: Command = {
     run: async (client, message, args) => {
         try {
             let res = "RESULT: " + await eval(args.join(""))
-            message.reply(res)
+            if(res) message.reply(res.toString())
         } catch (error) {
-            message.reply("ERROR: " + error)
+            message.reply("ERROR: " + error.toString())
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Command, ControlRoles, EnrollMessages } from '../../Interfaces'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
-import { Message, MessageActionRow, MessageSelectMenu, TextChannel } from 'discord.js'
+import { Client, Emoji, Message, MessageActionRow, MessageButton, MessageSelectMenu, TextChannel } from 'discord.js'
 import Materias from '../../../data/materias.json'
 import ExtendedClient from '../../Client'
 import { sendToTextChannel } from '../../Utils'
@@ -24,7 +24,7 @@ export const command: Command = {
         await createByYearSelects(client)
 
         /// create enroll management message
-
+        await createManagementMenu(client)
 
         /// delete sent command
         await tryAndDelete(message)
@@ -72,7 +72,7 @@ function getAllYearsAsOptions() {
         let yearOption = {
             label: `${cardinals[index]} Ano`,
             description: `Adicione todas matérias do ${cardinals[index]} ano`,
-            value: `addCoursesFromPeriod ${index + 1}`,
+            value: `${index + 1}`,
         }
 
         /// add to array
@@ -137,7 +137,7 @@ function getOptionsByYears(periods: string[]) {
         let materiaOption = {
             label: materia.nomeMateria,
             description: `${materiaProfessoresStr}`,
-            value: `addRole ${materiaID}`,
+            value: `${materiaID}`,
         }
         selectOptions.push(materiaOption)
 
@@ -148,6 +148,25 @@ function getOptionsByYears(periods: string[]) {
 
 function isFromGivenPeriod(array: string[], key: string) {
     return array.some((p: string) => { return p === Materias[key].serie })
+}
+
+async function createManagementMenu(client: Client) {
+    /// create select with each year
+    let firstRow = new MessageActionRow().addComponents(
+        new MessageButton()
+            .setCustomId('removeCoursesRoles')
+            .setEmoji("❌")
+            .setLabel("Remover Matérias")
+            .setStyle("DANGER"),
+    )
+    /// create view
+    let managementView = {
+        content: "**Gerenciar Matérias**",
+        components: [firstRow]
+    }
+
+    /// send view to channel
+    await sendToTextChannel(client, process.env.ENROLLMENT_CHANNEL, managementView)
 }
 
 async function tryAndDelete(item: Message) {
