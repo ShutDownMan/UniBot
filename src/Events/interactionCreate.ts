@@ -1,9 +1,10 @@
 import { Event } from '../Interfaces'
-import { ButtonInteraction, GuildMember, Interaction, MessageActionRow, MessageSelectMenu, SelectMenuInteraction } from 'discord.js'
+import { ButtonInteraction, GuildMember, Interaction, Message, MessageActionRow, MessageSelectMenu, SelectMenuInteraction } from 'discord.js'
 import Materias from '../../data/materias.json'
 import Logger from '../Logger'
 import Configs from '../config.json'
-import { sendToTextChannel } from '../Utils'
+import { deleteAfter, sendToTextChannel } from '../Utils'
+import ExtendedClient from '../Client'
 const log = Logger(Configs.EventsLogLevel, 'interactionCreate.ts')
 
 export const event: Event = {
@@ -16,15 +17,15 @@ export const event: Event = {
 
             // log.debug(selectInteraction.values)
 
-            await selectInteraction.deferUpdate();
+            // await selectInteraction.deferUpdate();
 
-            runSelectInteraction(client, interaction)
+            await runSelectInteraction(client, selectInteraction)
         }
 
         if (interaction.isButton()) {
             let buttonInteraction = interaction as ButtonInteraction
 
-            await buttonInteraction.deferUpdate();
+            // await buttonInteraction.deferUpdate();
 
             runButtonInteraction(client, buttonInteraction)
 
@@ -33,22 +34,44 @@ export const event: Event = {
     }
 }
 
-async function runSelectInteraction(client, interaction: SelectMenuInteraction) {
-    switch (interaction.customId) {
+async function runSelectInteraction(client: ExtendedClient, interaction: SelectMenuInteraction) {
+    let splittedInteractionCustomID = interaction.customId.split("|")
+    let interactionName = splittedInteractionCustomID[0]
+    let args = splittedInteractionCustomID.splice(1, splittedInteractionCustomID.length)
+
+    let reply: Message = undefined;
+    switch (interactionName) {
         case "bulkEnrollCoursesSelect":
+            await interaction.reply({content: "🤖 **Adicionando matérias** 🤖", ephemeral: true})
+
             await addCoursesFromPeriod(interaction.member as GuildMember, interaction.values[0])
-            await interaction.user.send("🤖 **Matérias adicionadas** 🤖")
+            reply = await interaction.editReply("🤖 **Matérias adicionadas** 🤖") as Message
+
+            await (interaction.message as Message).edit((interaction.message as Message).content)
+
+            deleteAfter(reply, 15)
             break;
-        case "FirstYearEnrollCoursesSelect":
-        case "SecondYearEnrollCoursesSelect":
-        case "ThirdYearEnrollCoursesSelect":
-        case "FourthYearEnrollCoursesSelect":
+        case "PrimeiroYearEnrollCoursesSelect":
+        case "SegundoYearEnrollCoursesSelect":
+        case "TerceiroYearEnrollCoursesSelect":
+        case "QuartoYearEnrollCoursesSelect":
+            await interaction.reply({content: "🤖 **Adicionando matérias** 🤖", ephemeral: true})
+
             await addBulkRoles(interaction.member as GuildMember, interaction.values)
-            await interaction.user.send("🤖 **Matérias adicionadas** 🤖")
+            reply = await interaction.editReply("🤖 **Matérias adicionadas** 🤖") as Message
+
+            await (interaction.message as Message).edit((interaction.message as Message).content)
+
+            deleteAfter(reply, 15)
             break;
         case "removeCoursesSelect":
+            await interaction.reply({content: "🤖 **Removendo matérias** 🤖", ephemeral: true})
+
             await removeBulkRoles(interaction.member as GuildMember, interaction.values)
-            await interaction.user.send("🤖 **Matérias removidas** 🤖")
+            reply = await interaction.editReply("🤖 **Matérias removidas** 🤖") as Message
+
+            // await interaction.deleteReply()
+            // await (interaction.message as Message).delete()
             break;
     }
 }
@@ -66,8 +89,8 @@ async function addCoursesFromPeriod(member: GuildMember, period: string) {
 }
 
 async function addBulkRoles(member: GuildMember, rolesID: string[]) {
-    rolesID.forEach(roleID => {
-        addRole(member, roleID);
+    rolesID.forEach(async roleID => {
+        await addRole(member, roleID);
     })
 }
 
@@ -82,8 +105,8 @@ async function addRole(member: GuildMember, roleID: string) {
 }
 
 async function removeBulkRoles(member: GuildMember, rolesID: string[]) {
-    rolesID.forEach(roleID => {
-        removeRole(member, roleID);
+    rolesID.forEach(async roleID => {
+        await removeRole(member, roleID);
     })
 }
 
@@ -131,13 +154,13 @@ async function createRemoveCoursesSelect(client, interaction: Interaction) {
             components: [row]
         }
 
-        messageToSend = { content: '**Escolha os cursos para remover**', components: [row] }
+        messageToSend = { content: '**Escolha os cursos para remover**', ephemeral: true, components: [row] }
     } else {
-        messageToSend = { content: '**Você não está escrito em nenhuma matéria**' }
+        messageToSend = { content: '**Você não está escrito em nenhuma matéria**', ephemeral: true }
     }
 
     /// send to member dms
-    await interaction.user.send(messageToSend)
+    await (interaction as ButtonInteraction).reply(messageToSend)
 }
 
 async function getMemberCoursesRoles(member: GuildMember) {
