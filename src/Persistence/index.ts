@@ -8,7 +8,7 @@ import Materias from '../../data/materias.json'
 import makeInterval from 'iso8601-repeating-interval'
 import { Materia } from './Materia'
 import { Moment } from 'moment'
-import { justADate } from '../Utils'
+import { justADate, toJson } from '../Utils'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
 // public classes: Collection<Number, ClassData> = new Collection()
@@ -145,10 +145,11 @@ class Persistence {
 
         log.debug("FETCHING classData")
         try {
-            let queryResult: QueryResult = await this.db.query(`SELECT ("classID"::INTEGER, "classData") FROM "Class" WHERE "classID" = '${classID}'`)
+            let queryResult: QueryResult = await this.db.query(`SELECT * FROM "Class" WHERE "classID" = '${classID}'`)
 
             if (queryResult.rowCount !== 0) {
-                classData = queryResult.rows[0]
+                classData = toJson(queryResult.rows[0])
+                // log.debug(classData)
             }
 
         } catch (error) {

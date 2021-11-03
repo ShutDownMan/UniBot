@@ -35,7 +35,7 @@ try {
 
     let persistence = new Persistence({})
 
-    let tasks = new Tasks(persistence)
+    let tasks = new Tasks(client, persistence)
 
     async function initAll() {
         log.info('Initializing client...')
