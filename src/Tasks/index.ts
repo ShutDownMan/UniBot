@@ -1,7 +1,8 @@
 import Logger from '../Logger'
 import Configs from '../config.json'
 import Persistence from '../Persistence'
-const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
+import { UniClass } from './../Persistence/ClassData'
+const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
 
 
 class Tasks {
@@ -15,10 +16,10 @@ class Tasks {
     }
 
     public async init() {
-        log.debug("init: ")
+        log.debug("Tasks init...")
         await Tasks.classReminder(this.persistence)
 
-        await this.initTasks()
+        // await this.initTasks()
     }
 
     private initTasks() {
@@ -26,24 +27,35 @@ class Tasks {
     }
 
     static async classReminder(persistence) {
-        // log.debug("classReminder: ")
+        log.debug("classReminder: ")
         // log.debug(persistence)
-        let todaysClassesData = await persistence.fetchTodaysClassData()
+        // let now = new Date();
+        // let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+        // let todaysClassesData = await persistence.fetchClassDataByDate(today)
 
-        // todaysClassesData.forEach((classID, classData) => {
-        //     if(!classData.reminderSent) {
-        //         let currentTime = new Date()
-        //         let reminderTime = new Date(classData.time)
-        //         reminderTime.setMinutes(-Configs.ClassReminderTimeInMinutes)
+        let todaysClassesData: UniClass[] = await persistence.fetchTodaysClassData()
 
-        //         if(currentTime >= reminderTime) {
-        //             this.sendClassReminder(classData)
-        //         }
-        //     }
+        // log.debug(JSON.stringify(todaysClassesData))
+
+        for(const uniClass of todaysClassesData) {
+            log.debug(JSON.stringify(uniClass))
+
+        }
+
+        // todaysClassesData.forEach((uniClass: UniClass) => {
+            // if(!uniClass.classData.reminderSent) {
+            //     let currentTime = new Date()
+            //     let reminderTime = new Date(uniClass.classData.time)
+            //     reminderTime.setMinutes(-Configs.ClassReminderTimeInMinutes)
+
+            //     if(currentTime >= reminderTime) {
+            //         Tasks.sendClassReminder(uniClass.classData)
+            //     }
+            // }
         // })
     }
 
-    private sendClassReminder(classData) {
+    static async sendClassReminder(classData) {
 
     }
 

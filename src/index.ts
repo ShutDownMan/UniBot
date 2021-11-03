@@ -33,17 +33,21 @@ try {
         intents: [Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
     })
 
-    log.info('Initializing client...')
-    client.init()
-
     let persistence = new Persistence({})
 
-    log.info('Initializing persistence...')
-    persistence.init()
-
     let tasks = new Tasks(persistence)
-    log.info('Initializing tasks...')
-    tasks.init()
+
+    async function initAll() {
+        log.info('Initializing client...')
+        await client.init()
+    
+        log.info('Initializing persistence...')
+        await persistence.init()
+    
+        log.info('Initializing tasks...')
+        await tasks.init()
+    }
+    initAll()
 
     const exitSignals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT']
 

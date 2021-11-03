@@ -1,9 +1,9 @@
 import Logger from '../Logger'
 import Configs from '../config.json'
 import Collection from '@discordjs/collection'
-import { ClassData, ClassStatus } from './ClassData'
+import { UniClass, ClassData, ClassStatus } from './ClassData'
 import { Client, Pool, QueryResult } from 'node-postgres'
-import { DiaryData } from './DiaryData'
+import { Diary, DiaryData } from './DiaryData'
 import Materias from '../../data/materias.json'
 import makeInterval from 'iso8601-repeating-interval'
 import { Materia } from './Materia'
@@ -15,8 +15,8 @@ const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 // public diary: Collection<Number, DiaryData> = new Collection()
 
 class Persistence {
-    public todaysClassesData: Collection<Number, ClassData> = null
-    public todaysDiary: DiaryData
+    public todaysDiary: Diary = null
+    public todaysClasses: UniClass[] = null
 
     private db: Pool
 
@@ -27,6 +27,8 @@ class Persistence {
 
     public async init() {
         this.initDB()
+
+        const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '2021-11-03'`);
 
         await this.fetchTodaysDiary()
     }
@@ -51,33 +53,51 @@ class Persistence {
 
     private async fetchTodaysDiary() {
         let today = (new Date()).toISOString().split("T")[0]
-        // log.debug(today)
+        log.debug(today)
 
-        this.todaysDiary = await this.getDiary(today)
+        this.todaysDiary = await this.fetchDiary(today)
+        log.debug("this.todaysDiary")
+        log.debug(this.todaysDiary)
     }
 
-    public async getDiary(dateID: string) {
-        let diary: DiaryData = null;
+    public async fetchDiary(dateID: string) {
+        let diary: Diary = null;
 
         log.debug("FETCHING Diary")
         try {
             const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '${dateID}'`);
+            // log.debug("QUERY STUCK??")
+            // log.debug(queryResult)
 
-            // log.debug(queryResult.rows[0])
+            if (queryResult.rowCount === 0) {
+                let newDiary = this.createDiary()
 
-            if (queryResult.rows.length === 0) {
-                diary = await this.upsertDiary(dateID, this.createDiary(dateID))
+                /// set classIDs
+                let now = new Date();
+                let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+                this.todaysClasses = await this.fetchClassDataByDate(today)
+
+                newDiary.classesIDs = this.todaysClasses.map(uniClass => {
+                    return uniClass.classID
+                })
+
+                /// create diary
+                diary = await this.upsertDiary(dateID, newDiary)
             } else {
                 diary = queryResult.rows[0]
+                this.todaysClasses = await this.fetchClassDataByIds(diary.diaryData.classesIDs)
+                // log.debug(this.todaysClasses)
+                // log.debug(JSON.stringify(diary.diaryData["classesIDs"]))
             }
         } catch (error) {
             log.error(error)
         }
 
-        return diary;
+        return diary
     }
 
     public async upsertDiary(dateID: string, diaryData: DiaryData) {
+        let result: Diary = null
 
         log.debug("UPSERTING Diary")
         try {
@@ -88,14 +108,16 @@ class Persistence {
                 ON CONFLICT ("dateID")
                 DO UPDATE SET "diaryData" = EXCLUDED."diaryData"
             `);
+
+            result = { dateID: dateID, diaryData: diaryData }
         } catch (error) {
             log.error(error)
         }
 
-        return diaryData
+        return result
     }
 
-    public createDiary(dateID: string) {
+    public createDiary() {
         let diary: DiaryData = {
             dailyReminderSent: false,
             classesIDs: []
@@ -104,46 +126,133 @@ class Persistence {
         return diary
     }
 
-    public async fetchTodaysClassData() {
-        if (this.todaysClassesData) return this.todaysClassesData
+    public async fetchClassDataByIds(classesIDs?: number[]) {
+        let classesData: UniClass[] = []
 
-        let classDataList: ClassData[] = []
+        for (const classID of classesIDs) {
+            let classData: UniClass = await this.fetchClassData(classID)
+
+            classesData.push(classData)
+        }
+        // await Promise.all(classesIDs.map(async (classID) => {
+        // }))
+
+        return classesData
+    }
+
+    public async fetchClassData(classID: number) {
+        let classData: UniClass = null;
+
+        log.debug("FETCHING classData")
+        try {
+            let queryResult: QueryResult = await this.db.query(`SELECT ("classID"::INTEGER, "classData") FROM "Class" WHERE "classID" = '${classID}'`)
+
+            if (queryResult.rowCount !== 0) {
+                classData = queryResult.rows[0]
+            }
+
+        } catch (error) {
+            log.error(error)
+        }
+
+        return classData
+    }
+
+    public createClassData() {
+        let classData: ClassData = {
+            materiaID: '',
+            reminderSent: false,
+            time: '',
+            status: ClassStatus.UNSTARTED
+        }
+
+        return classData
+    }
+
+    public async fetchTodaysClassData() {
+        if (!this.todaysClasses) this.todaysClasses = await this.fetchClassDataByIds(this.todaysDiary.diaryData.classesIDs)
+
+        // log.debug("Pq tá vazio o bagulho?")
+        // log.debug(JSON.stringify(this.todaysClasses))
+
+        return this.todaysClasses
+    }
+
+    public async fetchClassDataByDate(givenDate: Date) {
+        let classDataList: UniClass[] = []
 
         /// pass through each materia
-        Object.keys(Materias).forEach(materiaID => {
+        for (const materiaID of Object.keys(Materias)) {
             let materia: Materia = Materias[materiaID]
-            let now = new Date();
-            let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
             // let today = justADate(new Date());
 
-            // today.addDays(1)
-
-            materia.horarios.forEach(horario => {
+            /// pass through each horario
+            for (const horario of materia.horarios) {
                 /// get classes dates
-                let interval: Moment = makeInterval(horario.inicio).firstAfter(today).date
+                let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate).date
 
                 // log.debug(justADate(interval.toISOString()).toISOString())
 
-                if(today.toISOString() === justADate(interval.toISOString()).toISOString()) {
-                    let classData: ClassData = {
-                        reminderSent: false,
-                        time: interval.toISOString(),
-                        status: ClassStatus.UNSTARTED
-                    }
-                    console.debug(`${classData.toString()}`)
+                /// see if there is a class givenDate
+                if (givenDate.toISOString() === justADate(interval.toISOString()).toISOString()) {
+                    let tmpClassData = this.createClassData()
+                    tmpClassData.materiaID = materiaID
+                    tmpClassData.time = interval.toISOString()
 
-                    classDataList.push(classData)
+                    let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
+                    // log.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))
+                    // console.debug(`${classData.toString()}`)
+
+                    classDataList.push(upsertedClassData)
                 }
-            })
 
-        })
+            }
 
-        // var userEntered = new Date(event.target.valueAsNumber); // valueAsNumber has no time or timezone!
+            // await Promise.all(materia.horarios.map(async horario => {
+            // }))
+        }
 
-
-        /// see if there is a class today
+        // await Promise.all(Object.keys(Materias).map(async materiaID => {
+        // }))
 
         return classDataList
+    }
+
+    public async upsertClassData(classID: number, classData: ClassData) {
+        let result: UniClass = null
+
+        log.debug("UPSERTING Class")
+        try {
+            let queryResult: QueryResult = null
+
+            /// if no id specified
+            if (classID === 0) {
+                /// just simple insert returning id
+                queryResult = await this.db.query(`
+                    INSERT INTO "Class"
+                    ("classData")
+                    VALUES ('${JSON.stringify(classData)}')
+                    RETURNING ("classID"::INTEGER)
+                `);
+                result = { classID: queryResult.rows[0].classID, classData: classData }
+                // log.debug("INSERTED NEW " + JSON.stringify(result))
+            } else {
+                /// insert updating
+                queryResult = await this.db.query(`
+                    INSERT INTO "Class"
+                    ("classID", "classData")
+                    VALUES ('${classID}', '${JSON.stringify(classData)}')
+                    ON CONFLICT ("classID")
+                    DO UPDATE SET "classData" = EXCLUDED."classData"
+                `);
+                log.debug("UPSERTED " + classID)
+                result = { classID: classID, classData: classData }
+            }
+        } catch (error) {
+            log.error(error)
+        }
+
+        return result
     }
 
 }

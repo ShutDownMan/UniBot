@@ -7,7 +7,13 @@ export enum ClassStatus {
 }
 
 export interface ClassData {
+    materiaID: string
     reminderSent: boolean
     time: string
     status: ClassStatus
+}
+
+export interface UniClass {
+    classID: number
+    classData: ClassData
 }
