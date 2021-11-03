@@ -164,7 +164,8 @@ class Persistence {
             materiaID: '',
             reminderSent: false,
             time: '',
-            status: ClassStatus.UNSTARTED
+            status: ClassStatus.UNSTARTED,
+            horario: null
         }
 
         return classData
@@ -199,6 +200,7 @@ class Persistence {
                     let tmpClassData = this.createClassData()
                     tmpClassData.materiaID = materiaID
                     tmpClassData.time = interval.toISOString()
+                    tmpClassData.horario = horario
 
                     let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
                     // log.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))

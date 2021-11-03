@@ -19,7 +19,12 @@ export const event: Event = {
 
             // await selectInteraction.deferUpdate();
 
-            await runSelectInteraction(client, selectInteraction)
+            try {
+                await runSelectInteraction(client, selectInteraction)
+
+            } catch (error) {
+                log.error(error)
+            }
         }
 
         if (interaction.isButton()) {

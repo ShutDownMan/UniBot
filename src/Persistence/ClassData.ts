@@ -1,9 +1,11 @@
+import { Horario } from "./Horario";
 
 export enum ClassStatus {
     UNSTARTED,
     ONGOING,
     DONE,
-    CANCELED
+    CANCELED,
+    REMOVED
 }
 
 export interface ClassData {
@@ -11,6 +13,7 @@ export interface ClassData {
     reminderSent: boolean
     time: string
     status: ClassStatus
+    horario: Horario
 }
 
 export interface UniClass {

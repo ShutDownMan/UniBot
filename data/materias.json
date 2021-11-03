@@ -407,6 +407,9 @@
         "professores": [
             {
                 "nome": "Jorge Habib Hanna El Khouri"
+            },
+            {
+                "nome": "Antonio Marcos Massao Hachisuca"
             }
         ]
     },
@@ -434,7 +437,7 @@
         "nomeMateria": "Banco de Dados",
         "codMateria": "FOZ1001",
         "cargaHorariaEmHoras": 102,
-        "serie": "2",
+        "serie": "3",
         "horarios": [
             {
                 "inicio": "R42/2021-W43-1T07:30:00/P1W",
