@@ -49,7 +49,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="Class" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="960" y="280"/>
+	<position x="760" y="400"/>
 	<column name="classID" not-null="true">
 		<type name="serial" length="32"/>
 	</column>

@@ -76,10 +76,10 @@ class Tasks {
                     let materia: Materia = Materias[uniClass.classData.materiaID]
                     log.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
                     // log.debug("reminderTime:" + JSON.stringify(reminderTime))
-                    log.debug("classTime:" + JSON.stringify(classTime))
+                    // log.debug("classTime:" + JSON.stringify(classTime))
                     // log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
                     // log.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
-                    log.debug("-------------------------")
+                    // log.debug("-------------------------")
 
                     if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED)) {
                         //^ check if time to send reminder
@@ -107,10 +107,10 @@ class Tasks {
 
             if (uniClass.classData.status !== ClassStatus.CANCELED) {
                 if (uniClass.classData.horario.tipoAula === "Teórica")
-                    message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}:R>!**`
+                    message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
 
                 if (uniClass.classData.horario.tipoAula === "Prática")
-                    message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}:R> minutos!**`
+                    message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
             } else {
                 message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` foi cancelada!**`
             }
@@ -118,6 +118,7 @@ class Tasks {
             uniClass.classData.reminderSent = true
 
             await sendToTextChannel(this.client, materia.canalTextoID, message)
+            await sendToTextChannel(this.client, materia.canalTextoID, "https://tenor.com/bab2Y.gif")
 
             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
         } catch (error) {

@@ -53,7 +53,7 @@ async function createBulkCoursesSelect(client: ExtendedClient) {
     )
     /// create view
     let bulkYearsEnrollView = {
-        content: "**Adicionar Matérias Por Ano**",
+        content: "**Adicionar TODAS as Matérias por Ano**",
         components: [row]
     }
 

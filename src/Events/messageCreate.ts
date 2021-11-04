@@ -32,7 +32,7 @@ export const event: Event = {
 
         let processedContent = /(^l\.)([^\s]+)\s*((.*|\s*)*)/gm.exec(message.content)
 
-        log.debug(processedContent)
+        // log.debug(processedContent)
 
         if (processedContent !== null) {
             if (processedContent[1] !== global.dataState.prefix) return

@@ -93,21 +93,20 @@
         "serie": "1D",
         "horarios": [
             {
-                "inicio": "R42/2021-W43-2T07:30:00/P1W",
-                "duracao": "PT2H30M",
+                "inicio": "R42/2021-W43-2T08:20:00/P1W",
+                "duracao": "PT1H40M",
                 "tipoAula": "Teórica"
             },
             {
-                "inicio": "R42/2021-W43-4T10:10:00/P1W",
+                "inicio": "R42/2021-W43-2T10:00:00/P1W",
                 "duracao": "PT50M",
                 "tipoAula": "Prática",
                 "turma": "P1"
             },
             {
-                "inicio": "R42/2021-W43-4T11:00:00/P1W",
+                "inicio": "R42/2021-W43-4T08:20:00/P1W",
                 "duracao": "PT50M",
-                "tipoAula": "Prática",
-                "turma": "P2"
+                "tipoAula": "Teórica"
             }
         ],
         "professores": [
