@@ -8,7 +8,7 @@ const log = Logger(Configs.EventsLogLevel, 'messageCreate.ts')
 export const event: Event = {
     name: 'messageCreate',
     run: async (client, message: Message) => {
-        log.debug(message)
+        // log.debug(message)
         if (message.author.bot === true || !message.guild) return
 
         if (message.mentions.users.has(client.user.id) === true) {

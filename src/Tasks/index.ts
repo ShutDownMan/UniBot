@@ -11,12 +11,10 @@ const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
 
 
 class Tasks {
-    private persistence: Persistence
     private client: ExtendedClient
     private classReminderTask: NodeJS.Timer
 
-    public constructor(client, persistence) {
-        this.persistence = persistence
+    public constructor(client) {
         this.client = client
 
         return this
@@ -34,13 +32,14 @@ class Tasks {
     }
 
     public async classReminder() {
+        log.debug("=========================")
         log.debug("running classReminder...")
         // log.debug(persistence)
         // let now = new Date();
         // let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
         // let todaysClassesData = await persistence.fetchClassDataByDate(today)
 
-        let todaysClassesData: UniClass[] = await this.persistence.fetchTodaysClassData()
+        let todaysClassesData: UniClass[] = await this.client.persistence.fetchTodaysClassData()
 
         // log.debug(JSON.stringify(todaysClassesData))
 
@@ -61,7 +60,7 @@ class Tasks {
                             log.debug("finished? " + JSON.stringify(uniClass.classData))
 
                             uniClass.classData.status = ClassStatus.DONE
-                            await this.persistence.upsertClassData(uniClass.classID, uniClass.classData)
+                            await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
                         }
                     }
 
@@ -71,18 +70,18 @@ class Tasks {
                         log.debug("ongoing? " + JSON.stringify(uniClass.classData))
 
                         uniClass.classData.status = ClassStatus.ONGOING
-                        await this.persistence.upsertClassData(uniClass.classID, uniClass.classData)
+                        await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
                     }
 
                     let materia: Materia = Materias[uniClass.classData.materiaID]
                     log.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
                     // log.debug("reminderTime:" + JSON.stringify(reminderTime))
                     log.debug("classTime:" + JSON.stringify(classTime))
-                    log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
-                    log.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
+                    // log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
+                    // log.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
                     log.debug("-------------------------")
 
-                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING)) {
+                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED)) {
                         //^ check if time to send reminder
 
                         log.debug("reminderTime: " + reminderTime)
@@ -111,18 +110,24 @@ class Tasks {
                     message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}:R>!**`
 
                 if (uniClass.classData.horario.tipoAula === "Prática")
-                    message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar daqui ${Configs.ClassReminderTimeInMinutes} minutos!**`
+                    message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}:R> minutos!**`
             } else {
                 message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` foi cancelada!**`
             }
 
             uniClass.classData.reminderSent = true
 
-            // await sendToTextChannel(this.client, materia.canalTextoID, message)
+            await sendToTextChannel(this.client, materia.canalTextoID, message)
 
-            await this.persistence.upsertClassData(uniClass.classID, uniClass.classData)
+            await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
         } catch (error) {
             log.error(error)
+        }
+    }
+
+    public async gracefullShutdown(): Promise<void> {
+        if (process.env.IS_DEV_VERSION === 'true') {
+            log.info('Tasks gracefull shutdown...\n')
         }
     }
 

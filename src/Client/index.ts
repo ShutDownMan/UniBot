@@ -5,6 +5,8 @@ import { readdirSync } from 'fs'
 import Configs from '../config.json';
 import Logger from '../Logger'
 import { sendEphemeralEmbed, Color } from '../Utils'
+import Persistence from '../Persistence';
+import Tasks from '../Tasks';
 
 console.log(__dirname)
 
@@ -15,8 +17,15 @@ class ExtendedClient extends Client {
     public aliases: Collection<string, Command> = new Collection()
     public events: Collection<string, Event> = new Collection()
 
+    public persistence: Persistence
+    public tasks: Tasks
+
     constructor(args) {
         super(args);
+
+        this.persistence = new Persistence(this)
+
+        this.tasks = new Tasks(this)
     }
 
     public async init() {
@@ -46,8 +55,6 @@ class ExtendedClient extends Client {
 
         const eventPath = path.join(__dirname, '..', 'Events')
         readdirSync(eventPath).forEach(async (file) => {
-            log.debug("BOT_TOKEN=" + process.env.BOT_TOKEN)
-            log.debug("IS_DEV_VERSION=" + process.env.IS_DEV_VERSION)
             if (file.includes(process.env.IS_DEV_VERSION === 'false' ? '.js' : '.ts') === true) {
                 const { event } = await import(`${eventPath}/${file}`)
                 this.events.set(event.name, event)
@@ -66,11 +73,20 @@ class ExtendedClient extends Client {
         })
 
         this.login(process.env.BOT_TOKEN)
+        
+        log.info('Initializing persistence...')
+        await this.persistence.init()
+    
+        log.info('Initializing tasks...')
+        await this.tasks.init()
     }
 
     public async gracefullShutdown(): Promise<void> {
+        this.persistence.gracefullShutdown()
+        this.tasks.gracefullShutdown()
+
         if (process.env.IS_DEV_VERSION === 'true') {
-            log.info('Gracefull shutdown...\n')
+            log.info('Client gracefull shutdown...\n')
 
         }
     }

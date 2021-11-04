@@ -9,6 +9,7 @@ import makeInterval from 'iso8601-repeating-interval'
 import { Materia } from './Materia'
 import { Moment } from 'moment'
 import { justADate, toJson } from '../Utils'
+import ExtendedClient from '../Client'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
 // public classes: Collection<Number, ClassData> = new Collection()
@@ -18,11 +19,11 @@ class Persistence {
     public todaysDiary: Diary = null
     public todaysClasses: UniClass[] = null
 
+    private client: ExtendedClient
     private db: Pool
 
-    public constructor(configs) {
-
-        return this
+    public constructor(client) {
+        this.client = client
     }
 
     public async init() {
@@ -34,6 +35,8 @@ class Persistence {
     }
 
     public async gracefullShutdown() {
+        log.info('Persistence gracefull shutdown...\n')
+
         this.db.end()
     }
 

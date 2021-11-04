@@ -35,20 +35,10 @@ try {
         intents: [Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
     })
 
-    let persistence = new Persistence({})
-
-    let tasks = new Tasks(client, persistence)
-
     async function initAll() {
         log.info('Initializing client...')
         await client.init()
-    
-        log.info('Initializing persistence...')
-        await persistence.init()
-    
-        log.info('Initializing tasks...')
-        await tasks.init()
-    }
+        }
     initAll()
 
     const exitSignals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT']
@@ -57,7 +47,6 @@ try {
     exitSignals.map((signal) => {
         process.on(signal, async () => {
             await client.gracefullShutdown()
-            await persistence.gracefullShutdown()
             if (process.env.IS_DEV_VERSION === 'true') process.exit(ExitStatus.Failure)
         })
     })
@@ -68,7 +57,6 @@ try {
 
         /// attempt graceful shutdown
         await client.gracefullShutdown()
-        await persistence.gracefullShutdown()
 
         /// if dev version, exit process
         // log.debug(process.env.IS_DEV_VERSION)
