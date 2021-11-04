@@ -50,16 +50,12 @@ class Tasks {
                 if (!uniClass.classData.reminderSent) {
                     let currentTime = new Date()
                     let classTime = new Date(uniClass.classData.time)
-                    let reminderTime = new Date(classTime.getTime() - Configs.ClassReminderTimeInMinutes * 60)
-                    let finishedClassTime = new Date(classTime.getTime() + toSeconds(parse(uniClass.classData.horario.duracao)))
+                    let reminderTime = new Date(classTime.getTime() - Configs.ClassReminderTimeInMinutes * 60 * 1000)
+                    let finishedClassTime = new Date(classTime.getTime() + toSeconds(parse(uniClass.classData.horario.duracao)) * 1000)
 
-                    // log.debug("classTime:" + JSON.stringify(classTime))
-                    // log.debug("reminderTime:" + JSON.stringify(reminderTime))
-                    // log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
 
                     if (currentTime >= finishedClassTime) {
                         //^ check if class is finished
-
 
                         if (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING) {
                             log.debug("finished? " + JSON.stringify(uniClass.classData))
@@ -69,22 +65,28 @@ class Tasks {
                         }
                     }
 
-                    if (uniClass.classData.status === ClassStatus.UNSTARTED) {
-                        if (currentTime >= classTime) {
-                            //^ check if class is ongoing
+                    if (currentTime >= classTime && uniClass.classData.status === ClassStatus.UNSTARTED) {
+                        //^ check if class is ongoing
 
-                            log.debug("ongoing? " + JSON.stringify(uniClass.classData))
+                        log.debug("ongoing? " + JSON.stringify(uniClass.classData))
 
-                            uniClass.classData.status = ClassStatus.ONGOING
-                            await this.persistence.upsertClassData(uniClass.classID, uniClass.classData)
-                        }
+                        uniClass.classData.status = ClassStatus.ONGOING
+                        await this.persistence.upsertClassData(uniClass.classID, uniClass.classData)
+                    }
 
-                        if (currentTime >= reminderTime) {
-                            //^ check if time to send reminder
+                    let materia: Materia = Materias[uniClass.classData.materiaID]
+                    log.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
+                    // log.debug("reminderTime:" + JSON.stringify(reminderTime))
+                    log.debug("classTime:" + JSON.stringify(classTime))
+                    log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
+                    log.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
+                    log.debug("-------------------------")
 
-                            log.debug("reminderTime: " + reminderTime)
-                            await this.sendClassReminder(uniClass, classTime)
-                        }
+                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING)) {
+                        //^ check if time to send reminder
+
+                        log.debug("reminderTime: " + reminderTime)
+                        await this.sendClassReminder(uniClass, classTime)
                     }
                 }
             }
@@ -106,7 +108,7 @@ class Tasks {
 
             if (uniClass.classData.status !== ClassStatus.CANCELED) {
                 if (uniClass.classData.horario.tipoAula === "Teórica")
-                    message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}>!**`
+                    message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar <t:${Math.trunc(startTime.getTime() / 1000)}:R>!**`
 
                 if (uniClass.classData.horario.tipoAula === "Prática")
                     message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar daqui ${Configs.ClassReminderTimeInMinutes} minutos!**`

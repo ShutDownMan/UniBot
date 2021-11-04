@@ -42,10 +42,12 @@ class ExtendedClient extends Client {
 
         /* Events setup */
 
-        log.info('Loading events...')
+        log.info('Loading Events...')
 
         const eventPath = path.join(__dirname, '..', 'Events')
         readdirSync(eventPath).forEach(async (file) => {
+            log.debug("BOT_TOKEN=" + process.env.BOT_TOKEN)
+            log.debug("IS_DEV_VERSION=" + process.env.IS_DEV_VERSION)
             if (file.includes(process.env.IS_DEV_VERSION === 'false' ? '.js' : '.ts') === true) {
                 const { event } = await import(`${eventPath}/${file}`)
                 this.events.set(event.name, event)

@@ -8,6 +8,7 @@ const log = Logger(Configs.EventsLogLevel, 'messageCreate.ts')
 export const event: Event = {
     name: 'messageCreate',
     run: async (client, message: Message) => {
+        log.debug(message)
         if (message.author.bot === true || !message.guild) return
 
         if (message.mentions.users.has(client.user.id) === true) {
@@ -31,7 +32,7 @@ export const event: Event = {
 
         let processedContent = /(^l\.)([^\s]+)\s*((.*|\s*)*)/gm.exec(message.content)
 
-        // log.debug(processedContent)
+        log.debug(processedContent)
 
         if (processedContent !== null) {
             if (processedContent[1] !== global.dataState.prefix) return

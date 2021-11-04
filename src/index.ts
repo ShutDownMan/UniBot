@@ -9,6 +9,8 @@ import { VoiceChannel, Role, MessageActionRow, MessageButton } from 'discord.js'
 import Configs from './config.json'
 const log = Logger(Configs.IndexLogLevel, 'index.ts')
 
+require('dotenv').config();
+
 let dataState: BotState = {
     controlRoles: [ControlRoles.Admin, ControlRoles.Dev, ControlRoles.Moderator],
     prefix: process.argv[2] /* Bot Prefix */,
