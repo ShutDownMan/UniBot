@@ -4,3 +4,4 @@ dist
 ecosystem.config.js
 src/Transcriptor/videos/*
 src/Transcriptor/temp/
+.vscode/

@@ -17,7 +17,7 @@ export const command: Command = {
                 }, Configs.EphemeralMessageTime * 1000)
             })
         } catch (e) {
-            log.debug(`Failed to send message during ping command, this is a discord internal error \n${e.stack}`)
+            console.debug(`Failed to send message during ping command, this is a discord internal error \n${e.stack}`)
         }
     },
 }

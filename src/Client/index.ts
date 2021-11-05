@@ -31,7 +31,7 @@ class ExtendedClient extends Client {
     public async init() {
         /* Commands setup */
 
-        log.info('Loading commands...')
+        console.info('Loading commands...')
         const commandPath = path.join(__dirname, '..', 'Commands')
         readdirSync(commandPath).forEach((dir) => {
             const commands = readdirSync(`${commandPath}/${dir}`).filter((cmdFile) => cmdFile.endsWith(process.env.IS_DEV_VERSION === 'false' ? '.js' : '.ts'))
@@ -45,13 +45,13 @@ class ExtendedClient extends Client {
                         this.aliases.set(alias, command)
                     })
                 }
-                log.info(`${command.name} loaded!`)
+                console.info(`${command.name} loaded!`)
             }
         })
 
         /* Events setup */
 
-        log.info('Loading Events...')
+        console.info('Loading Events...')
 
         const eventPath = path.join(__dirname, '..', 'Events')
         readdirSync(eventPath).forEach(async (file) => {
@@ -60,12 +60,12 @@ class ExtendedClient extends Client {
                 this.events.set(event.name, event)
                 this.on(event.name, event.run.bind(null, this))
 
-                log.info(`${event.name} loaded!`)
+                console.info(`${event.name} loaded!`)
             }
         })
 
         this.once('ready', () => {
-            log.info(`Bot loaded, ${this.user.tag} is ready to go!`)
+            console.info(`Bot loaded, ${this.user.tag} is ready to go!`)
 
             this.user.setActivity(`${global.dataState.prefix}help`, {
                 type: 'LISTENING',
@@ -74,10 +74,10 @@ class ExtendedClient extends Client {
 
         this.login(process.env.BOT_TOKEN)
         
-        log.info('Initializing persistence...')
+        console.info('Initializing persistence...')
         await this.persistence.init()
     
-        log.info('Initializing tasks...')
+        console.info('Initializing tasks...')
         await this.tasks.init()
     }
 
@@ -86,7 +86,7 @@ class ExtendedClient extends Client {
         this.tasks.gracefullShutdown()
 
         if (process.env.IS_DEV_VERSION === 'true') {
-            log.info('Client gracefull shutdown...\n')
+            console.info('Client gracefull shutdown...\n')
 
         }
     }

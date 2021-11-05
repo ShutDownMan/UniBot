@@ -37,7 +37,7 @@ async function clearChannelMessages(client) {
             await (channel as TextChannel).bulkDelete(messages);
         })
     }).catch(error => {
-        log.error(error)
+        console.error(error)
     })
 
 }
@@ -119,7 +119,7 @@ function getOptionsByYears(periods: string[]) {
     /// fetch by period from materias
     let materiasFromPeriods = Object.keys(Materias).filter(k => { return isFromGivenPeriod(periods, k) })
 
-    // log.debug(materiasFromPeriods)
+    // console.debug(materiasFromPeriods)
 
     let selectOptions = []
 
@@ -132,7 +132,7 @@ function getOptionsByYears(periods: string[]) {
         if ((materia.professores.length > 1))
             materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
 
-        // log.debug(materiaProfessoresStr)
+        // console.debug(materiaProfessoresStr)
 
         let materiaOption = {
             label: materia.nomeMateria,
@@ -173,7 +173,7 @@ async function tryAndDelete(item: Message) {
     try {
         await item.delete()
     } catch (error) {
-        log.error(error)            
+        console.error(error)            
     }
 }
 

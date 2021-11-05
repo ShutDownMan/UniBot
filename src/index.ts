@@ -1,4 +1,3 @@
-require('events').EventEmitter.defaultMaxListeners = 30
 import { Intents, User } from 'discord.js'
 import Client from './Client'
 import Persistence from './Persistence'
@@ -28,7 +27,7 @@ enum ExitStatus {
 try {
     console.clear()
 
-    log.info('Initializing bot...')
+    console.info('Initializing bot...')
 
     /// get client instance
     let client = new Client({
@@ -36,7 +35,7 @@ try {
     })
 
     async function initAll() {
-        log.info('Initializing client...')
+        console.info('Initializing client...')
         await client.init()
         }
     initAll()
@@ -53,18 +52,17 @@ try {
 
     /// on raised exceptions
     process.on('uncaughtException', async (e) => {
-        log.fatal(new Error(`Error: ${e.stack}`))
+        console.error(new Error(`Error: ${e.stack}`))
 
         /// attempt graceful shutdown
         await client.gracefullShutdown()
 
         /// if dev version, exit process
-        // log.debug(process.env.IS_DEV_VERSION)
+        // console.debug(process.env.IS_DEV_VERSION)
         if (process.env.IS_DEV_VERSION) process.exit(ExitStatus.Failure)
     })
 
 } catch (e) {
-    log.error(new Error(`Bot exited due to error \n${e.stack}`))
+    console.error(new Error(`Bot exited due to error \n${e.stack}`))
     process.exit(ExitStatus.Failure)
 }
-

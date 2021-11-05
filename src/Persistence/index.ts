@@ -35,7 +35,7 @@ class Persistence {
     }
 
     public async gracefullShutdown() {
-        log.info('Persistence gracefull shutdown...\n')
+        console.info('Persistence gracefull shutdown...\n')
 
         this.db.end()
     }
@@ -50,27 +50,27 @@ class Persistence {
                 port: Number(process.env.PGPORT),
             })
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
     }
 
     private async fetchTodaysDiary() {
         let today = (new Date()).toISOString().split("T")[0]
-        log.debug(today)
+        console.debug(today)
 
         this.todaysDiary = await this.fetchDiary(today)
-        log.debug("this.todaysDiary")
-        log.debug(this.todaysDiary)
+        console.debug("this.todaysDiary")
+        console.debug(this.todaysDiary)
     }
 
     public async fetchDiary(dateID: string) {
         let diary: Diary = null;
 
-        log.debug("FETCHING Diary")
+        console.debug("FETCHING Diary")
         try {
             const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '${dateID}'`);
-            // log.debug("QUERY STUCK??")
-            // log.debug(queryResult)
+            // console.debug("QUERY STUCK??")
+            // console.debug(queryResult)
 
             if (queryResult.rowCount === 0) {
                 let newDiary = this.createDiary()
@@ -89,11 +89,11 @@ class Persistence {
             } else {
                 diary = queryResult.rows[0]
                 this.todaysClasses = await this.fetchClassDataByIds(diary.diaryData.classesIDs)
-                // log.debug(this.todaysClasses)
-                // log.debug(JSON.stringify(diary.diaryData["classesIDs"]))
+                // console.debug(this.todaysClasses)
+                // console.debug(JSON.stringify(diary.diaryData["classesIDs"]))
             }
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
 
         return diary
@@ -102,7 +102,7 @@ class Persistence {
     public async upsertDiary(dateID: string, diaryData: DiaryData) {
         let result: Diary = null
 
-        log.debug("UPSERTING Diary")
+        console.debug("UPSERTING Diary")
         try {
             const queryResult: QueryResult = await this.db.query(`
                 INSERT INTO "Diary"
@@ -114,7 +114,7 @@ class Persistence {
 
             result = { dateID: dateID, diaryData: diaryData }
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
 
         return result
@@ -146,17 +146,17 @@ class Persistence {
     public async fetchClassData(classID: number) {
         let classData: UniClass = null;
 
-        log.debug("FETCHING classData")
+        console.debug("FETCHING classData")
         try {
             let queryResult: QueryResult = await this.db.query(`SELECT * FROM "Class" WHERE "classID" = '${classID}'`)
 
             if (queryResult.rowCount !== 0) {
                 classData = toJson(queryResult.rows[0])
-                // log.debug(classData)
+                // console.debug(classData)
             }
 
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
 
         return classData
@@ -177,8 +177,8 @@ class Persistence {
     public async fetchTodaysClassData() {
         if (!this.todaysClasses) this.todaysClasses = await this.fetchClassDataByIds(this.todaysDiary.diaryData.classesIDs)
 
-        // log.debug("Pq tá vazio o bagulho?")
-        // log.debug(JSON.stringify(this.todaysClasses))
+        // console.debug("Pq tá vazio o bagulho?")
+        // console.debug(JSON.stringify(this.todaysClasses))
 
         return this.todaysClasses
     }
@@ -196,7 +196,7 @@ class Persistence {
                 /// get classes dates
                 let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate).date
 
-                // log.debug(justADate(interval.toISOString()).toISOString())
+                // console.debug(justADate(interval.toISOString()).toISOString())
 
                 /// see if there is a class givenDate
                 if (givenDate.toISOString() === justADate(interval.toISOString()).toISOString()) {
@@ -206,7 +206,7 @@ class Persistence {
                     tmpClassData.horario = horario
 
                     let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
-                    // log.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))
+                    // console.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))
                     // console.debug(`${classData.toString()}`)
 
                     classDataList.push(upsertedClassData)
@@ -227,7 +227,7 @@ class Persistence {
     public async upsertClassData(classID: number, classData: ClassData) {
         let result: UniClass = null
 
-        log.debug("UPSERTING Class")
+        console.debug("UPSERTING Class")
         try {
             let queryResult: QueryResult = null
 
@@ -241,7 +241,7 @@ class Persistence {
                     RETURNING ("classID"::INTEGER)
                 `);
                 result = { classID: queryResult.rows[0].classID, classData: classData }
-                // log.debug("INSERTED NEW " + JSON.stringify(result))
+                // console.debug("INSERTED NEW " + JSON.stringify(result))
             } else {
                 /// insert updating
                 queryResult = await this.db.query(`
@@ -251,11 +251,11 @@ class Persistence {
                     ON CONFLICT ("classID")
                     DO UPDATE SET "classData" = EXCLUDED."classData"
                 `);
-                log.debug("UPSERTED " + classID)
+                console.debug("UPSERTED " + classID)
                 result = { classID: classID, classData: classData }
             }
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
 
         return result

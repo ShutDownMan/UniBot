@@ -8,6 +8,7 @@ import { createRemoveCoursesSelect } from './buttonInteractions/removeCoursesRol
 import { addCoursesFromPeriod } from './selectInteractions/bulkEnrollCoursesSelect'
 import { addBulkRoles } from './selectInteractions/yearEnrollCoursesSelect'
 import { removeBulkCourses } from './selectInteractions/removeCoursesSelect'
+import { addReminder } from './buttonInteractions/addReminder'
 const log = Logger(Configs.EventsLogLevel, 'interactionCreate.ts')
 
 export const event: Event = {
@@ -16,9 +17,10 @@ export const event: Event = {
 
         // eval(interaction)
         if (interaction.isSelectMenu()) {
+            console.trace()
             let selectInteraction = interaction as SelectMenuInteraction
 
-            // log.debug(selectInteraction.values)
+            // console.debug(selectInteraction.values)
 
             // await selectInteraction.deferUpdate();
 
@@ -26,7 +28,7 @@ export const event: Event = {
                 await runSelectInteraction(client, selectInteraction)
 
             } catch (error) {
-                log.error(error)
+                console.error(error)
             }
         }
 
@@ -74,21 +76,19 @@ async function runSelectInteraction(client: ExtendedClient, interaction: SelectM
             await removeBulkCourses(interaction.member as GuildMember, interaction.values)
             reply = await interaction.editReply("🤖 **Matérias Removidas** 🤖") as Message
             break;
-        case "addTextReminder":
-            break;
-        case "addAssignmentReminder":
-            break;
-        case "addExamReminder":
-            break;
-        case "addProjectReminder":
+        default:
+            await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
             break;
     }
 }
 
-async function runButtonInteraction(client, interaction: ButtonInteraction) {
+async function runButtonInteraction(client: ExtendedClient, interaction: ButtonInteraction) {
     switch (interaction.customId) {
         case "removeCoursesRoles":
             createRemoveCoursesSelect(client, interaction)
+            break;
+        case "addReminder":
+            await addReminder(client, interaction)
             break;
         default:
             await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });

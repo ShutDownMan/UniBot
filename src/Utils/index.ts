@@ -28,18 +28,18 @@ export async function sendEphemeralEmbed(textChannel: TextChannel | TextBasedCha
                 try {
                     await message.delete()
                 } catch (e) {
-                    log.debug(`Failed to delete message, this is a discord internal error\n${e.stack}`)
+                    console.debug(`Failed to delete message, this is a discord internal error\n${e.stack}`)
                 }
             }, Configs.EphemeralMessageTime * 1000)
         })
         .catch((e) => {
-            log.debug(`Failed to send message, this is a discord internal error\n${e.stack}`)
+            console.debug(`Failed to send message, this is a discord internal error\n${e.stack}`)
         })
 }
 
 export async function safeReact(message: Message, reaction: string): Promise<void> {
     await message.react(reaction).catch((e) => {
-        log.debug(`Failed to react, this is a discord internal error\n${e.stack}`)
+        console.debug(`Failed to react, this is a discord internal error\n${e.stack}`)
     })
 }
 
@@ -54,7 +54,7 @@ export function deleteAfter(message: Message, timeInSeconds: number) {
         try {
             await message.delete()
         } catch (e) {
-            log.debug(`Failed to delete message, this is a discord internal error!`)
+            console.debug(`Failed to delete message, this is a discord internal error!`)
         }
     }, timeInSeconds * 1000)
 }

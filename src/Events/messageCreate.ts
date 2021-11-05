@@ -8,7 +8,7 @@ const log = Logger(Configs.EventsLogLevel, 'messageCreate.ts')
 export const event: Event = {
     name: 'messageCreate',
     run: async (client, message: Message) => {
-        // log.debug(message)
+        // console.debug(message)
         if (message.author.bot === true || !message.guild) return
 
         if (message.mentions.users.has(client.user.id) === true) {
@@ -19,12 +19,12 @@ export const event: Event = {
                         try {
                             await message.delete()
                         } catch (e) {
-                            log.debug(`Failed to delete message, this is a discord internal error! \n${e.stack}`)
+                            console.debug(`Failed to delete message, this is a discord internal error! \n${e.stack}`)
                         }
                     }, Configs.EphemeralMessageTime * 1000)
                 })
                 .catch((e) => {
-                    log.debug(`Failed to send message, this is a discord internal error! \n${e.stack}`)
+                    console.debug(`Failed to send message, this is a discord internal error! \n${e.stack}`)
                 })
 
             return
@@ -32,7 +32,7 @@ export const event: Event = {
 
         let processedContent = /(^l\.)([^\s]+)\s*((.*|\s*)*)/gm.exec(message.content)
 
-        // log.debug(processedContent)
+        // console.debug(processedContent)
 
         if (processedContent !== null) {
             if (processedContent[1] !== global.dataState.prefix) return
@@ -42,7 +42,7 @@ export const event: Event = {
 
             const command = client.commands.get(cmd) || client.aliases.get(cmd)
 
-            // log.debug(cmd, args, command)
+            // console.debug(cmd, args, command)
 
             if (command) {
                 if (isAllowed(message.member, (command as Command).allowedRoles)) {
@@ -65,7 +65,7 @@ export const event: Event = {
                 try {
                     await message.delete()
                 } catch (e) {
-                    log.debug(`Failed to deleted message while play command, this is a discord internal issue`)
+                    console.debug(`Failed to deleted message while play command, this is a discord internal issue`)
                 }
             }
         }

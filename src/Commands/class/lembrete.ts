@@ -13,7 +13,7 @@ export const command: Command = {
     description: 'Coloque um lembrete em alguma aula',
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message, args) => {
-        log.debug(args)
+        console.debug(args)
 
         if (message.channelId === process.env.BOT_PLAYGROUND_CHANNEL) {
         }
@@ -27,22 +27,22 @@ async function sendReminderMenu(client: ExtendedClient, channel: TextChannel) {
     /// create select with each year
     let firstRow = new MessageActionRow().addComponents(
         new MessageButton()
-            .setCustomId('addTextReminder')
+            .setCustomId('addReminder|simple')
             .setEmoji("📓")
             .setLabel('Simples')
             .setStyle('PRIMARY'),
         new MessageButton()
-            .setCustomId('addAssignmentReminder')
+            .setCustomId('addReminder|assignment')
             .setEmoji("📑")
-            .setLabel("Exercícios")
+            .setLabel("Exercício")
             .setStyle("PRIMARY"),
         new MessageButton()
-            .setCustomId('addExamReminder')
+            .setCustomId('addReminder|exam')
             .setEmoji("📝")
             .setLabel("Prova")
             .setStyle("PRIMARY"),
         new MessageButton()
-            .setCustomId('addProjectReminder')
+            .setCustomId('addReminder|project')
             .setEmoji("📖")
             .setLabel("Trabalho")
             .setStyle("PRIMARY"),

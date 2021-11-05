@@ -21,7 +21,7 @@ class Tasks {
     }
 
     public async init() {
-        log.debug("Tasks init...")
+        console.debug("Tasks init...")
         await this.classReminder()
 
         await this.initTasks()
@@ -32,16 +32,16 @@ class Tasks {
     }
 
     public async classReminder() {
-        log.debug("=========================")
-        log.debug("running classReminder...")
-        // log.debug(persistence)
+        console.debug("=========================")
+        console.debug("running classReminder...")
+        // console.debug(persistence)
         // let now = new Date();
         // let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
         // let todaysClassesData = await persistence.fetchClassDataByDate(today)
 
         let todaysClassesData: UniClass[] = await this.client.persistence.fetchTodaysClassData()
 
-        // log.debug(JSON.stringify(todaysClassesData))
+        // console.debug(JSON.stringify(todaysClassesData))
 
         for (let uniClass of todaysClassesData) {
 
@@ -57,7 +57,7 @@ class Tasks {
                         //^ check if class is finished
 
                         if (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING) {
-                            log.debug("finished? " + JSON.stringify(uniClass.classData))
+                            console.debug("finished? " + JSON.stringify(uniClass.classData))
 
                             uniClass.classData.status = ClassStatus.DONE
                             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
@@ -67,24 +67,24 @@ class Tasks {
                     if (currentTime >= classTime && uniClass.classData.status === ClassStatus.UNSTARTED) {
                         //^ check if class is ongoing
 
-                        log.debug("ongoing? " + JSON.stringify(uniClass.classData))
+                        console.debug("ongoing? " + JSON.stringify(uniClass.classData))
 
                         uniClass.classData.status = ClassStatus.ONGOING
                         await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
                     }
 
                     let materia: Materia = Materias[uniClass.classData.materiaID]
-                    log.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
-                    // log.debug("reminderTime:" + JSON.stringify(reminderTime))
-                    // log.debug("classTime:" + JSON.stringify(classTime))
-                    // log.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
-                    // log.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
-                    // log.debug("-------------------------")
+                    console.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
+                    // console.debug("reminderTime:" + JSON.stringify(reminderTime))
+                    // console.debug("classTime:" + JSON.stringify(classTime))
+                    // console.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
+                    // console.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
+                    // console.debug("-------------------------")
 
                     if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED)) {
                         //^ check if time to send reminder
 
-                        log.debug("reminderTime: " + reminderTime)
+                        console.debug("reminderTime: " + reminderTime)
                         await this.sendClassReminder(uniClass, classTime)
                     }
                 }
@@ -98,7 +98,7 @@ class Tasks {
         try {
             let materia: Materia = Materias[uniClass.classData.materiaID]
 
-            log.debug("SENDING REMINDER TO " + materia.nomeMateria)
+            console.debug("SENDING REMINDER TO " + materia.nomeMateria)
 
             let guild = await this.client.guilds.fetch(process.env.GUILD_ID)
             let mention = await guild.roles.fetch(uniClass.classData.materiaID)
@@ -122,13 +122,13 @@ class Tasks {
 
             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
         } catch (error) {
-            log.error(error)
+            console.error(error)
         }
     }
 
     public async gracefullShutdown(): Promise<void> {
         if (process.env.IS_DEV_VERSION === 'true') {
-            log.info('Tasks gracefull shutdown...\n')
+            console.info('Tasks gracefull shutdown...\n')
         }
     }
 

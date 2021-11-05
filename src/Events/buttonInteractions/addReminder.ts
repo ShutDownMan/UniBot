@@ -1,7 +1,58 @@
-import { ButtonInteraction, GuildMember, Interaction, MessageActionRow, MessageSelectMenu } from "discord.js"
+import { ButtonInteraction, GuildMember, Interaction, Message, MessageActionRow, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
 import Materias from '../../../data/materias.json'
+import Logger from '../../Logger'
+import Configs from '../../config.json'
+import ExtendedClient from "../../Client"
+import { Materia } from "../../Persistence/Materia"
+const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
-export async function createRemoveCoursesSelect(client, interaction: Interaction) {
+export async function addReminder(client: ExtendedClient, interaction: ButtonInteraction) {
+    let materia: Materia = getCourseTextChannel(interaction.channelId)
+
+    /// get from which materia user wants to add reminder to
+    let materiaID: string = interaction.channelId
+    if (!materia) {
+        materiaID = await getMateriaFromUser(interaction)
+        materia = Materias[materiaID]
+
+        if (!materiaID) return;
+    }
+}
+
+function getCourseTextChannel(channelId: string) {
+    for (let materiaID of Object.keys(Materias)) {
+        let materia: Materia = Materias[materiaID]
+        if (channelId === materia.canalTextoID) {
+            return materia
+        }
+    }
+    return null
+}
+
+async function getMateriaFromUser(interaction: ButtonInteraction) {
+    let materiaID: string = null
+    let selectCourseMessage: Message = await sendCoursesSelect(interaction)
+
+    const filter = i => {
+        i.deferUpdate();
+        return i.user.id === interaction.user.id;
+    };
+
+    try {
+        let selectCourseInteraction: SelectMenuInteraction = await selectCourseMessage.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: 60000 })
+
+        // await selectCourseInteraction.editReply(`You selected ${}!`)
+        materiaID = selectCourseInteraction.values[0]
+
+    } catch (error) {
+        console.error(error)
+    }
+
+    return materiaID
+}
+
+
+export async function sendCoursesSelect(interaction: ButtonInteraction) {
     let messageToSend: any = {}
 
     /// get option of the current year
@@ -31,9 +82,8 @@ export async function createRemoveCoursesSelect(client, interaction: Interaction
             /// create row element to show
             let row = new MessageActionRow().addComponents(
                 new MessageSelectMenu()
-                    .setCustomId(`removeCoursesSelect|${index}`)
+                    .setCustomId(`selectCourseSelect|${index}`)
                     .setPlaceholder(`${placeHolderAuxStr}Lista de Matérias`)
-                    .setMaxValues(chunk.length)
                     .addOptions(chunk),
             )
 
@@ -42,7 +92,7 @@ export async function createRemoveCoursesSelect(client, interaction: Interaction
 
         /// createView
         messageToSend = {
-            content: `**Selecione as matérias para remover**`,
+            content: `**Selecione uma matéria para adicionar o lembrete:**`,
             components: selectRows,
             ephemeral: true
         }
@@ -51,7 +101,7 @@ export async function createRemoveCoursesSelect(client, interaction: Interaction
     }
 
     /// send to member
-    await (interaction as ButtonInteraction).reply(messageToSend)
+    return await interaction.reply(messageToSend) as Message
 }
 
 async function getMemberCoursesRoles(member: GuildMember) {

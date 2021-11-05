@@ -28,6 +28,6 @@ async function removeRole(member: GuildMember, roleID: string) {
         let role = await member.guild.roles.fetch(roleID)
         await member.roles.remove(role)
     } catch (error) {
-        log.error(error)
+        console.error(error)
     }
 }
