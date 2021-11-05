@@ -10,6 +10,7 @@ import { Materia } from './Materia'
 import { Moment } from 'moment'
 import { justADate, toJson } from '../Utils'
 import ExtendedClient from '../Client'
+import moment from 'moment'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
 // public classes: Collection<Number, ClassData> = new Collection()
@@ -32,6 +33,8 @@ class Persistence {
         const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '2021-11-03'`);
 
         await this.fetchTodaysDiary()
+        
+        setInterval(() => {this.fetchTodaysDiary()}, Configs.ClassReminderInterval * 1000)
     }
 
     public async gracefullShutdown() {
@@ -55,7 +58,7 @@ class Persistence {
     }
 
     private async fetchTodaysDiary() {
-        let today = (new Date()).toISOString().split("T")[0]
+        let today = moment().format().split("T")[0]
         console.debug(today)
 
         this.todaysDiary = await this.fetchDiary(today)
@@ -76,8 +79,8 @@ class Persistence {
                 let newDiary = this.createDiary()
 
                 /// set classIDs
-                let now = new Date();
-                let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+                let today = moment(dateID);
+                console.debug(today)
                 this.todaysClasses = await this.fetchClassDataByDate(today)
 
                 newDiary.classesIDs = this.todaysClasses.map(uniClass => {
@@ -183,7 +186,7 @@ class Persistence {
         return this.todaysClasses
     }
 
-    public async fetchClassDataByDate(givenDate: Date) {
+    public async fetchClassDataByDate(givenDate: Moment) {
         let classDataList: UniClass[] = []
 
         /// pass through each materia
@@ -194,15 +197,19 @@ class Persistence {
             /// pass through each horario
             for (const horario of materia.horarios) {
                 /// get classes dates
-                let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate).date
+                let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
 
                 // console.debug(justADate(interval.toISOString()).toISOString())
 
+                // console.debug(givenDate.startOf('day').format())
+                // console.debug(justADate(interval).toISOString())
+                // console.debug(interval.startOf('day').format())
+
                 /// see if there is a class givenDate
-                if (givenDate.toISOString() === justADate(interval.toISOString()).toISOString()) {
+                if (givenDate.startOf('day').format() === interval.startOf('day').format()) {
                     let tmpClassData = this.createClassData()
                     tmpClassData.materiaID = materiaID
-                    tmpClassData.time = interval.toISOString()
+                    tmpClassData.time = interval.startOf('day').format()
                     tmpClassData.horario = horario
 
                     let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
