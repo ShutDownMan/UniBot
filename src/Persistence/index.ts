@@ -8,7 +8,7 @@ import Materias from '../../data/materias.json'
 import makeInterval from 'iso8601-repeating-interval'
 import { Materia } from './Materia'
 import { Moment } from 'moment'
-import { justADate, toJson } from '../Utils'
+import { toJson } from '../Utils'
 import ExtendedClient from '../Client'
 import moment from 'moment'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
@@ -192,17 +192,14 @@ class Persistence {
         /// pass through each materia
         for (const materiaID of Object.keys(Materias)) {
             let materia: Materia = Materias[materiaID]
-            // let today = justADate(new Date());
 
             /// pass through each horario
             for (const horario of materia.horarios) {
                 /// get classes dates
                 let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
 
-                // console.debug(justADate(interval.toISOString()).toISOString())
 
                 // console.debug(givenDate.startOf('day').format())
-                // console.debug(justADate(interval).toISOString())
                 // console.debug(interval.startOf('day').format())
 
                 /// see if there is a class givenDate
