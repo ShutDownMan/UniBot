@@ -92,7 +92,13 @@ async function runButtonInteraction(client: ExtendedClient, interaction: ButtonI
             createRemoveCoursesSelect(client, interaction)
             break;
         case "addReminder":
-            await addReminder(client, interaction, args[0])
+            await addReminder(client, interaction)
+            break;
+        case "showReminders":
+            await addReminder(client, interaction)
+            break;
+        case "manageReminders":
+            await addReminder(client, interaction)
             break;
         default:
             // await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });

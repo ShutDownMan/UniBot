@@ -91,3 +91,11 @@ export function toJson(data) {
 }
 
 // BigInt.prototype['toJSON'] = function() { return toJson(this) }
+
+export async function tryToDeleteMessage(message: Message) {
+    try {
+        message.delete()
+    } catch (error) {
+        console.error(error)
+    }
+}

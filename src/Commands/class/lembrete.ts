@@ -1,7 +1,7 @@
 import { Command, ControlRoles, EnrollMessages } from '../../Interfaces'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
-import { Client, Emoji, Message, MessageActionRow, MessageButton, MessageSelectMenu, TextChannel } from 'discord.js'
+import { Client, Emoji, GuildMember, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, MessageSelectMenu, Role, TextChannel } from 'discord.js'
 import Materias from '../../../data/materias.json'
 import ExtendedClient from '../../Client'
 import { sendToTextChannel } from '../../Utils'
@@ -13,46 +13,45 @@ export const command: Command = {
     description: 'Coloque um lembrete em alguma aula',
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message, args) => {
-        console.debug(args)
-
-        if (message.channelId === process.env.BOT_PLAYGROUND_CHANNEL) {
-        }
+        // console.debug(args)
 
         /// send menu message
-        await sendReminderMenu(client, message.channel as TextChannel)
+        await sendReminderMenu(client, message.channel as TextChannel, message.member)
     }
 }
 
-async function sendReminderMenu(client: ExtendedClient, channel: TextChannel) {
+async function sendReminderMenu(client: ExtendedClient, channel: TextChannel, member: GuildMember) {
     /// create select with each year
     let firstRow = new MessageActionRow().addComponents(
         new MessageButton()
-            .setCustomId('addReminder|simple')
-            .setEmoji("📓")
-            .setLabel('Simples')
+            .setCustomId('showReminders')
+            .setEmoji("📜")
+            .setLabel('Mostrar')
             .setStyle('PRIMARY'),
         new MessageButton()
-            .setCustomId('addReminder|assignment')
-            .setEmoji("📑")
-            .setLabel("Exercício")
-            .setStyle("PRIMARY"),
-        new MessageButton()
-            .setCustomId('addReminder|exam')
+            .setCustomId('addReminder')
             .setEmoji("📝")
-            .setLabel("Prova")
-            .setStyle("PRIMARY"),
+            .setLabel("Adicionar")
+            .setStyle("SUCCESS"),
         new MessageButton()
-            .setCustomId('addReminder|project')
-            .setEmoji("📖")
-            .setLabel("Trabalho")
-            .setStyle("PRIMARY"),
+            .setCustomId('manageReminders')
+            .setEmoji("⚙️")
+            .setLabel("Gerenciar")
+            .setStyle("SECONDARY")
+            .setDisabled(!isModerator(member)),
     )
     /// create view
     let managementView = {
-        content: "**Qual tipo de lembrete deseja adicionar?**",
+        content: "**O que deseja fazer com os lembretes?**",
         components: [firstRow]
     }
 
     /// send view to channel
     await sendToTextChannel(client, channel.id, managementView)
+}
+
+function isModerator(member: GuildMember) {
+    let controlRoles: string[] = (<any>Object).values(ControlRoles)
+
+    return member.roles.cache.hasAny(...controlRoles)
 }

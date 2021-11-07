@@ -11,6 +11,7 @@ import { Moment } from 'moment'
 import { toJson } from '../Utils'
 import ExtendedClient from '../Client'
 import moment from 'moment'
+import { Reminder, ReminderData } from './Reminder'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
 // public classes: Collection<Number, ClassData> = new Collection()
@@ -33,8 +34,8 @@ class Persistence {
         const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '2021-11-03'`);
 
         await this.fetchTodaysDiary()
-        
-        setInterval(() => {this.fetchTodaysDiary()}, Configs.ClassReminderInterval * 10000)
+
+        setInterval(() => { this.fetchTodaysDiary() }, Configs.ClassReminderInterval * 10000)
     }
 
     public async gracefullShutdown() {
@@ -77,7 +78,7 @@ class Persistence {
             // console.debug(queryResult)
 
             if (queryResult.rowCount === 0) {
-                let newDiary = this.createDiary()
+                let newDiary = this.createDiaryData()
 
                 /// set classIDs
                 let givenDate = moment(dateID);
@@ -124,7 +125,7 @@ class Persistence {
         return result
     }
 
-    public createDiary() {
+    public createDiaryData() {
         let diary: DiaryData = {
             dailyReminderSent: false,
             classesIDs: []
@@ -230,11 +231,11 @@ class Persistence {
     }
 
     public async upsertClassData(classID: number, classData: ClassData) {
-        let result: UniClass = null
+        let result: UniClass = null;
 
-        console.debug("UPSERTING Class")
+        console.debug("UPSERTING Class");
         try {
-            let queryResult: QueryResult = null
+            let queryResult: QueryResult = null;
 
             /// if no id specified
             if (classID === 0) {
@@ -256,14 +257,62 @@ class Persistence {
                     ON CONFLICT ("classID")
                     DO UPDATE SET "classData" = EXCLUDED."classData"
                 `);
-                console.debug("UPSERTED " + classID)
-                result = { classID: classID, classData: classData }
+                console.debug("UPSERTED " + classID);
+                result = { classID: classID, classData: classData };
             }
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
 
-        return result
+        return result;
+    }
+
+    static createReminderData(): ReminderData {
+        let reminderData: ReminderData = {
+            type: null,
+            dueDate: '',
+            description: '',
+            author: ''
+        }
+        // throw new Error("Method not implemented.")
+        return reminderData;
+    }
+
+    public async upsertReminder(reminderID: number, reminderData: ReminderData) {
+        let result: Reminder = null;
+
+        console.debug("UPSERTING Class");
+        try {
+            let queryResult: QueryResult = null;
+
+            /// if no id specified
+            if (reminderID === 0) {
+                /// just simple insert returning id
+                queryResult = await this.db.query(`
+                    INSERT INTO "Reminder"
+                    ("reminderData")
+                    VALUES ('${JSON.stringify(reminderData)}')
+                    RETURNING ("reminderID"::INTEGER)
+                `);
+                result = { reminderID: queryResult.rows[0].reminderID, reminderData: reminderData }
+                // console.debug("INSERTED NEW " + JSON.stringify(result))
+            } else {
+                /// insert updating
+                queryResult = await this.db.query(`
+                    INSERT INTO "Reminder"
+                    ("reminderID", "reminderData")
+                    VALUES ('${reminderID}', '${JSON.stringify(reminderData)}')
+                    ON CONFLICT ("reminderID")
+                    DO UPDATE SET "reminderData" = EXCLUDED."reminderData"
+                `);
+                console.debug("UPSERTED " + reminderID);
+                result = { reminderID, reminderData };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        return result;
     }
 
 }

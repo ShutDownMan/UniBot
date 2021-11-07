@@ -8,6 +8,7 @@
     "EphemeralMessageTime": 40,
     "ClassReminderInterval": 60,
     "ClassReminderTimeInMinutes": 15,
+    "ButtonDefaultTimeoutInSeconds": 60,
     "Colors": {
         "info": "0x17a2b8",
         "warn": "0xffc107",
