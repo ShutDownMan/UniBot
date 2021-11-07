@@ -17,7 +17,6 @@ export const event: Event = {
 
         // eval(interaction)
         if (interaction.isSelectMenu()) {
-            console.trace()
             let selectInteraction = interaction as SelectMenuInteraction
 
             // console.debug(selectInteraction.values)
@@ -29,6 +28,7 @@ export const event: Event = {
 
             } catch (error) {
                 console.error(error)
+                // console.trace()
             }
         }
 
@@ -77,21 +77,25 @@ async function runSelectInteraction(client: ExtendedClient, interaction: SelectM
             reply = await interaction.editReply("🤖 **Matérias Removidas** 🤖") as Message
             break;
         default:
-            await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
+            // await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
             break;
     }
 }
 
 async function runButtonInteraction(client: ExtendedClient, interaction: ButtonInteraction) {
-    switch (interaction.customId) {
+    let splittedInteractionCustomID = interaction.customId.split("|")
+    let interactionName = splittedInteractionCustomID[0]
+    let args = splittedInteractionCustomID.splice(1, splittedInteractionCustomID.length)
+
+    switch (interactionName) {
         case "removeCoursesRoles":
             createRemoveCoursesSelect(client, interaction)
             break;
         case "addReminder":
-            await addReminder(client, interaction)
+            await addReminder(client, interaction, args[0])
             break;
         default:
-            await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
+            // await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
             break;
     }
 }

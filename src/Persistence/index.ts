@@ -34,7 +34,7 @@ class Persistence {
 
         await this.fetchTodaysDiary()
         
-        setInterval(() => {this.fetchTodaysDiary()}, Configs.ClassReminderInterval * 1000)
+        setInterval(() => {this.fetchTodaysDiary()}, Configs.ClassReminderInterval * 10000)
     }
 
     public async gracefullShutdown() {
@@ -64,6 +64,7 @@ class Persistence {
         this.todaysDiary = await this.fetchDiary(today)
         console.debug("this.todaysDiary")
         console.debug(this.todaysDiary)
+        this.todaysClasses = await this.fetchClassDataByIds(this.todaysDiary.diaryData.classesIDs)
     }
 
     public async fetchDiary(dateID: string) {
@@ -79,11 +80,11 @@ class Persistence {
                 let newDiary = this.createDiary()
 
                 /// set classIDs
-                let today = moment(dateID);
-                console.debug(today)
-                this.todaysClasses = await this.fetchClassDataByDate(today)
+                let givenDate = moment(dateID);
+                console.debug(givenDate)
+                let dayClasses = await this.createClassDataByDate(givenDate)
 
-                newDiary.classesIDs = this.todaysClasses.map(uniClass => {
+                newDiary.classesIDs = dayClasses.map(uniClass => {
                     return uniClass.classID
                 })
 
@@ -91,7 +92,7 @@ class Persistence {
                 diary = await this.upsertDiary(dateID, newDiary)
             } else {
                 diary = queryResult.rows[0]
-                this.todaysClasses = await this.fetchClassDataByIds(diary.diaryData.classesIDs)
+                // this.todaysClasses = await this.fetchClassDataByIds(diary.diaryData.classesIDs)
                 // console.debug(this.todaysClasses)
                 // console.debug(JSON.stringify(diary.diaryData["classesIDs"]))
             }
@@ -186,7 +187,7 @@ class Persistence {
         return this.todaysClasses
     }
 
-    public async fetchClassDataByDate(givenDate: Moment) {
+    public async createClassDataByDate(givenDate: Moment) {
         let classDataList: UniClass[] = []
 
         /// pass through each materia

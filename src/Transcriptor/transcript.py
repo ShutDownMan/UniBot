@@ -1,3 +1,4 @@
+#/bin/python
 import contextlib
 from io import SEEK_END
 import math
@@ -7,7 +8,6 @@ import speech_recognition as sr
 import datetime
 import os
 import sys
-
 
 def transcribe(video_path):
     temp_folder = "./temp/"
