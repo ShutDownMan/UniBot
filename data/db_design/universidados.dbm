@@ -65,14 +65,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="540" y="400"/>
-	<column name="remindID" not-null="true">
+	<column name="reminderID" not-null="true">
 		<type name="serial" length="32"/>
 	</column>
-	<column name="remindData">
+	<column name="reminderData">
 		<type name="jsonb" length="0"/>
 	</column>
 	<constraint name="Reminder_pk" type="pk-constr" table="public.&quot;Reminder&quot;">
-		<columns names="remindID" ref-type="src-columns"/>
+		<columns names="reminderID" ref-type="src-columns"/>
 	</constraint>
 </table>
 

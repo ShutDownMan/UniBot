@@ -1,14 +1,13 @@
-import { ButtonInteraction, GuildMember, Interaction, Message, MessageActionRow, MessageButton, MessageCollector, MessageEmbed, MessageInteraction, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
+import { ButtonInteraction, GuildMember, Interaction, Message, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from "discord.js"
 import Materias from '../../../data/materias.json'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 import ExtendedClient from "../../Client"
-import { Materia } from "../../Persistence/Materia"
+import { Materia, MateriaData } from "../../Persistence/Materia"
 import moment, { Moment } from "moment"
 import makeInterval from 'iso8601-repeating-interval'
 import * as chrono from 'chrono-node';
-import { Horario } from "../../Persistence/Horario"
-import { Reminder, ReminderData, ReminderType } from "../../Persistence/Reminder"
+import { ReminderData, ReminderScope, ReminderType } from "../../Persistence/Reminder"
 import Persistence from "../../Persistence"
 import { tryToDeleteMessage } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
@@ -16,12 +15,10 @@ const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 export async function addReminder(client: ExtendedClient, interaction: ButtonInteraction) {
     let currentInteraction: Interaction = interaction;
     let reminderType: ReminderType = null
-    let materiaID: string = interaction.channelId;
-    let materia: Materia = getCourseTextChannel(interaction.channelId);
+    let materia: Materia = getMateriaFromTextChannel(interaction.channelId);
 
     /// send add reminder menu message
     let sendAddReminderMenuResult = await getTypeOfReminder(interaction)
-
     reminderType = sendAddReminderMenuResult.reminderType
     currentInteraction = sendAddReminderMenuResult.lastInteraction
 
@@ -34,12 +31,11 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
         if (!currentInteraction) return;
 
         /// get materia from materiaID
-        materiaID = getMateriaFromUserResult.materiaID
-        materia = Materias[materiaID];
+        materia = {materiaID: getMateriaFromUserResult.materiaID, materiaData: Materias[getMateriaFromUserResult.materiaID]};
     }
 
     /// get reminder date from user
-    let reminderDateResult = await getReminderDate(currentInteraction, materiaID);
+    let reminderDateResult = await getReminderDate(currentInteraction, materia.materiaID);
     let date: Moment = reminderDateResult.date;
     currentInteraction = reminderDateResult.lastInteraction;
 
@@ -55,7 +51,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     if (!currentInteraction) return;
 
     /// get final reminder
-    let getFinalReminderResult = await getFinalReminder(currentInteraction as ButtonInteraction, materia, reminderType, date, description)
+    let getFinalReminderResult = await getFinalReminder(currentInteraction as ButtonInteraction, materia.materiaData, reminderType, date, description)
     let reminderData: ReminderData = getFinalReminderResult.reminderData;
     currentInteraction = getFinalReminderResult.lastInteraction;
 
@@ -69,7 +65,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     await client.persistence.upsertReminder(0, reminderData)
 
     /// reply confiming save
-    await (currentInteraction as ButtonInteraction).editReply(`**💾 Saved 💾**`)
+    await (currentInteraction as ButtonInteraction).editReply(`**💾 Lembrete Salvo 💾**`)
 }
 
 async function getTypeOfReminder(interaction: ButtonInteraction) {
@@ -157,11 +153,11 @@ async function sendAddReminderMenu(interaction: ButtonInteraction) {
     return await interaction.reply(managementView) as Message
 }
 
-function getCourseTextChannel(channelId: string) {
+function getMateriaFromTextChannel(channelId: string): Materia {
     for (let materiaID of Object.keys(Materias)) {
-        let materia: Materia = Materias[materiaID]
+        let materia: MateriaData = Materias[materiaID]
         if (channelId === materia.canalTextoID) {
-            return materia
+            return {materiaID, materiaData: materia}
         }
     }
     return null
@@ -199,7 +195,6 @@ async function getMateriaFromUser(interaction: ButtonInteraction) {
 
     return { materiaID, lastInteraction: selectCourseInteraction }
 }
-
 
 export async function sendCoursesSelect(interaction: ButtonInteraction) {
     let messageToSend: any = {}
@@ -306,18 +301,17 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
         if (currentInteraction) {
             /// fetch user reply
             let userChoice = (getDateInteraction as ButtonInteraction).customId
+            await (getDateInteraction as ButtonInteraction).deferUpdate();
 
             let toDisable = [true, true, true, true]
             switch (userChoice) {
                 case "getReminderDate|nextClass":
-                    await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getNextClassFromMateriaResult = await getNextClassFromMateria(interaction, materiaID)
                     reminderDate = getNextClassFromMateriaResult.date
                     currentInteraction = getNextClassFromMateriaResult.lastInteraction
                     toDisable[0] = false
                     break;
                 case "getReminderDate|typeDate":
-                    await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getDateFromMessageResult = await getDateFromMessage(interaction)
                     reminderDate = getDateFromMessageResult.date
                     currentInteraction = getDateFromMessageResult.lastInteraction
@@ -335,7 +329,7 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
 
             reminderMessage.components[0].components.forEach((component, index) => { component.setDisabled(toDisable[index]) });
             (getDateInteraction as ButtonInteraction).editReply({ components: reminderMessage.components });
-    
+
             // console.debug(reminderDate.format())
         }
 
@@ -387,8 +381,9 @@ async function sendReminderDateMenu(interaction: Interaction, materiaID: string)
 }
 
 async function getNextClassFromMateria(interaction: Interaction, materiaID: string) {
-    let materia: Materia = Materias[materiaID]
+    let materia: MateriaData = Materias[materiaID]
     let tomorrow = moment().add(1, 'days')
+    console.debug(materiaID)
 
     let nextClass: Moment = null
     for (const horario of materia.horarios) {
@@ -416,7 +411,7 @@ async function getNextClassFromMateria(interaction: Interaction, materiaID: stri
 
     let messageContent: any = { content: `**O lembrete será: <t:${nextClass.unix()}:R>**`, components: [firstMessageRow], fetchReply: true, ephemeral: true }
     let reminderDateMenuMessage: Message = await (interaction as ButtonInteraction).editReply(messageContent) as Message;
-    console.debug({reminderDateMenuMessage})
+    console.debug({ reminderDateMenuMessage })
 
     const filterMember = i => {
         // i.deferUpdate();
@@ -751,7 +746,7 @@ async function getDescriptionFromMessage(interaction: Interaction) {
     return { description: descriptionMessage, lastInteraction: currentInteraction }
 }
 
-async function getFinalReminder(interaction: ButtonInteraction, materia: Materia, reminderType: ReminderType, date: Moment, description: Message) {
+async function getFinalReminder(interaction: ButtonInteraction, materia: MateriaData, reminderType: ReminderType, date: Moment, description: Message) {
     let reminderData: ReminderData = Persistence.createReminderData();
     let author = description.author
     let messageContent: any = null;
@@ -774,13 +769,28 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
             .setStyle("DANGER"),
     );
 
+    let embedDesc = ""
+    if (date) {
+        if (materia) {
+            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\` para a matéria de \`${materia.nomeMateria}\`.\n<t:${date.unix()}:R>`
+        } else {
+            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\`.\n<t:${date.unix()}:R>`
+        }
+    } else {
+        if (materia) {
+            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\` para a matéria de \`${materia.nomeMateria}\`.\nPor tempo indeterminado.`
+        } else {
+            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\`.\nPor tempo indeterminado.`
+        }
+    }
+
     /// embed template for single reminder
     const embedToSend = new MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#4f258a')
         .setTitle('Link da Mensagem')
         .setURL(description.url)
         .setAuthor(author.username, author.displayAvatarURL())
-        .setDescription(`Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\` para a matéria de \`${materia.nomeMateria}\`.\n<t:${date.unix()}:R>`)
+        .setDescription(embedDesc)
         // .setThumbnail('https://i.imgur.com/AfFp7pu.png')
         // .addFields(
         //     { name: 'Regular field title', value: 'Some value here' },
@@ -816,6 +826,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
     if (showReminderMessageInteraction.customId === "showReminder|cancel") {
         remindEmbedMessage.components[0].components[0].setDisabled(true)
         interaction.editReply({ components: remindEmbedMessage.components });
+        tryToDeleteMessage(description)
 
         messageContent = { embeds: [], content: `**❌ Lembrete cancelado... ❌**`, components: [] }
         await (interaction as ButtonInteraction).editReply(messageContent)
@@ -825,9 +836,12 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         interaction.editReply({ components: remindEmbedMessage.components });
 
         reminderData.author = description.author.id;
+        reminderData.descriptionURL = description.url;
         reminderData.description = description.content;
-        reminderData.dueDate = date.format();
+        if(date)
+            reminderData.dueDate = date.format();
         reminderData.type = reminderType;
+        reminderData.scope = ReminderScope.Public;
     }
 
     return { reminderData, lastInteraction: currentInteraction };

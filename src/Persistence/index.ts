@@ -6,12 +6,12 @@ import { Client, Pool, QueryResult } from 'node-postgres'
 import { Diary, DiaryData } from './DiaryData'
 import Materias from '../../data/materias.json'
 import makeInterval from 'iso8601-repeating-interval'
-import { Materia } from './Materia'
+import { MateriaData } from './Materia'
 import { Moment } from 'moment'
 import { toJson } from '../Utils'
 import ExtendedClient from '../Client'
 import moment from 'moment'
-import { Reminder, ReminderData } from './Reminder'
+import { Reminder, ReminderData, ReminderScope } from './Reminder'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
 // public classes: Collection<Number, ClassData> = new Collection()
@@ -193,7 +193,7 @@ class Persistence {
 
         /// pass through each materia
         for (const materiaID of Object.keys(Materias)) {
-            let materia: Materia = Materias[materiaID]
+            let materia: MateriaData = Materias[materiaID]
 
             /// pass through each horario
             for (const horario of materia.horarios) {
@@ -272,16 +272,18 @@ class Persistence {
             type: null,
             dueDate: '',
             description: '',
-            author: ''
+            author: '',
+            scope: ReminderScope.Public,
+            descriptionURL: ''
         }
-        // throw new Error("Method not implemented.")
+
         return reminderData;
     }
 
     public async upsertReminder(reminderID: number, reminderData: ReminderData) {
         let result: Reminder = null;
 
-        console.debug("UPSERTING Class");
+        console.debug("UPSERTING Reminder");
         try {
             let queryResult: QueryResult = null;
 
@@ -314,6 +316,35 @@ class Persistence {
 
         return result;
     }
+
+    public async fetchRemindersByMateriaID(materiaID: string, author: string, reminderScope: ReminderScope): Promise<Reminder[]> {
+        let reminders: Reminder[] = [];
+        let queryResult: QueryResult = null;
+
+        switch (reminderScope) {
+            case ReminderScope.Personal:
+                queryResult = await this.db.query(`
+                    SELECT * FROM "Reminder"
+                    WHERE reminderData ->> 'materiaID' = ${materiaID}
+                    AND reminderData ->> 'scope' = ${ReminderScope.Personal}
+                    AND reminderData ->> 'author' = ${author};
+                `);
+                break;
+            case ReminderScope.Public:
+                queryResult = await this.db.query(`
+                    SELECT * FROM "Reminder"
+                    WHERE reminderData ->> 'materiaID' = ${materiaID}
+                    AND reminderData ->> 'scope' = ${ReminderScope.Public}
+                `);
+                break;
+        }
+        reminders = queryResult.rows.map(row => {
+            return {reminderID: row.reminderID, reminderData: row.reminderData}
+        });
+
+        return reminders;
+    }
+    
 
 }
 

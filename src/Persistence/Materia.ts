@@ -1,7 +1,7 @@
 import { Horario } from "./Horario"
 import { Professor } from "./Professor";
 
-export interface Materia {
+export interface MateriaData {
     canalTextoID: string
     nomeMateria: string
     codMateria: string
@@ -9,4 +9,9 @@ export interface Materia {
     serie: string
     horarios: Horario[]
     professores: Professor[]
+}
+
+export interface Materia {
+    materiaID: string
+    materiaData: MateriaData
 }

@@ -1,7 +1,7 @@
 import { TextChannel, Message, TextBasedChannels, GuildMember } from 'discord.js'
 import Logger from '../Logger'
 import Configs from '../config.json'
-import { EnrollMessages } from '../Interfaces'
+import { ControlRoles, EnrollMessages } from '../Interfaces'
 import { Moment } from 'moment'
 import moment from 'moment'
 const log = Logger(Configs.CommandsLogLevel, 'utils.ts')
@@ -98,4 +98,10 @@ export async function tryToDeleteMessage(message: Message) {
     } catch (error) {
         console.error(error)
     }
+}
+
+function isModerator(member: GuildMember) {
+    let controlRoles: string[] = (<any>Object).values(ControlRoles)
+
+    return member.roles.cache.hasAny(...controlRoles)
 }

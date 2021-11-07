@@ -3,7 +3,7 @@ import Configs from '../config.json'
 import Persistence from '../Persistence'
 import { ClassStatus, UniClass } from './../Persistence/ClassData'
 import Materias from './../../data/materias.json'
-import { Materia } from '../Persistence/Materia'
+import { MateriaData } from '../Persistence/Materia'
 import ExtendedClient from '../Client'
 import { sendToTextChannel } from '../Utils'
 import { parse, toSeconds, pattern } from 'iso8601-duration';
@@ -73,7 +73,7 @@ class Tasks {
                         await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
                     }
 
-                    let materia: Materia = Materias[uniClass.classData.materiaID]
+                    let materia: MateriaData = Materias[uniClass.classData.materiaID]
                     console.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
                     // console.debug("reminderTime:" + JSON.stringify(reminderTime))
                     // console.debug("classTime:" + JSON.stringify(classTime))
@@ -96,7 +96,7 @@ class Tasks {
     private async sendClassReminder(uniClass: UniClass, startTime: Date) {
 
         try {
-            let materia: Materia = Materias[uniClass.classData.materiaID]
+            let materia: MateriaData = Materias[uniClass.classData.materiaID]
 
             console.debug("SENDING REMINDER TO " + materia.nomeMateria)
 

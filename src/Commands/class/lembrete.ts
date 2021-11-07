@@ -1,4 +1,4 @@
-import { Command, ControlRoles, EnrollMessages } from '../../Interfaces'
+import { Command, EnrollMessages } from '../../Interfaces'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 import { Client, Emoji, GuildMember, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, MessageSelectMenu, Role, TextChannel } from 'discord.js'
@@ -37,8 +37,7 @@ async function sendReminderMenu(client: ExtendedClient, channel: TextChannel, me
             .setCustomId('manageReminders')
             .setEmoji("⚙️")
             .setLabel("Gerenciar")
-            .setStyle("SECONDARY")
-            .setDisabled(!isModerator(member)),
+            .setStyle("SECONDARY"),
     )
     /// create view
     let managementView = {
@@ -48,10 +47,4 @@ async function sendReminderMenu(client: ExtendedClient, channel: TextChannel, me
 
     /// send view to channel
     await sendToTextChannel(client, channel.id, managementView)
-}
-
-function isModerator(member: GuildMember) {
-    let controlRoles: string[] = (<any>Object).values(ControlRoles)
-
-    return member.roles.cache.hasAny(...controlRoles)
 }

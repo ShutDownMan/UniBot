@@ -9,6 +9,7 @@ import { addCoursesFromPeriod } from './selectInteractions/bulkEnrollCoursesSele
 import { addBulkRoles } from './selectInteractions/yearEnrollCoursesSelect'
 import { removeBulkCourses } from './selectInteractions/removeCoursesSelect'
 import { addReminder } from './buttonInteractions/addReminder'
+import { showReminders } from './buttonInteractions/showReminders'
 const log = Logger(Configs.EventsLogLevel, 'interactionCreate.ts')
 
 export const event: Event = {
@@ -91,10 +92,10 @@ async function runButtonInteraction(client: ExtendedClient, interaction: ButtonI
         case "removeCoursesRoles":
             createRemoveCoursesSelect(client, interaction)
             break;
-        case "addReminder":
-            await addReminder(client, interaction)
-            break;
         case "showReminders":
+            await showReminders(client, interaction)
+            break;
+        case "addReminder":
             await addReminder(client, interaction)
             break;
         case "manageReminders":
