@@ -82,7 +82,7 @@ async function getTypeOfReminder(interaction: ButtonInteraction) {
         const filter = i => {
             return i.user.id === interaction.user.id
         }
-        addReminderMenuInteraction = await reminderMenuMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+        addReminderMenuInteraction = await reminderMenuMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
 
         let toDisable = [true, true, true, true]
         switch (addReminderMenuInteraction.customId) {
@@ -184,7 +184,7 @@ async function getMateriaFromUser(interaction: ButtonInteraction) {
 
     /// try to send select message for user to choose
     try {
-        selectCourseInteraction = await selectCourseMessage.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: Configs.ButtonDefaultTimeout * 1000 })
+        selectCourseInteraction = await selectCourseMessage.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: Configs["ButtonDefaultTimeout"] * 1000 })
 
         materiaID = selectCourseInteraction.values[0]
     } catch (error) {
@@ -292,7 +292,7 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
             return i.user.id === interaction.user.id;
         };
         try {
-            getDateInteraction = await reminderMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 });
+            getDateInteraction = await reminderMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 });
             currentInteraction = getDateInteraction;
         } catch (error) {
             console.error(error)
@@ -425,7 +425,7 @@ async function getNextClassFromMateria(interaction: Interaction, materiaID: stri
 
     let getDateInteraction: ButtonInteraction = null
     try {
-        getDateInteraction = await reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+        getDateInteraction = await reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
         currentInteraction = getDateInteraction
     } catch (error) {
         console.error(error)
@@ -490,8 +490,8 @@ async function getDateFromMessage(interaction: Interaction) {
         let messageResponse = null
         try {
             /// with collection
-            let messageCollectionPromise = (interaction as ButtonInteraction).channel.awaitMessages({ filter: filterAuthor, max: 1, errors: ['time'], time: Configs.ButtonDefaultTimeout * 1000 })
-            let getDateInteractionPromise = reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+            let messageCollectionPromise = (interaction as ButtonInteraction).channel.awaitMessages({ filter: filterAuthor, max: 1, errors: ['time'], time: Configs["ButtonDefaultTimeout"] * 1000 })
+            let getDateInteractionPromise = reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
             let racePromise = await Promise.race([messageCollectionPromise, getDateInteractionPromise])
 
             if (racePromise instanceof ButtonInteraction) {
@@ -526,7 +526,7 @@ async function getDateFromMessage(interaction: Interaction) {
 
             let getDateInteraction: ButtonInteraction = null
             try {
-                getDateInteraction = await reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+                getDateInteraction = await reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
                 currentInteraction = getDateInteraction
             } catch (error) {
                 console.error(error)
@@ -584,7 +584,7 @@ async function getReminderDescription(interaction: Interaction) {
         //     return i.user.id === interaction.user.id;
         // };
         // try {
-        //     getDescriptionInteraction = await reminderMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 });
+        //     getDescriptionInteraction = await reminderMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 });
         //     currentInteraction = getDescriptionInteraction;
         // } catch (error) {
         //     console.error(error)
@@ -703,7 +703,7 @@ async function getDescriptionFromMessage(interaction: Interaction) {
         };
 
         /// with collection
-        let messageCollection = await (interaction as ButtonInteraction).channel.awaitMessages({ filter: filterAuthor, max: 1, errors: ['time'], time: Configs.ButtonDefaultTimeout * 1000 })
+        let messageCollection = await (interaction as ButtonInteraction).channel.awaitMessages({ filter: filterAuthor, max: 1, errors: ['time'], time: Configs["ButtonDefaultTimeout"] * 1000 })
         let messageResponse = messageCollection.first()
 
         descriptionMessage = messageResponse
@@ -724,7 +724,7 @@ async function getDescriptionFromMessage(interaction: Interaction) {
 
             let getDescriptionInteraction: ButtonInteraction = null
             try {
-                getDescriptionInteraction = await reminderDescriptionMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+                getDescriptionInteraction = await reminderDescriptionMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
                 currentInteraction = getDescriptionInteraction
             } catch (error) {
                 console.error(error)
@@ -802,7 +802,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
 
     let showReminderMessageInteraction: ButtonInteraction = null
     try {
-        showReminderMessageInteraction = await remindEmbedMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs.ButtonDefaultTimeout * 1000 })
+        showReminderMessageInteraction = await remindEmbedMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
         currentInteraction = showReminderMessageInteraction
     } catch (error) {
         console.error(error)
