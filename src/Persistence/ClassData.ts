@@ -3,7 +3,7 @@ import { Horario } from "./Horario";
 export enum ClassStatus {
     UNSTARTED,
     ONGOING,
-    DONE,
+    FINISHED,
     CANCELED,
     REMOVED
 }
