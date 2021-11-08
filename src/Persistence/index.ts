@@ -198,18 +198,21 @@ class Persistence {
             /// pass through each horario
             for (const horario of materia.horarios) {
                 /// get classes dates
-                let interval: Moment = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
-
+                const nextClass: Readonly<Moment> = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
+                let nextClassDate: Moment = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
 
                 // console.debug(givenDate.startOf('day').format())
                 // console.debug(interval.startOf('day').format())
 
                 /// see if there is a class givenDate
-                if (givenDate.startOf('day').format() === interval.startOf('day').format()) {
+                if (givenDate.startOf('day').format() === nextClass.startOf('day').format()) {
+                    // console.debug(nextClass.format())
+                    // console.debug(nextClassDate.format())
                     let tmpClassData = this.createClassData()
                     tmpClassData.materiaID = materiaID
-                    tmpClassData.time = interval.startOf('day').format()
+                    tmpClassData.time = nextClassDate.format()
                     tmpClassData.horario = horario
+
 
                     let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
                     // console.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))
@@ -273,6 +276,7 @@ class Persistence {
             dueDate: '',
             description: '',
             author: '',
+            materiaID: '',
             scope: ReminderScope.Public,
             descriptionURL: ''
         }
@@ -317,34 +321,40 @@ class Persistence {
         return result;
     }
 
-    public async fetchRemindersByMateriaID(materiaID: string, author: string, reminderScope: ReminderScope): Promise<Reminder[]> {
+    public async fetchRemindersByMateriaID(materiaID: string, reminderScope: ReminderScope, author?: string): Promise<Reminder[]> {
         let reminders: Reminder[] = [];
         let queryResult: QueryResult = null;
+
+        console.debug(`
+            SELECT * FROM "Reminder"
+            WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
+        `)
+
+        /// AND "reminderData" ->> 'scope' = '${ReminderScope.Personal}'
 
         switch (reminderScope) {
             case ReminderScope.Personal:
                 queryResult = await this.db.query(`
                     SELECT * FROM "Reminder"
-                    WHERE reminderData ->> 'materiaID' = ${materiaID}
-                    AND reminderData ->> 'scope' = ${ReminderScope.Personal}
-                    AND reminderData ->> 'author' = ${author};
+                    WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
+                    AND "reminderData" ->> 'author' = '${author}'
                 `);
                 break;
             case ReminderScope.Public:
                 queryResult = await this.db.query(`
                     SELECT * FROM "Reminder"
-                    WHERE reminderData ->> 'materiaID' = ${materiaID}
-                    AND reminderData ->> 'scope' = ${ReminderScope.Public}
+                    WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
                 `);
                 break;
         }
+
+        console.debug(queryResult)
         reminders = queryResult.rows.map(row => {
             return {reminderID: row.reminderID, reminderData: row.reminderData}
         });
 
         return reminders;
     }
-    
 
 }
 
