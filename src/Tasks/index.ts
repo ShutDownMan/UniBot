@@ -3,12 +3,14 @@ import Configs from '../config.json'
 import Persistence from '../Persistence'
 import { ClassStatus, UniClass } from './../Persistence/ClassData'
 import Materias from './../../data/materias.json'
-import { MateriaData } from '../Persistence/Materia'
+import { Materia, MateriaData } from '../Persistence/Materia'
 import ExtendedClient from '../Client'
-import { sendToTextChannel } from '../Utils'
+import { capitalize, sendToTextChannel } from '../Utils'
 import { parse, toSeconds, pattern } from 'iso8601-duration';
+import { Reminder, ReminderScope } from '../Persistence/Reminder'
+import { GuildMember, MessageEmbed } from 'discord.js'
+import moment from 'moment'
 const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
-
 
 class Tasks {
     private client: ExtendedClient
@@ -59,7 +61,7 @@ class Tasks {
                         if (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING) {
                             console.debug("finished? " + JSON.stringify(uniClass.classData))
 
-                            uniClass.classData.status = ClassStatus.DONE
+                            uniClass.classData.status = ClassStatus.FINISHED
                             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
                         }
                     }
@@ -67,7 +69,7 @@ class Tasks {
                     if (currentTime >= classTime && uniClass.classData.status === ClassStatus.UNSTARTED) {
                         //^ check if class is ongoing
 
-                        console.debug("ongoing? " + JSON.stringify(uniClass.classData))
+                        // console.debug("ongoing? " + JSON.stringify(uniClass.classData))
 
                         uniClass.classData.status = ClassStatus.ONGOING
                         await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
@@ -75,13 +77,14 @@ class Tasks {
 
                     let materia: MateriaData = Materias[uniClass.classData.materiaID]
                     console.debug(materia.nomeMateria + " passou? " + (currentTime >= reminderTime))
+                    // console.debug("currentTime:" + JSON.stringify(currentTime))
                     // console.debug("reminderTime:" + JSON.stringify(reminderTime))
                     // console.debug("classTime:" + JSON.stringify(classTime))
                     // console.debug("finishedClassTime:" + JSON.stringify(finishedClassTime))
                     // console.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
                     // console.debug("-------------------------")
 
-                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED)) {
+                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING)) {
                         //^ check if time to send reminder
 
                         console.debug("reminderTime: " + reminderTime)
@@ -92,33 +95,34 @@ class Tasks {
         }
     }
 
-
     private async sendClassReminder(uniClass: UniClass, startTime: Date) {
 
         try {
-            let materia: MateriaData = Materias[uniClass.classData.materiaID]
+            let materia: Materia = { materiaID: uniClass.classData.materiaID, materiaData: Materias[uniClass.classData.materiaID] }
 
-            console.debug("SENDING REMINDER TO " + materia.nomeMateria)
+            console.debug("SENDING REMINDER TO " + materia.materiaData.nomeMateria)
 
             let guild = await this.client.guilds.fetch(process.env.GUILD_ID)
-            let mention = await guild.roles.fetch(uniClass.classData.materiaID)
+            let mention = await guild.roles.fetch(materia.materiaID)
 
             let message = null
 
             if (uniClass.classData.status !== ClassStatus.CANCELED) {
                 if (uniClass.classData.horario.tipoAula === "Teórica")
-                    message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
+                    message = `**Olá ${mention},\nA aula de \`${materia.materiaData.nomeMateria}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
 
                 if (uniClass.classData.horario.tipoAula === "Prática")
-                    message = `**Olá,\nA aula de \`${materia.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
+                    message = `**Olá,\nA aula de \`${materia.materiaData.nomeMateria}\` para a turma \`${uniClass.classData.horario.turma}\` vai começar!\n<t:${Math.trunc(startTime.getTime() / 1000)}:R>**`
             } else {
-                message = `**Olá ${mention},\nA aula de \`${materia.nomeMateria}\` foi cancelada!**`
+                message = `**Olá ${mention},\nA aula de \`${materia.materiaData.nomeMateria}\` foi cancelada!**`
             }
 
             uniClass.classData.reminderSent = true
 
-            await sendToTextChannel(this.client, materia.canalTextoID, message)
-            await sendToTextChannel(this.client, materia.canalTextoID, "https://tenor.com/bab2Y.gif")
+            let remindMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, message)
+            await remindMessage.react("👍")
+            await this.showUpcomingReminders(this.client, materia)
+            // await sendToTextChannel(this.client, materia.canalTextoID, "https://tenor.com/bab2Y.gif")
 
             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
         } catch (error) {
@@ -130,6 +134,67 @@ class Tasks {
         if (process.env.IS_DEV_VERSION === 'true') {
             console.info('Tasks gracefull shutdown...\n')
         }
+    }
+
+    public async showUpcomingReminders(client: ExtendedClient, materia: Materia) {
+        let reminders: Reminder[] = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, ReminderScope.Public)
+        let guild = await client.guilds.fetch(process.env.GUILD_ID)
+        let interactionAuthor = await guild.members.fetch(process.env.BOT_ID)
+
+        let today = moment().startOf('day')
+        reminders = reminders.filter((reminder) => { return today < moment(reminder.reminderData.dueDate) })
+        reminders = reminders.sort((a, b) => { return (moment(a.reminderData.dueDate) < moment(b.reminderData.dueDate) ? -1 : 1) })
+
+        // console.debug("author:")
+        // console.debug(author.displayName)
+
+        let embedsToSend: MessageEmbed[] = []
+        if (reminders.length > 0) {
+            for (let ind = 0; ind < reminders.length / 25 && ind < 10; ++ind) {
+                let currentReminders = reminders.splice(ind * 25, 25)
+
+                let embedDesc = ""
+                if (materia) {
+                    embedDesc = `Lista de lembretes de escopo \`${ReminderScope.Public}\` da matéria de \`${materia.materiaData.nomeMateria}\`.`
+                } else {
+                    embedDesc = `Lista de lembretes de escopo \`${ReminderScope.Public}\`.`
+                }
+                let reminderEmbed = new MessageEmbed()
+                    .setColor('#4f258a')
+                    .setTitle(((ind > 0) ? 'Continuação dos ' : '') + 'Lembretes:')
+                    .setDescription(embedDesc)
+                    .setTimestamp()
+                    .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
+
+                for (let reminder of currentReminders) {
+                    let reminderAuthor = await guild.members.fetch(reminder.reminderData.author)
+                    let reminderTitle = `Lembrete de ${capitalize(reminder.reminderData.type)} de ${reminderAuthor.displayName}`
+                    reminderTitle += (reminder.reminderData.dueDate) ? ` <t:${moment(reminder.reminderData.dueDate).unix()}:R>` : ``;
+                    let reminderDescStr = reminder.reminderData.description.substring(0, 165).concat((reminder.reminderData.description.length > 150) ? `[...]` : ``)
+                    let reminderDesc = `\
+                        \`\`\`\n${reminderDescStr}\n\`\`\`\
+                        [Mensagem](${reminder.reminderData.descriptionURL} 'Link para a mensagem da anotação')\n\u200b\
+                    `
+
+                    reminderEmbed.addField(reminderTitle, reminderDesc, false)
+                }
+
+                embedsToSend.push(reminderEmbed)
+            }
+
+        } else {
+            let noRemindersEmbed =  new MessageEmbed()
+            .setColor('#4f258a')
+            .setTitle('Lembretes:')
+            .setDescription(`**Não há lembretes para esta matéria.**\n\nOBS: Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
+            .setTimestamp()
+            .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
+
+            embedsToSend.push(noRemindersEmbed)
+        }
+
+        let messageContent: any = { content: `**Lembretes:**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
+        let showRemindersMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, messageContent)
     }
 
 }

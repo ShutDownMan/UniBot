@@ -66,7 +66,7 @@ export async function sendToTextChannel(client, channelID, message) {
 
     if (!channel) return
 
-    (channel as TextChannel).send(message)
+    return await (channel as TextChannel).send(message)
 }
 export function toJson(data) {
     if (data !== undefined) {
@@ -104,4 +104,12 @@ function isModerator(member: GuildMember) {
     let controlRoles: string[] = (<any>Object).values(ControlRoles)
 
     return member.roles.cache.hasAny(...controlRoles)
+}
+
+export function capitalize(text: string) {
+    return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+export function escapeRegExp(string) {
+    return string.replace(/[\\\`]/g, '\\$&'); // $& means the whole matched string
 }

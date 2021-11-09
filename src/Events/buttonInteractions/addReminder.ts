@@ -9,7 +9,7 @@ import makeInterval from 'iso8601-repeating-interval'
 import * as chrono from 'chrono-node';
 import { ReminderData, ReminderScope, ReminderType } from "../../Persistence/Reminder"
 import Persistence from "../../Persistence"
-import { tryToDeleteMessage } from "../../Utils"
+import { capitalize, escapeRegExp, tryToDeleteMessage } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
 export async function addReminder(client: ExtendedClient, interaction: ButtonInteraction) {
@@ -51,7 +51,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     if (!currentInteraction) return;
 
     /// get final reminder
-    let getFinalReminderResult = await getFinalReminder(currentInteraction as ButtonInteraction, materia.materiaData, reminderType, date, description)
+    let getFinalReminderResult = await getFinalReminder(currentInteraction as ButtonInteraction, materia, reminderType, date, description)
     let reminderData: ReminderData = getFinalReminderResult.reminderData;
     currentInteraction = getFinalReminderResult.lastInteraction;
 
@@ -65,7 +65,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     await client.persistence.upsertReminder(0, reminderData)
 
     /// reply confiming save
-    await (currentInteraction as ButtonInteraction).editReply(`**💾 Lembrete Salvo 💾**`)
+    await (currentInteraction as ButtonInteraction).editReply(`**💾 Lembrete Salvo. 💾**`)
 }
 
 async function getTypeOfReminder(interaction: ButtonInteraction) {
@@ -301,24 +301,28 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
         if (currentInteraction) {
             /// fetch user reply
             let userChoice = (getDateInteraction as ButtonInteraction).customId
-            await (getDateInteraction as ButtonInteraction).deferUpdate();
 
             let toDisable = [true, true, true, true]
             switch (userChoice) {
                 case "getReminderDate|nextClass":
+                    await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getNextClassFromMateriaResult = await getNextClassFromMateria(interaction, materiaID)
                     reminderDate = getNextClassFromMateriaResult.date
                     currentInteraction = getNextClassFromMateriaResult.lastInteraction
                     toDisable[0] = false
                     break;
                 case "getReminderDate|typeDate":
+                    await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getDateFromMessageResult = await getDateFromMessage(interaction)
                     reminderDate = getDateFromMessageResult.date
                     currentInteraction = getDateFromMessageResult.lastInteraction
                     toDisable[1] = false
                     break;
                 case "getReminderDate|noDate":
-                    reminderDate = null
+                    // let noDateMenuResult = await noDateMenu(interaction)
+                    reminderDate = null;
+                    // currentInteraction = noDateMenuResult.lastInteraction
+                    // (currentInteraction as ButtonInteraction).followUp({content: `**Sem data definida.**`, ephemeral: true})
                     toDisable[2] = false
                     break;
                 case "getReminderDate|cancel":
@@ -328,7 +332,10 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
             }
 
             reminderMessage.components[0].components.forEach((component, index) => { component.setDisabled(toDisable[index]) });
-            (getDateInteraction as ButtonInteraction).editReply({ components: reminderMessage.components });
+            await (interaction as ButtonInteraction).editReply({ components: reminderMessage.components });
+            // if((interaction as ButtonInteraction).replied || (interaction as ButtonInteraction).deferred) {
+
+            // }
 
             // console.debug(reminderDate.format())
         }
@@ -687,10 +694,16 @@ async function getDescriptionFromMessage(interaction: Interaction) {
 
     let currentInteraction: Interaction = null
     messageContent = { content: "**Digite o lembrete...**", components: [], ephemeral: true }
-    await (interaction as ButtonInteraction).reply(messageContent);
+    let currentMessage: Message = null
+    // if((interaction as ButtonInteraction).deferred || (interaction as ButtonInteraction).replied) {
+    //     currentMessage = await (interaction as ButtonInteraction).followUp(messageContent) as Message;
+    // } else {
+    // }
+    currentMessage = await (interaction as ButtonInteraction).reply(messageContent) as Message;
 
     while (!descriptionMessage) {
 
+        // await currentMessage.edit(messageContent)
         await (interaction as ButtonInteraction).editReply(messageContent);
 
         const filterAuthor = i => {
@@ -706,11 +719,12 @@ async function getDescriptionFromMessage(interaction: Interaction) {
         // console.debug({ parsedDate })
 
         if (descriptionMessage.content.replace(/ /g, '').length < 5) {
-            messageContent = { content: `**Não entendi...\n Por favor, digite a data novamente...**`, components: [secondMessageRow] }
+            messageContent = { content: `**Não entendi...\n Digite a mensagem do lembrete novamente...**`, components: [secondMessageRow] }
             descriptionMessage = null
         } else {
 
-            messageContent = { content: `**a mensagem do lembrete ficará assim...**\n\`\`\`${descriptionMessage.content}\`\`\``, components: [firstMessageRow] }
+            let escapedMessage = escapeRegExp(descriptionMessage.content)
+            messageContent = { content: `**a mensagem do lembrete ficará assim...**\n\`\`\`\n${escapedMessage}\n\`\`\``, components: [firstMessageRow] }
             let reminderDescriptionMenuMessage: Message = await (interaction as ButtonInteraction).editReply(messageContent) as Message;
 
             const filterMember = i => {
@@ -746,7 +760,7 @@ async function getDescriptionFromMessage(interaction: Interaction) {
     return { description: descriptionMessage, lastInteraction: currentInteraction }
 }
 
-async function getFinalReminder(interaction: ButtonInteraction, materia: MateriaData, reminderType: ReminderType, date: Moment, description: Message) {
+async function getFinalReminder(interaction: ButtonInteraction, materia: Materia, reminderType: ReminderType, date: Moment, description: Message) {
     let reminderData: ReminderData = Persistence.createReminderData();
     let author = description.author
     let messageContent: any = null;
@@ -769,18 +783,18 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
             .setStyle("DANGER"),
     );
 
-    let embedDesc = ""
+    let embedDesc = `Lembrete de \`${capitalize(reminderType)}\``
     if (date) {
         if (materia) {
-            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\` para a matéria de \`${materia.nomeMateria}\`.\n<t:${date.unix()}:R>`
+            embedDesc += ` para a matéria de \`${materia.materiaData.nomeMateria}\`.\n<t:${date.unix()}:R>`
         } else {
-            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\`.\n<t:${date.unix()}:R>`
+            embedDesc += `.\n<t:${date.unix()}:R>`
         }
     } else {
         if (materia) {
-            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\` para a matéria de \`${materia.nomeMateria}\`.\nPor tempo indeterminado.`
+            embedDesc += ` para a matéria de \`${materia.materiaData.nomeMateria}\`.\nPor tempo indeterminado.`
         } else {
-            embedDesc = `Lembrete de \`${reminderType.charAt(0).toUpperCase() + reminderType.slice(1)}\`.\nPor tempo indeterminado.`
+            embedDesc += `.\nPor tempo indeterminado.`
         }
     }
 
@@ -798,7 +812,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         //     { name: 'Inline field title', value: 'Some value here', inline: true },
         //     { name: 'Inline field title', value: 'Some value here', inline: true },
         // )
-        .addField(`Lembrete`, `\`\`\`${description}\`\`\``, false)
+        .addField(`Lembrete`, `\`\`\`\n${description.content.substring(0, 1000)}\n\`\`\``, false)
         // .setImage('https://i.imgur.com/AfFp7pu.png')
         .setTimestamp()
         .setFooter(author.username, author.displayAvatarURL());
@@ -835,9 +849,10 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         remindEmbedMessage.components[0].components[1].setDisabled(true)
         interaction.editReply({ components: remindEmbedMessage.components });
 
+        reminderData.materiaID = materia.materiaID;
         reminderData.author = description.author.id;
         reminderData.descriptionURL = description.url;
-        reminderData.description = description.content;
+        reminderData.description = escapeRegExp(description.content);
         if(date)
             reminderData.dueDate = date.format();
         reminderData.type = reminderType;

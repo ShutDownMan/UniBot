@@ -59,7 +59,7 @@ try {
 
         /// if dev version, exit process
         // console.debug(process.env.IS_DEV_VERSION)
-        if (process.env.IS_DEV_VERSION) process.exit(ExitStatus.Failure)
+        if (process.env.IS_DEV_VERSION === 'true') process.exit(ExitStatus.Failure)
     })
 
 } catch (e) {

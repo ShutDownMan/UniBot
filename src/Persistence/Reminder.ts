@@ -13,10 +13,12 @@ export enum ReminderScope {
 
 export interface ReminderData {
     type: ReminderType
+    createdAt: number
     dueDate: string
     description: string
     descriptionURL: string
     author: string
+    materiaID: string
     scope: ReminderScope
 }
 

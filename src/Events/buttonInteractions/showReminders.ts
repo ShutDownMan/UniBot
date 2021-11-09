@@ -6,6 +6,7 @@ import ExtendedClient from "../../Client"
 import { Materia, MateriaData } from "../../Persistence/Materia"
 import { Reminder, ReminderScope } from "../../Persistence/Reminder"
 import moment from "moment"
+import { capitalize } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
 export async function showReminders(client: ExtendedClient, interaction: ButtonInteraction) {
@@ -43,7 +44,7 @@ function getCourseTextChannel(channelId: string): Materia {
     for (let materiaID of Object.keys(Materias)) {
         let materia: MateriaData = Materias[materiaID]
         if (channelId === materia.canalTextoID) {
-            return { materiaID: channelId, materiaData: materia }
+            return { materiaID, materiaData: materia }
         }
     }
     return null
@@ -73,7 +74,7 @@ async function getScopeOfReminder(interaction: ButtonInteraction) {
                 break;
         }
 
-        console.debug(toDisable)
+        // console.debug(toDisable)
 
         reminderMenuMessage.components[0].components.forEach((component, index) => { component.setDisabled(toDisable[index]) })
         interaction.editReply({ components: reminderMenuMessage.components });
@@ -231,39 +232,59 @@ async function getMemberCoursesRoles(member: GuildMember) {
 }
 
 async function showRemindersFromMateria(client: ExtendedClient, interaction: Interaction, materia: Materia, reminderScope: ReminderScope) {
-    let reminders: Reminder[] = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, interaction.user.id, reminderScope)
-    let author = interaction.member as GuildMember
+    let reminders: Reminder[] = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, reminderScope, interaction.user.id)
+    let interactionAuthor = interaction.member as GuildMember
 
-    console.debug(reminders)
+    let today = moment().startOf('day')
+    reminders = reminders.filter((reminder) => { return today < moment(reminder.reminderData.dueDate) })
+    reminders = reminders.sort((a, b) => { return (moment(a.reminderData.dueDate) < moment(b.reminderData.dueDate) ? -1 : 1) })
+
+    // console.debug("author:")
+    // console.debug(author.displayName)
 
     let embedsToSend: MessageEmbed[] = []
-    for (let ind = 0; ind < 10; ++ind) {
-        let currentReminders = reminders.splice(ind * 25, 25)
+    if (reminders.length > 0) {
+        for (let ind = 0; ind < reminders.length / 25 && ind < 10; ++ind) {
+            let currentReminders = reminders.splice(ind * 25, 25)
 
-        let embedDesc = ""
-        if (materia) {
-            embedDesc = `Lista de lembretes de escopo ${reminderScope} da matéria de \`${materia.materiaData.nomeMateria}\``
-        } else {
-            embedDesc = `Lista de lembretes de escopo ${reminderScope}`
+            let embedDesc = ""
+            if (materia) {
+                embedDesc = `Lista de lembretes de escopo \`${reminderScope}\` da matéria de \`${materia.materiaData.nomeMateria}\`.`
+            } else {
+                embedDesc = `Lista de lembretes de escopo \`${reminderScope}\`.`
+            }
+            let reminderEmbed = new MessageEmbed()
+                .setColor('#4f258a')
+                .setTitle('Lembretes')
+                .setDescription(embedDesc)
+                .setTimestamp()
+                .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
+
+            for (let reminder of currentReminders) {
+                let reminderAuthor = await interaction.guild.members.fetch(reminder.reminderData.author)
+                let reminderTitle = `Lembrete de ${capitalize(reminder.reminderData.type)} de ${reminderAuthor.displayName}`
+                reminderTitle += (reminder.reminderData.dueDate) ? ` <t:${moment(reminder.reminderData.dueDate).unix()}:R>` : ``;
+                let reminderDescStr = reminder.reminderData.description.substring(0, 165).concat((reminder.reminderData.description.length > 150) ? `[...]` : ``)
+                let reminderDesc = `\
+                \`\`\`\n${reminderDescStr}\n\`\`\`\
+                [Mensagem](${reminder.reminderData.descriptionURL} 'Link para a mensagem da anotação')\n\u200b\
+            `
+
+                reminderEmbed.addField(reminderTitle, reminderDesc, false)
+            }
+
+            embedsToSend.push(reminderEmbed)
         }
-        let reminderEmbed = new MessageEmbed()
+    } else {
+        let noRemindersEmbed = new MessageEmbed()
             .setColor('#4f258a')
-            .setTitle('Lembretes')
-            .setDescription(embedDesc)
+            .setTitle('Lembretes:')
+            .setDescription(`**Não há lembretes para esta matéria.**\n\nOBS: Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
             .setTimestamp()
-            .setFooter(author.nickname, author.displayAvatarURL());
+            .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
 
-        for (let reminder of currentReminders) {
-            let reminderTitle = `[Mensagem](${reminder.reminderData.descriptionURL} Link para a mensagem da anotação')`
-            let reminderDesc = `<t:${moment(reminder.reminderData.dueDate).unix()}:R>\`\`\`${reminder.reminderData.description}\`\`\``
-
-            reminderEmbed.addField(reminderTitle, reminderDesc, false)
-        }
-
-        embedsToSend.push(reminderEmbed)
+        embedsToSend.push(noRemindersEmbed)
     }
-
     let messageContent: any = { content: `**Lembretes:**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
     let showRemindersMessage = await (interaction as ButtonInteraction).reply(messageContent)
-
 }

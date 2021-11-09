@@ -273,6 +273,7 @@ class Persistence {
     static createReminderData(): ReminderData {
         let reminderData: ReminderData = {
             type: null,
+            createdAt: moment().unix(),
             dueDate: '',
             description: '',
             author: '',
@@ -325,11 +326,6 @@ class Persistence {
         let reminders: Reminder[] = [];
         let queryResult: QueryResult = null;
 
-        console.debug(`
-            SELECT * FROM "Reminder"
-            WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
-        `)
-
         /// AND "reminderData" ->> 'scope' = '${ReminderScope.Personal}'
 
         switch (reminderScope) {
@@ -348,7 +344,7 @@ class Persistence {
                 break;
         }
 
-        console.debug(queryResult)
+        // console.debug(queryResult)
         reminders = queryResult.rows.map(row => {
             return {reminderID: row.reminderID, reminderData: row.reminderData}
         });

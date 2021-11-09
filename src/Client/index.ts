@@ -34,7 +34,7 @@ class ExtendedClient extends Client {
         console.info('Loading commands...')
         const commandPath = path.join(__dirname, '..', 'Commands')
         readdirSync(commandPath).forEach((dir) => {
-            const commands = readdirSync(`${commandPath}/${dir}`).filter((cmdFile) => cmdFile.endsWith(process.env.IS_DEV_VERSION === 'false' ? '.js' : '.ts'))
+            const commands = readdirSync(`${commandPath}/${dir}`).filter((cmdFile) => cmdFile.endsWith(process.env.IS_DEV_VERSION !== 'true' ? '.js' : '.ts'))
 
             for (const file of commands) {
                 const { command } = require(`${commandPath}/${dir}/${file}`)
@@ -55,7 +55,7 @@ class ExtendedClient extends Client {
 
         const eventPath = path.join(__dirname, '..', 'Events')
         readdirSync(eventPath).forEach(async (file) => {
-            if (file.includes(process.env.IS_DEV_VERSION === 'false' ? '.js' : '.ts') === true) {
+            if (file.includes(process.env.IS_DEV_VERSION !== 'true' ? '.js' : '.ts') === true) {
                 const { event } = await import(`${eventPath}/${file}`)
                 this.events.set(event.name, event)
                 this.on(event.name, event.run.bind(null, this))
