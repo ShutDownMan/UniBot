@@ -32,9 +32,12 @@ export async function showReminders(client: ExtendedClient, interaction: ButtonI
         /// if interaction failed, stop here
         if (!currentInteraction) return;
 
-        /// get materia from materiaID
-        materiaID = getMateriaFromUserResult.materiaID
-        materia = Materias[materiaID];
+        if (getMateriaFromUserResult.materiaID !== "all") {
+            /// get materia from materiaID
+            materiaID = getMateriaFromUserResult.materiaID
+            materia = Materias[materiaID];
+        }
+
     }
 
     await showRemindersFromMateria(client, currentInteraction, materia, reminderScope)
@@ -162,9 +165,9 @@ export async function sendCoursesSelect(interaction: ButtonInteraction) {
     /// if there are options to choose
     if (options.length > 0) {
         let defaultOption = {
-            label: "Nenhuma Matéria",
-            description: "Não atrelar o lembrete a uma matéria especifica",
-            value: "none"
+            label: "Todas Matérias",
+            description: "Mostrar os lembretes de todas as matérias",
+            value: "all"
         }
         options = [defaultOption].concat(options)
 
@@ -232,7 +235,12 @@ async function getMemberCoursesRoles(member: GuildMember) {
 }
 
 async function showRemindersFromMateria(client: ExtendedClient, interaction: Interaction, materia: Materia, reminderScope: ReminderScope) {
-    let reminders: Reminder[] = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, reminderScope, interaction.user.id)
+    let reminders: Reminder[] = null
+    if(materia) {
+        reminders = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, reminderScope, interaction.user.id)
+    } else {
+        reminders = await client.persistence.fetchReminders()
+    }
     let interactionAuthor = interaction.member as GuildMember
 
     let today = moment().startOf('day')
@@ -261,15 +269,16 @@ async function showRemindersFromMateria(client: ExtendedClient, interaction: Int
                 .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
 
             for (let reminder of currentReminders) {
+                let reminderMateria = Materias[reminder.reminderData.materiaID]
                 let reminderAuthor = await interaction.guild.members.fetch(reminder.reminderData.author)
-                let reminderTitle = `Lembrete de ${capitalize(reminder.reminderData.type)} de ${reminderAuthor.displayName}`
+                let reminderTitle = `Lembrete de \`${capitalize(reminder.reminderData.type)}\` de \`${reminderAuthor.displayName}\``
                 reminderTitle += (reminder.reminderData.dueDate) ? ` <t:${moment(reminder.reminderData.dueDate).unix()}:R>` : ``;
+                reminderTitle += (!materia) ? ` da matéria de \`${reminderMateria.nomeMateria}\`` : ``;
                 let reminderDescStr = reminder.reminderData.description.substring(0, 165).concat((reminder.reminderData.description.length > 150) ? `[...]` : ``)
                 let reminderDesc = `\
                 \`\`\`\n${reminderDescStr}\n\`\`\`\
                 [Mensagem](${reminder.reminderData.descriptionURL} 'Link para a mensagem da anotação')\n\u200b\
             `
-
                 reminderEmbed.addField(reminderTitle, reminderDesc, false)
             }
 
@@ -285,6 +294,6 @@ async function showRemindersFromMateria(client: ExtendedClient, interaction: Int
 
         embedsToSend.push(noRemindersEmbed)
     }
-    let messageContent: any = { content: `**Lembretes:**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
+    let messageContent: any = { content: `\u200b`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
     let showRemindersMessage = await (interaction as ButtonInteraction).reply(messageContent)
 }

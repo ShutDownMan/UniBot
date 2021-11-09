@@ -31,7 +31,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
         if (!currentInteraction) return;
 
         /// get materia from materiaID
-        materia = {materiaID: getMateriaFromUserResult.materiaID, materiaData: Materias[getMateriaFromUserResult.materiaID]};
+        materia = { materiaID: getMateriaFromUserResult.materiaID, materiaData: Materias[getMateriaFromUserResult.materiaID] };
     }
 
     /// get reminder date from user
@@ -59,7 +59,7 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     if (!currentInteraction) return;
 
     /// defer reply
-    await (currentInteraction as ButtonInteraction).deferReply()
+    await (currentInteraction as ButtonInteraction).deferReply({ephemeral: true})
 
     /// save reminder
     await client.persistence.upsertReminder(0, reminderData)
@@ -157,7 +157,7 @@ function getMateriaFromTextChannel(channelId: string): Materia {
     for (let materiaID of Object.keys(Materias)) {
         let materia: MateriaData = Materias[materiaID]
         if (channelId === materia.canalTextoID) {
-            return {materiaID, materiaData: materia}
+            return { materiaID, materiaData: materia }
         }
     }
     return null
@@ -389,13 +389,13 @@ async function sendReminderDateMenu(interaction: Interaction, materiaID: string)
 
 async function getNextClassFromMateria(interaction: Interaction, materiaID: string) {
     let materia: MateriaData = Materias[materiaID]
-    let tomorrow = moment().add(1, 'days')
+    let tomorrow = moment().add(1, 'days').startOf('day')
     console.debug(materiaID)
 
     let nextClass: Moment = null
     for (const horario of materia.horarios) {
-        let firstAfterClass: Moment = makeInterval(horario.inicio).firstAfter(tomorrow.startOf('day')).date
-        if (!nextClass || nextClass < firstAfterClass) {
+        let firstAfterClass: Moment = makeInterval(horario.inicio).firstAfter(tomorrow).date
+        if (!nextClass || firstAfterClass < nextClass) {
             nextClass = firstAfterClass
         }
     }
@@ -785,13 +785,13 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
 
     let embedDesc = `Lembrete de \`${capitalize(reminderType)}\``
     if (date) {
-        if (materia) {
+        if (materia.materiaData) {
             embedDesc += ` para a matéria de \`${materia.materiaData.nomeMateria}\`.\n<t:${date.unix()}:R>`
         } else {
             embedDesc += `.\n<t:${date.unix()}:R>`
         }
     } else {
-        if (materia) {
+        if (materia.materiaData) {
             embedDesc += ` para a matéria de \`${materia.materiaData.nomeMateria}\`.\nPor tempo indeterminado.`
         } else {
             embedDesc += `.\nPor tempo indeterminado.`
@@ -853,7 +853,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         reminderData.author = description.author.id;
         reminderData.descriptionURL = description.url;
         reminderData.description = escapeRegExp(description.content);
-        if(date)
+        if (date)
             reminderData.dueDate = date.format();
         reminderData.type = reminderType;
         reminderData.scope = ReminderScope.Public;

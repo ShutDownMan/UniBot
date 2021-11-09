@@ -20,6 +20,7 @@ export interface ReminderData {
     author: string
     materiaID: string
     scope: ReminderScope
+    disabled: boolean
 }
 
 export interface Reminder {

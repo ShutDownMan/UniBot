@@ -279,7 +279,8 @@ class Persistence {
             author: '',
             materiaID: '',
             scope: ReminderScope.Public,
-            descriptionURL: ''
+            descriptionURL: '',
+            disabled: false
         }
 
         return reminderData;
@@ -334,24 +335,67 @@ class Persistence {
                     SELECT * FROM "Reminder"
                     WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
                     AND "reminderData" ->> 'author' = '${author}'
+                    AND "reminderData" ->> 'disabled' = 'false'
                 `);
                 break;
             case ReminderScope.Public:
                 queryResult = await this.db.query(`
                     SELECT * FROM "Reminder"
                     WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
+                    AND "reminderData" ->> 'disabled' = 'false'
                 `);
                 break;
         }
 
         // console.debug(queryResult)
         reminders = queryResult.rows.map(row => {
-            return {reminderID: row.reminderID, reminderData: row.reminderData}
+            return { reminderID: row.reminderID, reminderData: row.reminderData }
         });
 
         return reminders;
     }
 
+    public async fetchReminderByID(reminderID: number | string): Promise<Reminder> {
+        let queryResult: QueryResult = null;
+
+        queryResult = await this.db.query(`
+            SELECT * FROM "Reminder"
+            WHERE "reminderID" = ${reminderID}
+        `);
+
+        if(queryResult.rowCount > 0)
+            return toJson(queryResult.rows[0])
+
+        return null
+    }
+
+    public async fetchRemindersByAuthor(author: string, scope: ReminderScope): Promise<Reminder[]> {
+        let queryResult: QueryResult = null;
+
+        queryResult = await this.db.query(`
+            SELECT * FROM "Reminder"
+            WHERE "reminderData" ->> 'author' = '${author}'
+        `);
+
+        if(queryResult.rowCount > 0)
+            return queryResult.rows.map(row => {return toJson(row) })
+
+        return []
+    }
+
+    public async fetchReminders(): Promise<Reminder[]> {
+        let queryResult: QueryResult = null;
+
+        queryResult = await this.db.query(`
+            SELECT * FROM "Reminder"
+            WHERE "reminderData" ->> 'disabled' = 'false'
+        `);
+
+        if(queryResult.rowCount > 0)
+            return queryResult.rows.map(row => {return toJson(row) })
+
+        return []
+    }
 }
 
 export default Persistence

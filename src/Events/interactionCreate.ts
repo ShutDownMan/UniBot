@@ -10,6 +10,7 @@ import { addBulkRoles } from './selectInteractions/yearEnrollCoursesSelect'
 import { removeBulkCourses } from './selectInteractions/removeCoursesSelect'
 import { addReminder } from './buttonInteractions/addReminder'
 import { showReminders } from './buttonInteractions/showReminders'
+import { manageReminders } from './buttonInteractions/manageReminders'
 const log = Logger(Configs.EventsLogLevel, 'interactionCreate.ts')
 
 export const event: Event = {
@@ -99,7 +100,7 @@ async function runButtonInteraction(client: ExtendedClient, interaction: ButtonI
             await addReminder(client, interaction)
             break;
         case "manageReminders":
-            await addReminder(client, interaction)
+            await manageReminders(client, interaction)
             break;
         default:
             // await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
