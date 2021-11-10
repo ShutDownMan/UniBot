@@ -477,7 +477,7 @@
         "serie": "3",
         "horarios": [
             {
-                "inicio": "R42/2021-W43-2T16:10:00/P1W",
+                "inicio": "R42/2021-W43-2T17:00:00/P1W",
                 "duracao": "PT1H40M",
                 "tipoAula": "Teórica"
             },

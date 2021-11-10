@@ -102,6 +102,15 @@ async function runButtonInteraction(client: ExtendedClient, interaction: ButtonI
         case "manageReminders":
             await manageReminders(client, interaction)
             break;
+        case "showTranscriptions":
+            // await showTranscriptions(client, interaction)
+            break;
+        case "addTranscription":
+            // await addTranscription(client, interaction)
+            break;
+        case "manageTranscriptions":
+            // await manageTranscriptions(client, interaction)
+            break;
         default:
             // await interaction.reply({ content: 'Interaction not Implemented', ephemeral: true });
             break;

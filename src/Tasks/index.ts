@@ -84,7 +84,7 @@ class Tasks {
                     // console.debug(JSON.stringify(toSeconds(parse(uniClass.classData.horario.duracao))))
                     // console.debug("-------------------------")
 
-                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED || uniClass.classData.status === ClassStatus.ONGOING)) {
+                    if (currentTime >= reminderTime && (uniClass.classData.status === ClassStatus.UNSTARTED)) {
                         //^ check if time to send reminder
 
                         console.debug("reminderTime: " + reminderTime)
@@ -186,14 +186,14 @@ class Tasks {
             let noRemindersEmbed =  new MessageEmbed()
             .setColor('#4f258a')
             .setTitle('Lembretes:')
-            .setDescription(`**Não há lembretes para esta matéria.**\n\nOBS: Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
+            .setDescription(`**Não há lembretes para esta matéria.**\n\n**OBS:** Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
             .setTimestamp()
             .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
 
             embedsToSend.push(noRemindersEmbed)
         }
 
-        let messageContent: any = { content: `**Lembretes:**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
+        let messageContent: any = { content: `**\u200b**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
         let showRemindersMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, messageContent)
     }
 
