@@ -41,7 +41,7 @@ class Persistence {
     public async gracefullShutdown() {
         console.info('Persistence gracefull shutdown...\n')
 
-        this.db.end()
+        // this.db.end()
     }
 
     private async initDB() {
