@@ -20,12 +20,13 @@ export enum Emojis {
     error = '❌',
 }
 
-export async function sendEphemeralEmbed(textChannel: TextChannel | TextBasedChannels, content: Object): Promise<void> {
+export async function sendEmbed(textChannel: TextChannel | TextBasedChannels, content: Object, ephemeral?: boolean): Promise<void> {
     await textChannel
         .send({
             embeds: [content],
         })
         .then((message: Message) => {
+            if(!ephemeral) return;
             setTimeout(async () => {
                 try {
                     await message.delete()

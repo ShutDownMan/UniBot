@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces'
-import { sendEphemeralEmbed, Color, deleteAfter } from '../../Utils'
+import { sendEmbed, Color, deleteAfter } from '../../Utils'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 const log = Logger(Configs.CommandsLogLevel, 'ping.ts')
@@ -10,7 +10,7 @@ export const command: Command = {
     description: 'Shows info about the bot.',
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message) => {
-        await sendEphemeralEmbed(message.channel, {
+        await sendEmbed(message.channel, {
             color: Color.warn,
             author: {
                 name: 'Sobre o UniBot.',

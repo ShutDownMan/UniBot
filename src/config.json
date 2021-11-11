@@ -6,6 +6,7 @@
     "TaskQueueLogLevel": 4,
     "VoiceHandlerLogLevel": 4,
     "EphemeralMessageTime": 40,
+    "ClassDiaryInterval": 3600,
     "ClassReminderInterval": 60,
     "ClassReminderTimeInMinutes": 15,
     "ButtonDefaultTimeoutInSeconds": 60,

@@ -1,7 +1,7 @@
 import { Event, Command } from '../Interfaces'
 import { Message } from 'discord.js'
 import Logger from '../Logger'
-import { sendEphemeralEmbed, Color, isAllowed } from '../Utils'
+import { sendEmbed, Color, isAllowed } from '../Utils'
 import Configs from '../config.json'
 const log = Logger(Configs.EventsLogLevel, 'messageCreate.ts')
 
@@ -53,7 +53,7 @@ export const event: Event = {
                     message.reply("Você não tem as permissões necessárias para executar esse comando.")
                 }
             } else {
-                await sendEphemeralEmbed(message.channel, {
+                await sendEmbed(message.channel, {
                     color: Color.error,
                     author: {
                         name: `Command not found`,

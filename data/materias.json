@@ -331,7 +331,6 @@
                 "duracao": "PT1H40M",
                 "tipoAula": "Teórica"
             }
-
         ],
         "professores": [
             {
@@ -467,6 +466,29 @@
             {
                 "nome": "Newton Spolaôr"
             }
+        ],
+        "bibliografia": [
+            {
+                "tipo": "livro",
+                "lingua": "pt-BR",
+                "name": "Compiladores: princípios, técnicas e ferramentas",
+                "downloadLink": "https://drive.google.com/file/d/1GnHfysg0uhls1GoFdYTecOfyF627ju0M/view?usp=sharing",
+                "format": "pdf"
+            },
+            {
+                "tipo": "livro",
+                "lingua": "pt-BR",
+                "name": "Como construir um compilador utilizando Ferramentas Java",
+                "downloadLink": "https://drive.google.com/file/d/1EHhlW6CY8HzD-jAKxmL3SPixTm_c6lUc/view?usp=sharing",
+                "format": "pdf"
+            },
+            {
+                "tipo": "livro",
+                "lingua": "en-US",
+                "name": "Compiler Construction: Principles and Practice",
+                "downloadLink": "https://drive.google.com/file/d/1S3RhvOZNtmG3fpHe4AhTfzCBOmviVnqd/view?usp=sharing",
+                "format": "pdf"
+            }
         ]
     },
     "904760047601614878": {
@@ -499,7 +521,7 @@
         "codMateria": "FOZ1007",
         "cargaHorariaEmHoras": 204,
         "serie": "3",
-        "horarios": [ ],
+        "horarios": [],
         "professores": [
             {
                 "nome": "Antonio Marcos Massao Hachisuca"
@@ -772,6 +794,22 @@
             {
                 "nome": "Andre Gustavo Maletzke"
             }
+        ],
+        "bibliografia": [
+            {
+                "tipo": "livro",
+                "lingua": "pt-BR",
+                "name": "Sistemas de Informação Gerenciais",
+                "downloadLink": "#",
+                "format": "pdf"
+            },
+            {
+                "tipo": "livro",
+                "lingua": "en-US",
+                "name": "Management Information Systems: Managing the Digital Firm",
+                "downloadLink": "https://drive.google.com/file/d/14EHIko5lBJR_hDnwFvzX-5pg8Abysoz2/view?usp=sharing",
+                "format": "mobi"
+            }
         ]
     },
     "904803563803410502": {
@@ -828,7 +866,7 @@
         "codMateria": "FOZ1014",
         "cargaHorariaEmHoras": 204,
         "serie": "4",
-        "horarios": [ ],
+        "horarios": [],
         "professores": [
             {
                 "nome": "Teresinha Arnauts Hachisuca"

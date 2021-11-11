@@ -106,7 +106,7 @@ export async function sendCoursesSelect(member: GuildMember, channel: TextBasedC
 
         /// createView
         messageToSend = {
-            content: `**Selecione uma matéria para adicionar o lembrete:**`,
+            content: `**Selecione uma matéria para mostrar as informações:**`,
             components: selectRows,
             fetchReply: true
         }
@@ -152,7 +152,7 @@ async function sendMateriaInfoMessage(materia: Materia, member: GuildMember, cha
         materiaProfessoresStr = `**Professores:** \`${materia.materiaData.professores.map(prof => {return prof.nome}).reduce((prev: string, curr: string) => { return `${prev}, ${curr}` })}\``;
 
     let materiaDesc = `**Matéria de** \`${materia.materiaData.nomeMateria}\`\n\
-        **código:** \`${materia.materiaData.codMateria}\`\n\
+        **Código:** \`${materia.materiaData.codMateria}\`\n\
         \`${materia.materiaData.cargaHorariaEmHoras}\` **hrs aula**\n\
         **Série:** \`${materia.materiaData.serie}\`\n\
         ${materiaProfessoresStr}\n\

@@ -171,7 +171,7 @@ class Persistence {
         let classData: ClassData = {
             materiaID: '',
             reminderSent: false,
-            time: '',
+            startTime: '',
             status: ClassStatus.UNSTARTED,
             horario: null
         }
@@ -210,7 +210,7 @@ class Persistence {
                     // console.debug(nextClassDate.format())
                     let tmpClassData = this.createClassData()
                     tmpClassData.materiaID = materiaID
-                    tmpClassData.time = nextClassDate.format()
+                    tmpClassData.startTime = nextClassDate.format()
                     tmpClassData.horario = horario
 
 

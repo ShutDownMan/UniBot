@@ -563,7 +563,7 @@ function parseDateCustom(dateStr: string) {
             results.forEach((result) => {
                 /// let hour be 0
                 if (!result.start.isCertain("hour")) {
-                    result.start.assign('hour', 0)
+                    result.start.assign('hour', 23)
                 }
             });
             return results;

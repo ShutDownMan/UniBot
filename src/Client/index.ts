@@ -4,7 +4,7 @@ import path from 'path'
 import { readdirSync } from 'fs'
 import Configs from '../config.json';
 import Logger from '../Logger'
-import { sendEphemeralEmbed, Color } from '../Utils'
+import { sendEmbed, Color } from '../Utils'
 import Persistence from '../Persistence';
 import Tasks from '../Tasks';
 

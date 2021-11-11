@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces'
-import { Color, sendEphemeralEmbed } from '../../Utils'
+import { Color, sendEmbed } from '../../Utils'
 
 export const command: Command = {
     name: 'ajuda',
@@ -8,7 +8,7 @@ export const command: Command = {
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message, args) => {
         if (args[0] === '') {
-            await sendEphemeralEmbed(message.channel, {
+            await sendEmbed(message.channel, {
                 color: Color.info,
                 author: {
                     name: 'Ajuda com os comandos',
@@ -31,7 +31,7 @@ export const command: Command = {
                         dynamic: true,
                     }),
                 },
-            })
+            }, false)
         } else {
             for (let i = 0; i < args.length; i++) {
                 let find = client.commands.get(args[i])
@@ -41,13 +41,13 @@ export const command: Command = {
 
                     if (aliasesString === '') aliasesString = 'Sem aliases.'
 
-                    await sendEphemeralEmbed(message.channel, {
+                    await sendEmbed(message.channel, {
                         color: Color.info,
                         author: {
                             name: 'Commando ' + find.name[0].toUpperCase() + find.name.slice(1),
                         },
                         description: '```ini\n' + `[Aliases]: ${aliasesString}\n\n[Descrição]: ${find?.description}` + '\n```',
-                    })
+                    }, false)
                 } else {
                     find = client.aliases.get(args[i])
 
@@ -56,15 +56,15 @@ export const command: Command = {
 
                         if (aliasesString === '') aliasesString = 'Sem aliases.'
 
-                        await sendEphemeralEmbed(message.channel, {
+                        await sendEmbed(message.channel, {
                             color: Color.info,
                             author: {
                                 name: find.name,
                             },
                             description: '```ini\n' + `[Aliases]: ${aliasesString}\n\n[Descrição]: ${find?.description}` + '\n```',
-                        })
+                        }, false)
                     } else {
-                        await sendEphemeralEmbed(message.channel, {
+                        await sendEmbed(message.channel, {
                             color: Color.error,
                             author: {
                                 name: `Comando não encontrado`,

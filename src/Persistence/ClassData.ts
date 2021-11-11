@@ -11,7 +11,7 @@ export enum ClassStatus {
 export interface ClassData {
     materiaID: string
     reminderSent: boolean
-    time: string
+    startTime: string
     status: ClassStatus
     horario: Horario
 }

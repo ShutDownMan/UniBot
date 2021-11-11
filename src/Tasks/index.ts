@@ -14,6 +14,7 @@ const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
 
 class Tasks {
     private client: ExtendedClient
+    private classDiaryTask: NodeJS.Timer
     private classReminderTask: NodeJS.Timer
 
     public constructor(client) {
@@ -24,13 +25,15 @@ class Tasks {
 
     public async init() {
         console.debug("Tasks init...")
+        await this.classDiary()
         await this.classReminder()
 
         await this.initTasks()
     }
 
     private initTasks() {
-        this.classReminderTask = setInterval(() => { this.classReminder() }, Configs.ClassReminderInterval * 1000)
+        this.classDiaryTask = setInterval(() => { this.classDiary() }, Configs["ClassDiaryInterval"] * 1000)
+        this.classReminderTask = setInterval(() => { this.classReminder() }, Configs["ClassReminderInterval"] * 1000)
     }
 
     public async classReminder() {
@@ -50,7 +53,7 @@ class Tasks {
             if (uniClass.classData) {
                 if (!uniClass.classData.reminderSent) {
                     let currentTime = new Date()
-                    let classTime = new Date(uniClass.classData.time)
+                    let classTime = new Date(uniClass.classData.startTime)
                     let reminderTime = new Date(classTime.getTime() - Configs.ClassReminderTimeInMinutes * 60 * 1000)
                     let finishedClassTime = new Date(classTime.getTime() + toSeconds(parse(uniClass.classData.horario.duracao)) * 1000)
 
@@ -183,18 +186,56 @@ class Tasks {
             }
 
         } else {
-            let noRemindersEmbed =  new MessageEmbed()
-            .setColor('#4f258a')
-            .setTitle('Lembretes:')
-            .setDescription(`**Não há lembretes para esta matéria.**\n\n**OBS:** Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
-            .setTimestamp()
-            .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
+            let noRemindersEmbed = new MessageEmbed()
+                .setColor('#4f258a')
+                .setTitle('Lembretes:')
+                .setDescription(`**Não há lembretes para esta matéria.**\n\n**OBS:** Você pode adicionar lembretes de tarefas, trabalhos, provas e anotações por meio do comando \`${global.dataState.prefix}lembrete\``)
+                .setTimestamp()
+                .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
 
             embedsToSend.push(noRemindersEmbed)
         }
 
         let messageContent: any = { content: `**\u200b**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
         let showRemindersMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, messageContent)
+    }
+
+    public async classDiary() {
+        let todaysDiary = this.client.persistence.todaysDiary
+        if(!todaysDiary || todaysDiary.diaryData.dailyReminderSent) return;
+
+        let guild = await this.client.guilds.fetch(process.env.GUILD_ID)
+        let interactionAuthor = await guild.members.fetch(process.env.BOT_ID)
+        let todaysClassesData: UniClass[] = await this.client.persistence.fetchTodaysClassData()
+        todaysClassesData.sort((a, b) => { return (moment(a.classData.startTime) < moment(b.classData.startTime)) ? -1 : 1})
+
+        let diaryEmbed = new MessageEmbed()
+            .setColor('#4f258a')
+            .setTitle(`Diário de Aulas <t:${moment().unix()}:D>:`)
+            .setDescription(``)
+            .setTimestamp()
+            .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
+
+        for (let uniClass of todaysClassesData) {
+        // debugger;
+        let materia: MateriaData = Materias[uniClass.classData.materiaID]
+            console.debug(uniClass.classData.startTime)
+
+            if (uniClass.classData && materia) {
+                let startTime = moment(uniClass.classData.startTime)
+
+                let fieldName = `${materia.nomeMateria}`
+                let fieldDesc = `\
+                    Aula ás <t:${startTime.unix()}:t> horas\n\
+                `
+                diaryEmbed.addField(fieldName, fieldDesc, false)
+            }
+        }
+
+        sendToTextChannel(this.client, process.env.DIARY_CHANNEL_ID, {content: `\u200b`, embeds: [diaryEmbed]})
+
+        todaysDiary.diaryData.dailyReminderSent = true;
+        this.client.persistence.upsertDiary(todaysDiary.dateID, todaysDiary.diaryData)
     }
 
 }
