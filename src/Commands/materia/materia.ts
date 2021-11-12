@@ -4,7 +4,7 @@ import Configs from '../../config.json'
 import { ButtonInteraction, GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextBasedChannels, TextChannel } from 'discord.js'
 import Materias from '../../../data/materias.json'
 import ExtendedClient from '../../Client'
-import { sendToTextChannel } from '../../Utils'
+import { getMemberCoursesRoles, sendToTextChannel } from '../../Utils'
 import { Materia, MateriaData } from '../../Persistence/Types/Materia'
 import { Professor } from '../../Persistence/Types/Professor'
 const log = Logger(Configs.CommandsLogLevel, 'materia.ts')
@@ -117,30 +117,6 @@ export async function sendCoursesSelect(member: GuildMember, channel: TextBasedC
 
     /// send to member
     return await channel.send(messageToSend) as Message
-}
-
-async function getMemberCoursesRoles(member: GuildMember) {
-    let selectOptions = []
-
-    member.roles.cache.forEach(role => {
-        if (role.id in Materias) {
-            let materia: MateriaData = Materias[role.id]
-            /// create description string
-            let materiaProfessoresStr = materia.professores[0].nome
-
-            /// if there's more than 1 professor, apply a reduce
-            if ((materia.professores.length > 1))
-                materiaProfessoresStr = materia.professores.map(prof => {return prof.nome}).reduce((prev: string, curr: string) => { return `${prev}, ${curr}` })
-
-            selectOptions.push({
-                label: materia.nomeMateria,
-                description: `${materiaProfessoresStr}`,
-                value: `${role.id}`,
-            })
-        }
-    })
-
-    return selectOptions
 }
 
 async function sendMateriaInfoMessage(materia: Materia, member: GuildMember, channel: TextBasedChannels) {

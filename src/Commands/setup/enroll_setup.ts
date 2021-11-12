@@ -130,7 +130,7 @@ function getOptionsByYears(periods: string[]) {
         let materiaProfessoresStr = materia.professores[0].nome
         /// if there's more than 1 professor, apply a reduce
         if ((materia.professores.length > 1))
-            materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
+            materiaProfessoresStr = materia.professores.map(prof => {return prof.nome}).reduce((prev: string, curr: string) => { return `${prev}, ${curr}` })
 
         // console.debug(materiaProfessoresStr)
 

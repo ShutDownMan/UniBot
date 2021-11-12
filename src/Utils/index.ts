@@ -2,9 +2,7 @@ import { TextChannel, Message, TextBasedChannels, GuildMember } from 'discord.js
 import Logger from '../Logger'
 import Configs from '../config.json'
 import { ControlRoles, EnrollMessages } from '../Interfaces'
-import makeInterval from 'iso8601-repeating-interval'
-import { Moment } from 'moment'
-import moment from 'moment'
+import Materias from '../../data/materias.json'
 const log = Logger(Configs.CommandsLogLevel, 'utils.ts')
 
 export const oneHourInMS = 1000 * 60 * 60 * 1
@@ -132,20 +130,26 @@ export function applyMixins(derivedConstructor: any, baseConstructors: any[]) {
     });
 }
 
-/**
-  firstAfter (date) {
-    date = moment(date)
-    if (this._end && date.isAfter(this._end)) return null
-    if (this._start && date.isSameOrBefore(this._start)) return {index: 0, date: this._start.clone()}
+export async function getMemberCoursesRoles(member: GuildMember) {
+    let selectOptions = []
 
-    let index = 0
-    let cursor = this._start.clone()
+    member.roles.cache.forEach(role => {
+        if (role.id in Materias) {
+            let materia = Materias[role.id]
+            /// create description string
+            let materiaProfessoresStr = materia.professores[0].nome
 
-    do {
-      index++
-      cursor = this._start.clone().add(this._duration.times(index))
-    } while (cursor.isBefore(date))
+            /// if there's more than 1 professor, apply a reduce
+            if ((materia.professores.length > 1))
+                materiaProfessoresStr = materia.professores.map(prof => {return prof.nome}).reduce((prev: string, curr: string) => { return `${prev}, ${curr}` })
 
-    return {index, date: cursor}
-  }
- */
+            selectOptions.push({
+                label: materia.nomeMateria,
+                description: `${materiaProfessoresStr}`,
+                value: `${role.id}`,
+            })
+        }
+    })
+
+    return selectOptions
+}

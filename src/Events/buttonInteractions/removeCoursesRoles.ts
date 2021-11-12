@@ -1,5 +1,6 @@
 import { ButtonInteraction, GuildMember, Interaction, MessageActionRow, MessageSelectMenu } from "discord.js"
 import Materias from '../../../data/materias.json'
+import { getMemberCoursesRoles } from "../../Utils"
 
 export async function createRemoveCoursesSelect(client, interaction: Interaction) {
     let messageToSend: any = {}
@@ -52,28 +53,4 @@ export async function createRemoveCoursesSelect(client, interaction: Interaction
 
     /// send to member
     await (interaction as ButtonInteraction).reply(messageToSend)
-}
-
-async function getMemberCoursesRoles(member: GuildMember) {
-    let selectOptions = []
-
-    member.roles.cache.forEach(role => {
-        if (role.id in Materias) {
-            let materia = Materias[role.id]
-            /// create description string
-            let materiaProfessoresStr = materia.professores[0].nome
-
-            /// if there's more than 1 professor, apply a reduce
-            if ((materia.professores.length > 1))
-                materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
-
-            selectOptions.push({
-                label: materia.nomeMateria,
-                description: `${materiaProfessoresStr}`,
-                value: `${role.id}`,
-            })
-        }
-    })
-
-    return selectOptions
 }

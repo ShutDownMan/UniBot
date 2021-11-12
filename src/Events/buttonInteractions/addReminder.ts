@@ -9,7 +9,7 @@ import makeInterval from 'iso8601-repeating-interval'
 import * as chrono from 'chrono-node';
 import { ReminderData, ReminderScope, ReminderType } from "../../Persistence/Types/Reminder"
 import { ReminderPersistence} from "../../Persistence"
-import { capitalize, escapeRegExp, tryToDeleteMessage } from "../../Utils"
+import { capitalize, escapeRegExp, getMemberCoursesRoles, tryToDeleteMessage } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
 export async function addReminder(client: ExtendedClient, interaction: ButtonInteraction) {
@@ -244,30 +244,6 @@ export async function sendCoursesSelect(interaction: ButtonInteraction) {
 
     /// send to member
     return await interaction.reply(messageToSend) as Message
-}
-
-async function getMemberCoursesRoles(member: GuildMember) {
-    let selectOptions = []
-
-    member.roles.cache.forEach(role => {
-        if (role.id in Materias) {
-            let materia = Materias[role.id]
-            /// create description string
-            let materiaProfessoresStr = materia.professores[0].nome
-
-            /// if there's more than 1 professor, apply a reduce
-            if ((materia.professores.length > 1))
-                materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
-
-            selectOptions.push({
-                label: materia.nomeMateria,
-                description: `${materiaProfessoresStr}`,
-                value: `${role.id}`,
-            })
-        }
-    })
-
-    return selectOptions
 }
 
 async function getReminderDate(interaction: Interaction, materiaID: string) {

@@ -6,7 +6,7 @@ import ExtendedClient from "../../Client"
 import { Materia, MateriaData } from "../../Persistence/Types/Materia"
 import { Reminder, ReminderScope } from "../../Persistence/Types/Reminder"
 import moment from "moment"
-import { capitalize } from "../../Utils"
+import { capitalize, getMemberCoursesRoles } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
 export async function showReminders(client: ExtendedClient, interaction: ButtonInteraction) {
@@ -208,30 +208,6 @@ export async function sendCoursesSelect(interaction: ButtonInteraction) {
 
     /// send to member
     return await interaction.reply(messageToSend) as Message
-}
-
-async function getMemberCoursesRoles(member: GuildMember) {
-    let selectOptions = []
-
-    member.roles.cache.forEach(role => {
-        if (role.id in Materias) {
-            let materia = Materias[role.id]
-            /// create description string
-            let materiaProfessoresStr = materia.professores[0].nome
-
-            /// if there's more than 1 professor, apply a reduce
-            if ((materia.professores.length > 1))
-                materiaProfessoresStr = materia.professores.reduce((prev: { nome: string }, curr: { nome: string }) => { return `${prev.nome}, ${curr.nome}` })
-
-            selectOptions.push({
-                label: materia.nomeMateria,
-                description: `${materiaProfessoresStr}`,
-                value: `${role.id}`,
-            })
-        }
-    })
-
-    return selectOptions
 }
 
 async function showRemindersFromMateria(client: ExtendedClient, interaction: Interaction, materia: Materia, reminderScope: ReminderScope) {
