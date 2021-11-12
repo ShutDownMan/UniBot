@@ -1,50 +1,23 @@
 import Logger from '../Logger'
 import Configs from '../config.json'
 import Collection from '@discordjs/collection'
-import { UniClass, ClassData, ClassStatus } from './ClassData'
+import { UniClass, ClassData, ClassStatus } from './Types/ClassData'
 import { Client, Pool, QueryResult } from 'node-postgres'
-import { Diary, DiaryData } from './DiaryData'
+import { Diary, DiaryData } from './Types/DiaryData'
 import Materias from '../../data/materias.json'
 import makeInterval from 'iso8601-repeating-interval'
-import { MateriaData } from './Materia'
+import { MateriaData } from './Types/Materia'
 import { Moment } from 'moment'
-import { toJson } from '../Utils'
+import { toJson, applyMixins } from '../Utils'
 import ExtendedClient from '../Client'
 import moment from 'moment'
-import { Reminder, ReminderData, ReminderScope } from './Reminder'
+import { Reminder, ReminderData, ReminderScope } from './Types/Reminder'
 const log = Logger(Configs.EventsLogLevel, 'persistence.ts')
 
-// public classes: Collection<Number, ClassData> = new Collection()
-// public diary: Collection<Number, DiaryData> = new Collection()
+class NodePostgres {
+    public db: Pool = null
 
-class Persistence {
-    public todaysDiary: Diary = null
-    public todaysClasses: UniClass[] = null
-
-    private client: ExtendedClient
-    private db: Pool
-
-    public constructor(client) {
-        this.client = client
-    }
-
-    public async init() {
-        this.initDB()
-
-        const queryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '2021-11-03'`);
-
-        await this.fetchTodaysDiary()
-
-        setInterval(() => { this.fetchTodaysDiary() }, Configs.ClassReminderInterval * 10000)
-    }
-
-    public async gracefullShutdown() {
-        console.info('Persistence gracefull shutdown...\n')
-
-        this.db.end()
-    }
-
-    private async initDB() {
+    protected async initDB() {
         try {
             this.db = new Pool({
                 user: process.env.PGUSER,
@@ -58,14 +31,16 @@ class Persistence {
         }
     }
 
-    private async fetchTodaysDiary() {
+}
+
+class DiaryPersistence extends NodePostgres {
+    public todaysDiary: Diary = null
+
+    protected async fetchTodaysDiary() {
         let today = moment().format().split("T")[0]
         console.debug(today)
 
         this.todaysDiary = await this.fetchDiary(today)
-        console.debug("this.todaysDiary")
-        console.debug(this.todaysDiary)
-        this.todaysClasses = await this.fetchClassDataByIds(this.todaysDiary.diaryData.classesIDs)
     }
 
     public async fetchDiary(dateID: string) {
@@ -81,21 +56,14 @@ class Persistence {
                 let newDiary = this.createDiaryData()
 
                 /// set classIDs
-                let givenDate = moment(dateID);
-                console.debug(givenDate)
-                let dayClasses = await this.createClassDataByDate(givenDate)
-
-                newDiary.classesIDs = dayClasses.map(uniClass => {
-                    return uniClass.classID
-                })
+                // let givenDate = moment(dateID);
+                // console.debug(givenDate)
+                // await this.initClassDataByDate(givenDate)
 
                 /// create diary
                 diary = await this.upsertDiary(dateID, newDiary)
             } else {
                 diary = queryResult.rows[0]
-                // this.todaysClasses = await this.fetchClassDataByIds(diary.diaryData.classesIDs)
-                // console.debug(this.todaysClasses)
-                // console.debug(JSON.stringify(diary.diaryData["classesIDs"]))
             }
         } catch (error) {
             console.error(error)
@@ -128,10 +96,37 @@ class Persistence {
     public createDiaryData() {
         let diary: DiaryData = {
             dailyReminderSent: false,
-            classesIDs: []
         }
 
         return diary
+    }
+
+}
+
+class UniClassPersistence extends NodePostgres {
+    public todaysClasses: UniClass[] = null
+
+    public async fetchTodaysClassData() {
+        if (!this.todaysClasses) {
+            const today = moment().format().split("T")[0]
+            this.todaysClasses = await this.fetchClassDataByDiaryID(today)
+        }
+
+        return this.todaysClasses
+    }
+
+    public async fetchClassDataByDiaryID(diaryID: string) {
+        let queryResult: QueryResult = null;
+
+        queryResult = await this.db.query(`
+            SELECT * FROM "Class"
+            WHERE "classData" ->> 'diaryID' = '${diaryID}'
+        `);
+
+        if (queryResult.rowCount > 0)
+            return queryResult.rows.map(row => { return toJson(row) })
+
+        return []
     }
 
     public async fetchClassDataByIds(classesIDs?: number[]) {
@@ -142,8 +137,6 @@ class Persistence {
 
             classesData.push(classData)
         }
-        // await Promise.all(classesIDs.map(async (classID) => {
-        // }))
 
         return classesData
     }
@@ -169,26 +162,18 @@ class Persistence {
 
     public createClassData() {
         let classData: ClassData = {
+            diaryID: '',
             materiaID: '',
             reminderSent: false,
             startTime: '',
             status: ClassStatus.UNSTARTED,
-            horario: null
+            horario: null,
         }
 
         return classData
     }
 
-    public async fetchTodaysClassData() {
-        if (!this.todaysClasses) this.todaysClasses = await this.fetchClassDataByIds(this.todaysDiary.diaryData.classesIDs)
-
-        // console.debug("Pq tá vazio o bagulho?")
-        // console.debug(JSON.stringify(this.todaysClasses))
-
-        return this.todaysClasses
-    }
-
-    public async createClassDataByDate(givenDate: Moment) {
+    public async initUniClassFromMaterias() {
         let classDataList: UniClass[] = []
 
         /// pass through each materia
@@ -198,37 +183,23 @@ class Persistence {
             /// pass through each horario
             for (const horario of materia.horarios) {
                 /// get classes dates
-                const nextClass: Readonly<Moment> = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
-                let nextClassDate: Moment = makeInterval(horario.inicio).firstAfter(givenDate.startOf('day')).date
+                let classes: Moment[] = makeInterval(horario.inicio).dates()
 
-                // console.debug(givenDate.startOf('day').format())
-                // console.debug(interval.startOf('day').format())
-
-                /// see if there is a class givenDate
-                if (givenDate.startOf('day').format() === nextClass.startOf('day').format()) {
-                    // console.debug(nextClass.format())
-                    // console.debug(nextClassDate.format())
+                for (const classDate of classes) {
                     let tmpClassData = this.createClassData()
-                    tmpClassData.materiaID = materiaID
-                    tmpClassData.startTime = nextClassDate.format()
-                    tmpClassData.horario = horario
 
+                    tmpClassData.materiaID = materiaID
+                    tmpClassData.startTime = classDate.format()
+                    tmpClassData.horario = horario
+                    tmpClassData.diaryID = classDate.format().split("T")[0]
 
                     let upsertedClassData: UniClass = await this.upsertClassData(0, tmpClassData)
-                    // console.debug("upsertedClassData:" + JSON.stringify(upsertedClassData))
-                    // console.debug(`${classData.toString()}`)
 
                     classDataList.push(upsertedClassData)
                 }
-
             }
 
-            // await Promise.all(materia.horarios.map(async horario => {
-            // }))
         }
-
-        // await Promise.all(Object.keys(Materias).map(async materiaID => {
-        // }))
 
         return classDataList
     }
@@ -269,6 +240,9 @@ class Persistence {
 
         return result;
     }
+}
+
+export class ReminderPersistence extends NodePostgres {
 
     static createReminderData(): ReminderData {
         let reminderData: ReminderData = {
@@ -363,7 +337,7 @@ class Persistence {
             WHERE "reminderID" = ${reminderID}
         `);
 
-        if(queryResult.rowCount > 0)
+        if (queryResult.rowCount > 0)
             return toJson(queryResult.rows[0])
 
         return null
@@ -377,8 +351,8 @@ class Persistence {
             WHERE "reminderData" ->> 'author' = '${author}'
         `);
 
-        if(queryResult.rowCount > 0)
-            return queryResult.rows.map(row => {return toJson(row) })
+        if (queryResult.rowCount > 0)
+            return queryResult.rows.map(row => { return toJson(row) })
 
         return []
     }
@@ -391,11 +365,42 @@ class Persistence {
             WHERE "reminderData" ->> 'disabled' = 'false'
         `);
 
-        if(queryResult.rowCount > 0)
-            return queryResult.rows.map(row => {return toJson(row) })
+        if (queryResult.rowCount > 0)
+            return queryResult.rows.map(row => { return toJson(row) })
 
         return []
     }
 }
+
+interface Persistence extends NodePostgres, DiaryPersistence, UniClassPersistence, ReminderPersistence { }
+
+class Persistence {
+
+    protected client: ExtendedClient
+
+    public constructor(client) {
+
+        this.client = client
+    }
+
+    public async init() {
+        this.initDB()
+
+        const testQueryResult: QueryResult = await this.db.query(`SELECT * FROM "Diary" WHERE "dateID" = '2021-11-03'`);
+        // this.initUniClassFromMaterias()
+        
+        await this.fetchTodaysDiary()
+
+        setInterval(() => { this.fetchTodaysDiary() }, Configs.ClassReminderInterval * 10000)
+    }
+
+    public async gracefullShutdown() {
+        console.info('Persistence gracefull shutdown...\n')
+
+        this.db.end()
+    }
+}
+
+applyMixins(Persistence, [NodePostgres, DiaryPersistence, UniClassPersistence, ReminderPersistence])
 
 export default Persistence

@@ -3,8 +3,8 @@ import Materias from '../../../data/materias.json'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 import ExtendedClient from "../../Client"
-import { Materia, MateriaData } from "../../Persistence/Materia"
-import { Reminder, ReminderScope } from "../../Persistence/Reminder"
+import { Materia, MateriaData } from "../../Persistence/Types/Materia"
+import { Reminder, ReminderScope } from "../../Persistence/Types/Reminder"
 import moment from "moment"
 import { capitalize } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')

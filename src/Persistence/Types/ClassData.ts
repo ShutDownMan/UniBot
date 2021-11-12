@@ -9,6 +9,7 @@ export enum ClassStatus {
 }
 
 export interface ClassData {
+    diaryID: string
     materiaID: string
     reminderSent: boolean
     startTime: string

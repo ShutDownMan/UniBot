@@ -1,7 +1,6 @@
 
 export interface DiaryData {
     dailyReminderSent: boolean
-    classesIDs: number[]
 }
 
 export interface Diary {

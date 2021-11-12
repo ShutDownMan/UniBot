@@ -3,12 +3,12 @@ import Materias from '../../../data/materias.json'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 import ExtendedClient from "../../Client"
-import { Materia, MateriaData } from "../../Persistence/Materia"
+import { Materia, MateriaData } from "../../Persistence/Types/Materia"
 import moment, { Moment } from "moment"
 import makeInterval from 'iso8601-repeating-interval'
 import * as chrono from 'chrono-node';
-import { ReminderData, ReminderScope, ReminderType } from "../../Persistence/Reminder"
-import Persistence from "../../Persistence"
+import { ReminderData, ReminderScope, ReminderType } from "../../Persistence/Types/Reminder"
+import { ReminderPersistence} from "../../Persistence"
 import { capitalize, escapeRegExp, tryToDeleteMessage } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'addReminder.ts')
 
@@ -669,7 +669,7 @@ async function getDescriptionFromMessage(interaction: Interaction) {
 }
 
 async function getFinalReminder(interaction: ButtonInteraction, materia: Materia, reminderType: ReminderType, date: Moment, description: Message) {
-    let reminderData: ReminderData = Persistence.createReminderData();
+    let reminderData: ReminderData = ReminderPersistence.createReminderData();
     let author = description.author
     let messageContent: any = null;
     let remindEmbedMessage = null;

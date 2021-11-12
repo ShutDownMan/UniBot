@@ -5,8 +5,8 @@ import { ButtonInteraction, GuildMember, Message, MessageActionRow, MessageButto
 import Materias from '../../../data/materias.json'
 import ExtendedClient from '../../Client'
 import { sendToTextChannel } from '../../Utils'
-import { Materia, MateriaData } from '../../Persistence/Materia'
-import { Professor } from '../../Persistence/Professor'
+import { Materia, MateriaData } from '../../Persistence/Types/Materia'
+import { Professor } from '../../Persistence/Types/Professor'
 const log = Logger(Configs.CommandsLogLevel, 'materia.ts')
 
 export const command: Command = {

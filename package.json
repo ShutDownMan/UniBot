@@ -29,7 +29,7 @@
         "discord.js": "^13.2.0",
         "dotenv": "^10.0.0",
         "iso8601-duration": "^1.3.0",
-        "iso8601-repeating-interval": "^0.1.4",
+        "iso8601-repeating-interval": "github:ShutDownMan/iso8601-repeating-interval",
         "moment": "^2.29.1",
         "node-postgres": "^0.6.2",
         "pino": "^7.0.2",

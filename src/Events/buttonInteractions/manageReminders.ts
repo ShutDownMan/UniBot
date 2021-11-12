@@ -3,11 +3,11 @@ import Materias from '../../../data/materias.json'
 import Logger from '../../Logger'
 import Configs from '../../config.json'
 import ExtendedClient from "../../Client"
-import { Materia, MateriaData } from "../../Persistence/Materia"
+import { Materia, MateriaData } from "../../Persistence/Types/Materia"
 import moment, { Moment } from "moment"
 import makeInterval from 'iso8601-repeating-interval'
 import * as chrono from 'chrono-node';
-import { Reminder, ReminderData, ReminderScope, ReminderType } from "../../Persistence/Reminder"
+import { Reminder, ReminderData, ReminderScope, ReminderType } from "../../Persistence/Types/Reminder"
 import Persistence from "../../Persistence"
 import { capitalize, escapeRegExp, tryToDeleteMessage } from "../../Utils"
 const log = Logger(Configs.EventsLogLevel, 'manageReminders.ts')

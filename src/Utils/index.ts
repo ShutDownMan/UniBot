@@ -2,6 +2,7 @@ import { TextChannel, Message, TextBasedChannels, GuildMember } from 'discord.js
 import Logger from '../Logger'
 import Configs from '../config.json'
 import { ControlRoles, EnrollMessages } from '../Interfaces'
+import makeInterval from 'iso8601-repeating-interval'
 import { Moment } from 'moment'
 import moment from 'moment'
 const log = Logger(Configs.CommandsLogLevel, 'utils.ts')
@@ -26,7 +27,7 @@ export async function sendEmbed(textChannel: TextChannel | TextBasedChannels, co
             embeds: [content],
         })
         .then((message: Message) => {
-            if(!ephemeral) return;
+            if (!ephemeral) return;
             setTimeout(async () => {
                 try {
                     await message.delete()
@@ -114,3 +115,37 @@ export function capitalize(text: string) {
 export function escapeRegExp(string) {
     return string.replace(/[\\\`]/g, '\\$&'); // $& means the whole matched string
 }
+
+export function applyMixins(derivedConstructor: any, baseConstructors: any[]) {
+    baseConstructors.forEach(baseConstructor => {
+        Object.getOwnPropertyNames(baseConstructor.prototype)
+            .forEach(name => {
+                Object.defineProperty(derivedConstructor.prototype,
+                    name,
+                    Object.
+                        getOwnPropertyDescriptor(
+                            baseConstructor.prototype,
+                            name
+                        )
+                );
+            });
+    });
+}
+
+/**
+  firstAfter (date) {
+    date = moment(date)
+    if (this._end && date.isAfter(this._end)) return null
+    if (this._start && date.isSameOrBefore(this._start)) return {index: 0, date: this._start.clone()}
+
+    let index = 0
+    let cursor = this._start.clone()
+
+    do {
+      index++
+      cursor = this._start.clone().add(this._duration.times(index))
+    } while (cursor.isBefore(date))
+
+    return {index, date: cursor}
+  }
+ */

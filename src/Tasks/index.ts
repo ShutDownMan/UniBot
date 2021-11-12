@@ -1,13 +1,13 @@
 import Logger from '../Logger'
 import Configs from '../config.json'
 import Persistence from '../Persistence'
-import { ClassStatus, UniClass } from './../Persistence/ClassData'
+import { ClassStatus, UniClass } from '../Persistence/Types/ClassData'
 import Materias from './../../data/materias.json'
-import { Materia, MateriaData } from '../Persistence/Materia'
+import { Materia, MateriaData } from '../Persistence/Types/Materia'
 import ExtendedClient from '../Client'
 import { capitalize, sendToTextChannel } from '../Utils'
 import { parse, toSeconds, pattern } from 'iso8601-duration';
-import { Reminder, ReminderScope } from '../Persistence/Reminder'
+import { Reminder, ReminderScope } from '../Persistence/Types/Reminder'
 import { GuildMember, MessageEmbed } from 'discord.js'
 import moment from 'moment'
 const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
@@ -122,9 +122,9 @@ class Tasks {
 
             uniClass.classData.reminderSent = true
 
-            let remindMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, message)
-            await remindMessage.react("👍")
-            await this.showUpcomingReminders(this.client, materia)
+            // let remindMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, message)
+            // await remindMessage.react("👍")
+            // await this.showUpcomingReminders(this.client, materia)
             // await sendToTextChannel(this.client, materia.canalTextoID, "https://tenor.com/bab2Y.gif")
 
             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)
@@ -147,9 +147,6 @@ class Tasks {
         let today = moment().startOf('day')
         reminders = reminders.filter((reminder) => { return today < moment(reminder.reminderData.dueDate) })
         reminders = reminders.sort((a, b) => { return (moment(a.reminderData.dueDate) < moment(b.reminderData.dueDate) ? -1 : 1) })
-
-        // console.debug("author:")
-        // console.debug(author.displayName)
 
         let embedsToSend: MessageEmbed[] = []
         if (reminders.length > 0) {
