@@ -122,9 +122,9 @@ class Tasks {
 
             uniClass.classData.reminderSent = true
 
-            // let remindMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, message)
-            // await remindMessage.react("👍")
-            // await this.showUpcomingReminders(this.client, materia)
+            let remindMessage = await sendToTextChannel(this.client, materia.materiaData.canalTextoID, message)
+            await remindMessage.react("👍")
+            await this.showUpcomingReminders(this.client, materia)
             // await sendToTextChannel(this.client, materia.canalTextoID, "https://tenor.com/bab2Y.gif")
 
             await this.client.persistence.upsertClassData(uniClass.classID, uniClass.classData)

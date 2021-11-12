@@ -513,6 +513,22 @@
             {
                 "nome": "Roberto Gil Brasil"
             }
+        ],
+        "bibliografia": [
+            {
+                "tipo": "livro",
+                "lingua": "pt-BR",
+                "name": "Engenharia de Software Sommerville",
+                "downloadLink": "https://drive.google.com/file/d/1c_flBukWiskSzf7UUcUysKGiOzQMUm_Q/view?usp=sharing",
+                "format": "pdf"
+            },
+            {
+                "tipo": "livro",
+                "lingua": "pt-BR",
+                "name": "Engenharia de Software: Uma Abordagem Profissional Pressman",
+                "downloadLink": "https://drive.google.com/file/d/1dGurJwfHzPIkSWFANUFs8JN5_0qp6YwQ/view?usp=sharing",
+                "format": "pdf"
+            }
         ]
     },
     "904760144695541770": {
