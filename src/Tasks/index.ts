@@ -198,7 +198,7 @@ class Tasks {
     }
 
     public async classDiary() {
-        let todaysDiary = this.client.persistence.todaysDiary
+        let todaysDiary = await this.client.persistence.fetchTodaysDiary()
         if(!todaysDiary || todaysDiary.diaryData.dailyReminderSent) return;
 
         let guild = await this.client.guilds.fetch(process.env.GUILD_ID)

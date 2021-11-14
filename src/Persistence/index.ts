@@ -36,11 +36,13 @@ class NodePostgres {
 class DiaryPersistence extends NodePostgres {
     public todaysDiary: Diary = null
 
-    protected async fetchTodaysDiary() {
+    public async fetchTodaysDiary() {
         let today = moment().format().split("T")[0]
         console.debug(today)
 
         this.todaysDiary = await this.fetchDiary(today)
+
+        return this.todaysDiary
     }
 
     public async fetchDiary(dateID: string) {
