@@ -42,20 +42,18 @@ function getMateriaFromTextChannel(channelId: string): Materia {
 async function getMateriaFromUser(member: GuildMember, channel: TextBasedChannels) {
     let materiaID: string = null
     let selectCourseMessage: Message = await sendCoursesSelect(member, channel)
+    let selectCourseInteraction: SelectMenuInteraction = null
 
-    // console.debug(selectCourseMessage)
-
+    /// message couldn`t be sent
     if (!selectCourseMessage) return null
 
     const filter = i => {
-        // i.deferUpdate();
         return i.user.id === member.id;
     };
 
-    let selectCourseInteraction: SelectMenuInteraction = null
-
     /// try to send select message for user to choose
     try {
+        /// await for select menu interaction
         selectCourseInteraction = await selectCourseMessage.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: Configs["ButtonDefaultTimeout"] * 1000 })
         selectCourseInteraction.deferUpdate()
 
@@ -67,14 +65,17 @@ async function getMateriaFromUser(member: GuildMember, channel: TextBasedChannel
         let messageContent = { content: `**😢 Você me deixou no vácuo! 😢**`, components: [] }
         selectCourseMessage.edit(messageContent)
 
-        selectCourseInteraction = null
+        /// return interaction as failed
+        return null
     }
 
+    /// return 
     return { materiaID, materiaData: Materias[materiaID] }
 }
 
 export async function sendCoursesSelect(member: GuildMember, channel: TextBasedChannels) {
     let messageToSend: any = {}
+    let selectRows: MessageActionRow[] = []
 
     /// get option of the current year
     let options = await getMemberCoursesRoles(member as GuildMember)
@@ -87,11 +88,9 @@ export async function sendCoursesSelect(member: GuildMember, channel: TextBasedC
             return all
         }, [])
 
-        // console.debug(optionsChunks)
 
-        let selectRows: MessageActionRow[] = []
+        /// for each chunk of materias
         optionsChunks.forEach((chunk, index) => {
-
             let placeHolderAuxStr = (index) ? "Continuação da " : ""
             /// create row element to show
             let row = new MessageActionRow().addComponents(
@@ -101,10 +100,11 @@ export async function sendCoursesSelect(member: GuildMember, channel: TextBasedC
                     .addOptions(chunk),
             )
 
+            /// add constructed row to array
             selectRows.push(row)
         });
 
-        /// createView
+        /// create view
         messageToSend = {
             content: `**Selecione uma matéria para mostrar as informações:**`,
             components: selectRows,
@@ -127,6 +127,7 @@ async function sendMateriaInfoMessage(materia: Materia, member: GuildMember, cha
     if ((materia.materiaData.professores.length > 1))
         materiaProfessoresStr = `**Professores:** \`${materia.materiaData.professores.map(prof => {return prof.nome}).reduce((prev: string, curr: string) => { return `${prev}, ${curr}` })}\``;
 
+    /// construct description
     let materiaDesc = `**Matéria de** \`${materia.materiaData.nomeMateria}\`\n\
         **Código:** \`${materia.materiaData.codMateria}\`\n\
         \`${materia.materiaData.cargaHorariaEmHoras}\` **hrs aula**\n\
@@ -134,6 +135,7 @@ async function sendMateriaInfoMessage(materia: Materia, member: GuildMember, cha
         ${materiaProfessoresStr}\n\
     `
 
+    /// create embed
     let materiaEmbed = new MessageEmbed()
         .setColor('#4f258a')
         .setTitle(materia.materiaData.nomeMateria)

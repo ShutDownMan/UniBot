@@ -228,9 +228,7 @@ class Tasks {
 
         /// for each class today
         for (let uniClass of todaysClassesData) {
-            // debugger;
             let materia: MateriaData = Materias[uniClass.classData.materiaID]
-            console.debug(uniClass.classData.startTime)
 
             /// if has class data and materia
             if (uniClass.classData && materia) {
