@@ -25,10 +25,11 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
     /// get from which materia user wants to add reminder to
     if (!materia) {
         let getMateriaFromUserResult = await getMateriaFromUser(currentInteraction as ButtonInteraction);
-        currentInteraction = getMateriaFromUserResult.lastInteraction
 
         /// if interaction failed, stop here
         if (!currentInteraction) return;
+
+        currentInteraction = getMateriaFromUserResult.lastInteraction
 
         /// get materia from materiaID
         materia = { materiaID: getMateriaFromUserResult.materiaID, materiaData: Materias[getMateriaFromUserResult.materiaID] };
@@ -70,16 +71,17 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
 
 async function getTypeOfReminder(interaction: ButtonInteraction) {
     let reminderType: ReminderType = null
-
     let reminderMenuMessage: Message = await sendAddReminderMenu(interaction)
-
     let addReminderMenuInteraction: ButtonInteraction = null
+    const filter = i => {
+        return i.user.id === interaction.user.id
+    }
+
     try {
-        const filter = i => {
-            return i.user.id === interaction.user.id
-        }
+        /// await for user button interaction
         addReminderMenuInteraction = await reminderMenuMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
 
+        /// get which button was pressed and disable others
         let toDisable = [true, true, true, true]
         switch (addReminderMenuInteraction.customId) {
             case "reminderType|note":
@@ -100,7 +102,9 @@ async function getTypeOfReminder(interaction: ButtonInteraction) {
                 break;
         }
 
+        /// disable non pressed buttons as to show the user the path taken
         reminderMenuMessage.components[0].components.forEach((component, index) => { component.setDisabled(toDisable[index]) })
+        /// edit message reply 
         interaction.editReply({ components: reminderMenuMessage.components });
     } catch (error) {
         console.error(error)
@@ -118,7 +122,7 @@ async function getTypeOfReminder(interaction: ButtonInteraction) {
 async function sendAddReminderMenu(interaction: ButtonInteraction) {
     let managementView: any = {}
 
-    /// create select with
+    /// create buttons for each reminder type
     let firstRow = new MessageActionRow().addComponents(
         new MessageButton()
             .setCustomId('reminderType|note')
@@ -154,32 +158,38 @@ async function sendAddReminderMenu(interaction: ButtonInteraction) {
 }
 
 function getMateriaFromTextChannel(channelId: string): Materia {
+    /// for each materia in Materias
     for (let materiaID of Object.keys(Materias)) {
         let materia: MateriaData = Materias[materiaID]
+
+        /// if given text channel ID is in current materia
         if (channelId === materia.canalTextoID) {
             return { materiaID, materiaData: materia }
         }
     }
+
+    /// nothing found
     return null
 }
 
 async function getMateriaFromUser(interaction: ButtonInteraction) {
     let materiaID: string = null
     let selectCourseMessage: Message = await sendCoursesSelect(interaction)
+    let selectCourseInteraction: SelectMenuInteraction = null
 
-
-    if (!selectCourseMessage) return { materiaID, lastInteraction: null }
+    /// if message couln't be sent
+    if (!selectCourseMessage) return null
 
     const filter = i => {
         return i.user.id === interaction.user.id;
     };
 
-    let selectCourseInteraction: SelectMenuInteraction = null
-
     /// try to send select message for user to choose
     try {
+        /// await for user select menu interaction
         selectCourseInteraction = await selectCourseMessage.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: Configs["ButtonDefaultTimeout"] * 1000 })
 
+        /// get materia id from select choice
         materiaID = selectCourseInteraction.values[0]
     } catch (error) {
         console.error(error)
@@ -191,6 +201,7 @@ async function getMateriaFromUser(interaction: ButtonInteraction) {
         selectCourseInteraction = null
     }
 
+    /// return results
     return { materiaID, lastInteraction: selectCourseInteraction }
 }
 
@@ -251,31 +262,38 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
     let currentInteraction: Interaction = null;
     let getDateInteraction: ButtonInteraction = null;
 
+    const filter = i => {
+        return i.user.id === interaction.user.id;
+    };
+
     try {
+        /// send get reminder date message 
         let reminderMessage: Message = await sendReminderDateMenu(interaction, materiaID)
 
-        const filter = i => {
-            return i.user.id === interaction.user.id;
-        };
         try {
+            /// await for user button interaction
             getDateInteraction = await reminderMessage.awaitMessageComponent({ filter, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 });
             currentInteraction = getDateInteraction;
         } catch (error) {
             console.error(error)
 
+            /// user took too long to respond
             let messageContent = { content: `**😢 Você me deixou no vácuo! 😢**`, components: [] }
             await getDateInteraction.editReply(messageContent)
 
             currentInteraction = null
         }
 
+        /// if user responded to interaction
         if (currentInteraction) {
             /// fetch user reply
             let userChoice = (getDateInteraction as ButtonInteraction).customId
 
+            /// choose from user choice
             let toDisable = [true, true, true, true]
             switch (userChoice) {
                 case "getReminderDate|nextClass":
+                    /// get date of next class from materia
                     await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getNextClassFromMateriaResult = await getNextClassFromMateria(interaction, materiaID)
                     reminderDate = getNextClassFromMateriaResult.date
@@ -283,6 +301,7 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
                     toDisable[0] = false
                     break;
                 case "getReminderDate|typeDate":
+                    /// get date from user reply
                     await (getDateInteraction as ButtonInteraction).deferUpdate();
                     let getDateFromMessageResult = await getDateFromMessage(interaction)
                     reminderDate = getDateFromMessageResult.date
@@ -290,15 +309,18 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
                     toDisable[1] = false
                     break;
                 case "getReminderDate|noDate":
+                    /// no reminder date
                     reminderDate = null;
                     toDisable[2] = false
                     break;
                 case "getReminderDate|cancel":
+                    /// cancel reminder making process
                     await (getDateInteraction as ButtonInteraction).editReply({ content: `Entendi...\nA criação do lembrete foi cancelada.` })
                     toDisable[3] = false
                     break;
             }
 
+            /// disable non clicked buttons
             reminderMessage.components[0].components.forEach((component, index) => { component.setDisabled(toDisable[index]) });
             await (interaction as ButtonInteraction).editReply({ components: reminderMessage.components });
         }
@@ -307,13 +329,14 @@ async function getReminderDate(interaction: Interaction, materiaID: string) {
         console.error(error)
     }
 
+    /// return date and last user interaction
     return { date: reminderDate, lastInteraction: currentInteraction }
 }
 
 async function sendReminderDateMenu(interaction: Interaction, materiaID: string) {
     let reminderDateView: any = {}
 
-    /// create select with
+    /// create buttons with reminder date input options
     let firstRow = new MessageActionRow().addComponents(
         new MessageButton()
             .setCustomId('getReminderDate|nextClass')
@@ -346,26 +369,27 @@ async function sendReminderDateMenu(interaction: Interaction, materiaID: string)
         fetchReply: true
     }
 
-    /// send to member
+    /// reply to interaction
     return await (interaction as ButtonInteraction).reply(reminderDateView) as Message
 }
 
 async function getNextClassFromMateria(interaction: Interaction, materiaID: string) {
     let materia: MateriaData = Materias[materiaID]
     let tomorrow = moment().add(1, 'days').startOf('day')
-    console.debug(materiaID)
-
     let nextClass: Moment = null
+    let currentInteraction: Interaction = null
+
+    /// loop through each horário in materia
     for (const horario of materia.horarios) {
+        /// first after (starting from tomorrow)
         let firstAfterClass: Moment = makeInterval(horario.inicio).firstAfter(tomorrow).date
+        /// if next class exists and is earlier than previous next class
         if (!nextClass || firstAfterClass < nextClass) {
             nextClass = firstAfterClass
         }
     }
 
-    let currentInteraction: Interaction = null
-
-    /// create select with
+    /// create confirm buttons dialog message
     let firstMessageRow = new MessageActionRow().addComponents(
         new MessageButton()
             .setCustomId('getReminderDate|correct')
@@ -379,9 +403,9 @@ async function getNextClassFromMateria(interaction: Interaction, materiaID: stri
             .setStyle("DANGER")
     )
 
+    /// construct confirm dialog message to send
     let messageContent: any = { content: `**O lembrete será: <t:${nextClass.unix()}:R>**`, components: [firstMessageRow], fetchReply: true, ephemeral: true }
     let reminderDateMenuMessage: Message = await (interaction as ButtonInteraction).editReply(messageContent) as Message;
-    console.debug({ reminderDateMenuMessage })
 
     const filterMember = i => {
         return i.member.id === interaction.user.id;
@@ -389,23 +413,27 @@ async function getNextClassFromMateria(interaction: Interaction, materiaID: stri
 
     let getDateInteraction: ButtonInteraction = null
     try {
+        /// await for user button interaction
         getDateInteraction = await reminderDateMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
         currentInteraction = getDateInteraction
     } catch (error) {
         console.error(error)
 
+        /// user took to long to interact
         messageContent = { content: `**😢 Você me deixou no vácuo! 😢**`, components: [] }
         await (interaction as ButtonInteraction).editReply(messageContent)
 
         currentInteraction = null
     }
 
+    /// user cancelled reminder making process
     if (getDateInteraction.customId === "getReminderDate|toCorrect") {
         nextClass = null
         messageContent = { content: `**❌ Lembrete cancelado... ❌**`, components: [] }
         await (interaction as ButtonInteraction).editReply(messageContent)
     }
 
+    /// return next class date and last interaction
     return { date: nextClass, lastInteraction: currentInteraction }
 }
 
@@ -579,15 +607,10 @@ async function getDescriptionFromMessage(interaction: Interaction) {
     let currentInteraction: Interaction = null
     messageContent = { content: "**Digite o lembrete...**", components: [], ephemeral: true }
     let currentMessage: Message = null
-    // if((interaction as ButtonInteraction).deferred || (interaction as ButtonInteraction).replied) {
-    //     currentMessage = await (interaction as ButtonInteraction).followUp(messageContent) as Message;
-    // } else {
-    // }
     currentMessage = await (interaction as ButtonInteraction).reply(messageContent) as Message;
 
     while (!descriptionMessage) {
 
-        // await currentMessage.edit(messageContent)
         await (interaction as ButtonInteraction).editReply(messageContent);
 
         const filterAuthor = i => {
@@ -599,8 +622,6 @@ async function getDescriptionFromMessage(interaction: Interaction) {
         let messageResponse = messageCollection.first()
 
         descriptionMessage = messageResponse
-        // messageResponse.delete()
-        // console.debug({ parsedDate })
 
         if (descriptionMessage.content.replace(/ /g, '').length < 5) {
             messageContent = { content: `**Não entendi...\n Digite a mensagem do lembrete novamente...**`, components: [secondMessageRow] }
@@ -689,15 +710,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         .setURL(description.url)
         .setAuthor(author.username, author.displayAvatarURL())
         .setDescription(embedDesc)
-        // .setThumbnail('https://i.imgur.com/AfFp7pu.png')
-        // .addFields(
-        //     { name: 'Regular field title', value: 'Some value here' },
-        //     { name: '\u200B', value: '\u200B' },
-        //     { name: 'Inline field title', value: 'Some value here', inline: true },
-        //     { name: 'Inline field title', value: 'Some value here', inline: true },
-        // )
         .addField(`Lembrete`, `\`\`\`\n${description.content.substring(0, 1000)}\n\`\`\``, false)
-        // .setImage('https://i.imgur.com/AfFp7pu.png')
         .setTimestamp()
         .setFooter(author.username, author.displayAvatarURL());
 
