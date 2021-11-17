@@ -606,9 +606,9 @@ async function getDescriptionFromMessage(interaction: Interaction) {
 
     let currentInteraction: Interaction = null
     messageContent = { content: "**Digite o lembrete...**", components: [], ephemeral: true }
-    let currentMessage: Message = null
-    currentMessage = await (interaction as ButtonInteraction).reply(messageContent) as Message;
+    await (interaction as ButtonInteraction).reply(messageContent) as Message;
 
+    /// while description message invalid
     while (!descriptionMessage) {
 
         await (interaction as ButtonInteraction).editReply(messageContent);
@@ -623,12 +623,15 @@ async function getDescriptionFromMessage(interaction: Interaction) {
 
         descriptionMessage = messageResponse
 
-        if (descriptionMessage.content.replace(/ /g, '').length < 5) {
+        /// check if message too short
+        if (descriptionMessage.content.replace(/ /g, '').length < 3) {
             messageContent = { content: `**Não entendi...\n Digite a mensagem do lembrete novamente...**`, components: [secondMessageRow] }
             descriptionMessage = null
         } else {
 
+            /// escape troublesome characters from message content
             let escapedMessage = escapeRegExp(descriptionMessage.content)
+            /// send reminder message preview
             messageContent = { content: `**a mensagem do lembrete ficará assim...**\n\`\`\`\n${escapedMessage}\n\`\`\``, components: [firstMessageRow] }
             let reminderDescriptionMenuMessage: Message = await (interaction as ButtonInteraction).editReply(messageContent) as Message;
 
@@ -636,20 +639,25 @@ async function getDescriptionFromMessage(interaction: Interaction) {
                 return i.member.id === interaction.user.id;
             };
 
+            /// get member user interaction
             let getDescriptionInteraction: ButtonInteraction = null
             try {
+                /// await for button interaction
                 getDescriptionInteraction = await reminderDescriptionMenuMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
                 currentInteraction = getDescriptionInteraction
             } catch (error) {
                 console.error(error)
 
+                /// user took too long to repond to interaction
                 messageContent = { content: `**😢 Você me deixou no vácuo! 😢**`, components: [] }
                 await (interaction as ButtonInteraction).editReply(messageContent)
 
                 currentInteraction = null
             }
 
+            /// user choose to fix message
             if (getDescriptionInteraction.customId === "getReminderDescription|toCorrect") {
+                /// delete user's sent message
                 await tryToDeleteMessage(descriptionMessage)
                 getDescriptionInteraction.deferUpdate()
 
@@ -659,9 +667,11 @@ async function getDescriptionFromMessage(interaction: Interaction) {
         }
     }
 
+    /// send reminder message preview
     messageContent = { content: `**O lembrete será:**\n\`\`\`${descriptionMessage.content}\`\`\``, components: [] }
     await (interaction as ButtonInteraction).editReply(messageContent) as Message;
 
+    /// return reminder description from user interactions
     return { description: descriptionMessage, lastInteraction: currentInteraction }
 }
 
