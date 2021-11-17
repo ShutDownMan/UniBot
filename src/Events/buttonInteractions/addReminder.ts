@@ -688,6 +688,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
             .setStyle("DANGER"),
     );
 
+    /// construct embed description
     let embedDesc = `Lembrete de \`${capitalize(reminderType)}\``
     if (date) {
         if (materia.materiaData) {
@@ -723,29 +724,36 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
 
     let showReminderMessageInteraction: ButtonInteraction = null
     try {
+        /// await for member button interaction
         showReminderMessageInteraction = await remindEmbedMessage.awaitMessageComponent({ filter: filterMember, componentType: 'BUTTON', time: Configs["ButtonDefaultTimeout"] * 1000 })
         currentInteraction = showReminderMessageInteraction
     } catch (error) {
         console.error(error)
 
+        /// user took too long to respond to interaction
         messageContent = { embeds: [], content: `**😢 Você me deixou no vácuo! 😢**`, components: [] }
         await (interaction as ButtonInteraction).editReply(messageContent)
 
         currentInteraction = null
     }
 
+    /// if user cancelled process
     if (showReminderMessageInteraction.customId === "showReminder|cancel") {
+        /// disable other button
         remindEmbedMessage.components[0].components[0].setDisabled(true)
-        interaction.editReply({ components: remindEmbedMessage.components });
-        tryToDeleteMessage(description)
+        /// delete reminder message
+        // tryToDeleteMessage(description)
 
+        /// edit interaction reply
         messageContent = { embeds: [], content: `**❌ Lembrete cancelado... ❌**`, components: [] }
         await (interaction as ButtonInteraction).editReply(messageContent)
         currentInteraction = null
     } else {
+        /// disable cancel button
         remindEmbedMessage.components[0].components[1].setDisabled(true)
-        interaction.editReply({ components: remindEmbedMessage.components });
+        await interaction.editReply({ components: remindEmbedMessage.components });
 
+        /// construct reminder in order to return
         reminderData.materiaID = materia.materiaID;
         reminderData.author = description.author.id;
         reminderData.descriptionURL = description.url;
@@ -756,5 +764,6 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         reminderData.scope = ReminderScope.Public;
     }
 
+    /// return constructed reminder from user interactions
     return { reminderData, lastInteraction: currentInteraction };
 }
