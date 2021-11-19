@@ -37,11 +37,12 @@ export async function addReminder(client: ExtendedClient, interaction: ButtonInt
 
     /// get reminder date from user
     let reminderDateResult = await getReminderDate(currentInteraction, materia.materiaID);
+    console.debug({reminderDateResult})
     let date: Moment = reminderDateResult.date;
     currentInteraction = reminderDateResult.lastInteraction;
 
     /// if interaction failed, stop here
-    if (!currentInteraction) return;
+    if (!currentInteraction || !reminderDateResult.date) return;
 
     /// get reminder description from user
     let getReminderDescriptionResult = await getReminderDescription(currentInteraction);
