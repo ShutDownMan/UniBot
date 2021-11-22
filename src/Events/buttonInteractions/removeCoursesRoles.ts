@@ -1,5 +1,4 @@
 import { ButtonInteraction, GuildMember, Interaction, MessageActionRow, MessageSelectMenu } from "discord.js"
-import Materias from '../../../data/materias.json'
 import { getMemberCoursesRoles } from "../../Utils"
 
 export async function createRemoveCoursesSelect(client, interaction: Interaction) {
@@ -22,8 +21,6 @@ export async function createRemoveCoursesSelect(client, interaction: Interaction
             all[ch] = [].concat((all[ch] || []), one);
             return all
         }, [])
-
-        // console.debug(optionsChunks)
 
         let selectRows: MessageActionRow[] = []
         optionsChunks.forEach((chunk, index) => {

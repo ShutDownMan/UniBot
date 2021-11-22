@@ -156,12 +156,6 @@
                 "duracao": "PT50M",
                 "tipoAula": "Prática",
                 "turma": "P1"
-            },
-            {
-                "inicio": "R42/2021-W43-1T17:00:00/P1W",
-                "duracao": "PT50M",
-                "tipoAula": "Prática",
-                "turma": "P2"
             }
         ],
         "professores": [

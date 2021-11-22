@@ -5,3 +5,4 @@ ecosystem.config.js
 src/Transcriptor/videos/*
 src/Transcriptor/temp/
 .vscode/
+data/sql/sql_setup.sql

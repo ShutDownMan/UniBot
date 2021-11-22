@@ -109,10 +109,8 @@ class UniClassPersistence extends NodePostgres {
     public todaysClasses: UniClass[] = null
 
     public async fetchTodaysClassData() {
-        if (!this.todaysClasses) {
-            const today = moment().format().split("T")[0]
-            this.todaysClasses = await this.fetchClassDataByDiaryID(today)
-        }
+        const today = moment().format().split("T")[0]
+        this.todaysClasses = await this.fetchClassDataByDiaryID(today)
 
         return this.todaysClasses
     }
@@ -177,6 +175,8 @@ class UniClassPersistence extends NodePostgres {
 
     public async initUniClassFromMaterias() {
         let classDataList: UniClass[] = []
+
+        /// I FORGOR TO ADD THE DIARIES Entries
 
         /// pass through each materia
         for (const materiaID of Object.keys(Materias)) {
