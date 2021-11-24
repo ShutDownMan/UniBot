@@ -1,16 +1,14 @@
 import Logger from '../Logger'
 import Configs from '../config.json'
-import Persistence from '../Persistence'
 import { ClassStatus, UniClass } from '../Persistence/Types/ClassData'
 import Materias from './../../data/materias.json'
 import { Materia, MateriaData } from '../Persistence/Types/Materia'
 import ExtendedClient from '../Client'
 import { capitalize, sendToTextChannel } from '../Utils'
-import { parse, toSeconds, pattern } from 'iso8601-duration';
+import { parse, toSeconds } from 'iso8601-duration';
 import { Reminder, ReminderScope } from '../Persistence/Types/Reminder'
-import { GuildMember, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
 import moment from 'moment'
-import { Component } from 'chrono-node'
 const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
 
 class Tasks {
@@ -132,6 +130,9 @@ class Tasks {
         if (process.env.IS_DEV_VERSION === 'true') {
             console.info('Tasks gracefull shutdown...\n')
         }
+
+        clearInterval(this.classDiaryTask)
+        clearInterval(this.classReminderTask)
     }
 
     public async showUpcomingReminders(client: ExtendedClient, materia: Materia) {
@@ -207,7 +208,7 @@ class Tasks {
                 new MessageButton()
                     .setCustomId('addReminder')
                     .setEmoji("📝")
-                    .setLabel("Adicionar")
+                    .setLabel("Adicionar Lembrete")
                     .setStyle("SUCCESS")
             )
 
