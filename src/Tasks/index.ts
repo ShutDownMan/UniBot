@@ -8,8 +8,9 @@ import ExtendedClient from '../Client'
 import { capitalize, sendToTextChannel } from '../Utils'
 import { parse, toSeconds, pattern } from 'iso8601-duration';
 import { Reminder, ReminderScope } from '../Persistence/Types/Reminder'
-import { GuildMember, MessageEmbed } from 'discord.js'
+import { GuildMember, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
 import moment from 'moment'
+import { Component } from 'chrono-node'
 const log = Logger(Configs.EventsLogLevel, 'tasks.ts')
 
 class Tasks {
@@ -145,6 +146,7 @@ class Tasks {
         reminders = reminders.sort((a, b) => { return (moment(a.reminderData.dueDate) < moment(b.reminderData.dueDate) ? -1 : 1) })
 
         let embedsToSend: MessageEmbed[] = []
+        let componentsToSend: MessageActionRow[] = []
         /// if there are reminders
         if (reminders.length > 0) {
             /// divide reminders in chunks of 25
@@ -199,10 +201,22 @@ class Tasks {
 
             /// add to embed list
             embedsToSend.push(noRemindersEmbed)
+
+            /// create add reminder button
+            let addReminderButtonRow = new MessageActionRow().addComponents(
+                new MessageButton()
+                    .setCustomId('addReminder')
+                    .setEmoji("📝")
+                    .setLabel("Adicionar")
+                    .setStyle("SUCCESS")
+            )
+
+            /// insert addReminder button to components list
+            componentsToSend.push(addReminderButtonRow)
         }
 
         /// populate message fields and send
-        let messageContent: any = { content: `**\u200b**`, embeds: embedsToSend, components: [], ephemeral: true, fetchReply: true };
+        let messageContent: any = { content: `**\u200b**`, embeds: embedsToSend, components: componentsToSend, ephemeral: true, fetchReply: true };
         return await sendToTextChannel(this.client, materia.materiaData.canalTextoID, messageContent)
     }
 
