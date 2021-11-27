@@ -24,7 +24,7 @@ export const command: Command = {
             fields: [
                 {
                     name: `Lembretes`,
-                    value: 'Aulas: ⚠️ | Tarefas: ⚠️ | Trabalhos: ⚠️ | Provas: ⚠️',
+                    value: 'Aulas: ✅ | Tarefas: ✅ | Trabalhos: ✅ | Provas: ✅',
                     inline: true,
                 },
                 {
@@ -34,7 +34,7 @@ export const command: Command = {
                 },
                 {
                     name: `Anotação nas Aulas`,
-                    value: 'Anotações públicas ⚠️ | Anotações privadas: ⚠️',
+                    value: 'Anotações públicas ✅ | Anotações privadas: ⚠️',
                     inline: false,
                 },
                 {
