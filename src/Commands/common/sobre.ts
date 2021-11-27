@@ -28,7 +28,7 @@ export const command: Command = {
                 '```ini\n' +
                 'Sou um bot criado e mantido por Jedi. Qualquer bug ou problema pode falar com ele!\nPode usar o comando de ajuda ' +
                 `[${global.dataState.prefix}ajuda]  para ver os outros comandos possíveis.` + 
-                `\n\nTenho ${slocInfo.sloc} linhas de código e ${slocInfo.comments} linhas de comentários, tudo isso em ${slocInfo.files} arquivos.` +
+                `\n\nTenho \`${slocInfo.sloc}\` linhas de código e \`${slocInfo.comments}\` linhas de comentários, tudo isso em \`${slocInfo.files}\` arquivos.` +
                 '\n\nObs: O template base para o bot foi feito pelo [github.com/costaluu]\n\nO código é aberto pelo repositório [github.com/ShutDownMan/UniBot]' +
                 '\n```',
             fields: [
