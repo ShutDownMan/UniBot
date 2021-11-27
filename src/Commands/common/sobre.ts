@@ -7,12 +7,12 @@ import sloc from 'node-sloc'
 
 export const command: Command = {
     name: 'sobre',
-    aliases: [],
+    aliases: ['about'],
     description: 'Shows info about the bot.',
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message) => {
         let slocOptions = {
-            path: (process.env.IS_DEV_VERSION === 'true') ? './' : './../src/',
+            path: './',
             extensions: ['ts', 'json'],
             ignorePaths: ['node_modules'],
             ignoreDefault: true,
