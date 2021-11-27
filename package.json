@@ -32,6 +32,7 @@
         "iso8601-repeating-interval": "github:ShutDownMan/iso8601-repeating-interval",
         "moment": "^2.29.1",
         "node-postgres": "^0.6.2",
+        "node-sloc": "^0.2.1",
         "pino": "^7.0.2",
         "pino-pretty": "^7.1.0",
         "pino-std-serializers": "^4.0.0",
