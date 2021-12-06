@@ -12,8 +12,8 @@ export const command: Command = {
     allowedRoles: [process.env.EVERYONE_ROLE_ID.toString()],
     run: async (client, message) => {
         let slocOptions = {
-            path: './',
-            extensions: ['ts', 'json'],
+            path: './src/',
+            extensions: ['.ts'],
             ignorePaths: ['node_modules'],
             ignoreDefault: true,
         }

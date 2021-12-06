@@ -46,15 +46,16 @@ async function getMemberCoursesRoles(member) {
 let guild = await message.guild.fetch()
 let members = await guild.members.fetch()
 for(let member of members.values()) {
-    if(!member.user.bot) {
+    if(member && !member.user.bot) {
         let materiasFromUser = await getMemberCoursesRoles(member)
 
         if(materiasFromUser.length === 0) {
             console.debug("sending to " + member)
-            await member.send("**🤖 Olá, tudo bem? 🤖\nPercebi que ainda não colocou nenhuma matéria no servidor, e sem os cargos não vai receber as notificações das aulas...\n\nDeixa-me te ajudar: Vá até o canal de texto <#904119001024716860> e selecione as matérias que está cursando.**")
         }
     }
 }
+
+//await member.send("**🤖 Olá, tudo bem? 🤖\nPercebi que ainda não colocou nenhuma matéria no servidor, e sem os cargos não vai receber as notificações das aulas...\n\nDeixa-me te ajudar: Vá até o canal de texto <#904119001024716860> e selecione as matérias que está cursando.**")
 
 */
 

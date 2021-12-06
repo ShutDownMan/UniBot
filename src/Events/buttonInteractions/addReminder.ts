@@ -687,15 +687,15 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
     /// confirm/cancel buttons
     let viewComponents = new MessageActionRow().addComponents(
         new MessageButton()
-            .setCustomId('showReminder|confirm')
-            .setEmoji("✅")
-            .setLabel("Confirmar")
+            .setCustomId('showReminder|public')
+            .setEmoji("🔓")
+            .setLabel("Público")
             .setStyle("SUCCESS"),
         new MessageButton()
-            .setCustomId('showReminder|cancel')
-            .setEmoji("❌")
-            .setLabel("Cancelar")
-            .setStyle("DANGER"),
+            .setCustomId('showReminder|personal')
+            .setEmoji("🔐")
+            .setLabel("Pessoal")
+            .setStyle("PRIMARY"),
     );
 
     /// construct embed description
@@ -747,22 +747,7 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         currentInteraction = null
     }
 
-    /// if user cancelled process
-    if (showReminderMessageInteraction.customId === "showReminder|cancel") {
-        /// disable other button
-        remindEmbedMessage.components[0].components[0].setDisabled(true)
-        /// delete reminder message
-        // tryToDeleteMessage(description)
-
-        /// edit interaction reply
-        messageContent = { embeds: [], content: `**❌ Lembrete cancelado... ❌**`, components: [] }
-        await (interaction as ButtonInteraction).editReply(messageContent)
-        currentInteraction = null
-    } else {
-        /// disable cancel button
-        remindEmbedMessage.components[0].components[1].setDisabled(true)
-        await interaction.editReply({ components: remindEmbedMessage.components });
-
+    if(showReminderMessageInteraction) {
         /// construct reminder in order to return
         reminderData.materiaID = materia.materiaID;
         reminderData.author = description.author.id;
@@ -771,6 +756,21 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         if (date)
             reminderData.dueDate = date.format();
         reminderData.type = reminderType;
+    }
+
+    /// if user cancelled process
+    if (showReminderMessageInteraction.customId === "showReminder|personal") {
+        /// disable other button
+        remindEmbedMessage.components[0].components[0].setDisabled(true)
+
+        reminderData.scope = ReminderScope.Personal;
+    }
+
+    if (showReminderMessageInteraction.customId === "showReminder|public") { 
+        /// disable other button
+        remindEmbedMessage.components[0].components[1].setDisabled(true)
+        await interaction.editReply({ components: remindEmbedMessage.components });
+
         reminderData.scope = ReminderScope.Public;
     }
 

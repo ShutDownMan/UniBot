@@ -35,7 +35,7 @@ export async function showReminders(client: ExtendedClient, interaction: ButtonI
         if (getMateriaFromUserResult.materiaID !== "all") {
             /// get materia from materiaID
             materiaID = getMateriaFromUserResult.materiaID
-            materia = Materias[materiaID];
+            materia = { materiaID, materiaData: Materias[materiaID] };
         }
 
     }
@@ -56,7 +56,7 @@ function getCourseTextChannel(channelId: string): Materia {
 async function getScopeOfReminder(interaction: ButtonInteraction) {
     let reminderScope: ReminderScope = null
 
-    let reminderMenuMessage: Message = await sendAddReminderMenu(interaction)
+    let reminderMenuMessage: Message = await sendGetScopeOfReminderMenu(interaction)
 
     let addReminderMenuInteraction: ButtonInteraction = null
     try {
@@ -95,7 +95,7 @@ async function getScopeOfReminder(interaction: ButtonInteraction) {
 }
 
 
-async function sendAddReminderMenu(interaction: ButtonInteraction) {
+async function sendGetScopeOfReminderMenu(interaction: ButtonInteraction) {
     let scopeChoiceView: any = {}
 
     /// create select with
@@ -212,7 +212,7 @@ export async function sendCoursesSelect(interaction: ButtonInteraction) {
 
 async function showRemindersFromMateria(client: ExtendedClient, interaction: Interaction, materia: Materia, reminderScope: ReminderScope) {
     let reminders: Reminder[] = null
-    if(materia) {
+    if (materia) {
         reminders = await client.persistence.fetchRemindersByMateriaID(materia.materiaID, reminderScope, interaction.user.id)
     } else {
         reminders = await client.persistence.fetchReminders()

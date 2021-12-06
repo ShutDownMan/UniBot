@@ -305,6 +305,13 @@ export class ReminderPersistence extends NodePostgres {
 
         /// AND "reminderData" ->> 'scope' = '${ReminderScope.Personal}'
 
+        console.debug(`
+            SELECT * FROM "Reminder"
+            WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
+            AND "reminderData" ->> 'author' = '${author}'
+            AND "reminderData" ->> 'disabled' = 'false'
+        `)
+
         switch (reminderScope) {
             case ReminderScope.Personal:
                 queryResult = await this.db.query(`
@@ -318,6 +325,10 @@ export class ReminderPersistence extends NodePostgres {
                 queryResult = await this.db.query(`
                     SELECT * FROM "Reminder"
                     WHERE "reminderData" ->> 'materiaID' = '${materiaID}'
+                    AND (
+                        "reminderData" ->> 'scope' = '${ReminderScope.Public}'
+                        OR "reminderData" ->> 'author' = '${author}'
+                    )
                     AND "reminderData" ->> 'disabled' = 'false'
                 `);
                 break;
