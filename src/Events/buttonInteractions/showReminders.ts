@@ -245,11 +245,14 @@ async function showRemindersFromMateria(client: ExtendedClient, interaction: Int
                 .setFooter(interactionAuthor.displayName, interactionAuthor.displayAvatarURL());
 
             for (let reminder of currentReminders) {
-                let reminderMateria = Materias[reminder.reminderData.materiaID]
                 let reminderAuthor = await interaction.guild.members.fetch(reminder.reminderData.author)
                 let reminderTitle = `Lembrete de \`${capitalize(reminder.reminderData.type)}\` de \`${reminderAuthor.displayName}\``
                 reminderTitle += (reminder.reminderData.dueDate) ? ` <t:${moment(reminder.reminderData.dueDate).unix()}:R>` : ``;
-                reminderTitle += (materia) ? ` da matéria de \`${reminderMateria.nomeMateria}\`` : ``;
+                if(!materia) {
+                    let reminderMateria = Materias[reminder.reminderData.materiaID]
+                    if(reminderMateria)
+                        reminderTitle += ` da matéria de \`${reminderMateria.nomeMateria}\``;    
+                }
                 let reminderDescStr = reminder.reminderData.description.substring(0, 165).concat((reminder.reminderData.description.length > 150) ? `[...]` : ``)
                 let reminderDesc = `\
                 \`\`\`\n${reminderDescStr}\n\`\`\`\
