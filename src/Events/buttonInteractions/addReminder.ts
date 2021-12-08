@@ -758,10 +758,10 @@ async function getFinalReminder(interaction: ButtonInteraction, materia: Materia
         reminderData.type = reminderType;
     }
 
-    /// if user cancelled process
     if (showReminderMessageInteraction.customId === "showReminder|personal") {
         /// disable other button
         remindEmbedMessage.components[0].components[0].setDisabled(true)
+        await interaction.editReply({ components: remindEmbedMessage.components });
 
         reminderData.scope = ReminderScope.Personal;
     }
